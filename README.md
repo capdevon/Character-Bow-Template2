@@ -8,6 +8,7 @@ The demo contains:
 * Animations (with gltf2 animations)
 * Third Person Camera with collision detection
 * Bow with two types of ammo and effect
+* Keyboard/Mouse and Joystick support
 * Sounds
 * Particles (with org.apache.commons.pool.impl.GenericKeyedObjectPool)
 * Postprocessing
