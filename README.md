@@ -16,6 +16,6 @@ The demo contains:
 * Postprocessing
 
 Resource Used:
-* ![mixamo](https://www.mixamo.com/#/)
+* [mixamo](https://www.mixamo.com/#/)
 
 ![Screenshot](media/character-bow-demo-1.jpg)
