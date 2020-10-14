@@ -46,6 +46,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     private MocapControl animator;
     private BetterCharacterControl bcc;
     private final Vector3f walkDirection = new Vector3f(0, 0, 0);
+    private final Vector3f viewDirection = new Vector3f(0, 0, 1);
 
     private final Quaternion dr = new Quaternion();
     private final Vector3f camDir = new Vector3f();
@@ -66,10 +67,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.aimNode    = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
             this.collCamera = getComponent(CameraCollisionControl.class);
-            this.bcc = getComponent(BetterCharacterControl.class);
-            this.animator = getComponent(MocapControl.class);
+            this.bcc        = getComponent(BetterCharacterControl.class);
+            this.animator   = getComponent(MocapControl.class);
             animator.addListener(this);
             setFOV(defaultFOV);
         }
@@ -110,7 +111,8 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
                 spatial.getWorldRotation().slerp(dr, 1 - (tpf * m_TurnSpeed));
-                bcc.setViewDirection(spatial.getWorldRotation().mult(Vector3f.UNIT_Z));
+                spatial.getWorldRotation().mult(Vector3f.UNIT_Z, viewDirection);
+                bcc.setViewDirection(viewDirection);
             }
 
             float xSpeed = isRunning ? m_RunSpeed : m_MoveSpeed;
@@ -142,7 +144,6 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         fov = (isAiming) ? (fov + m) : (fov - m);
         fov = FastMath.clamp(fov, 0, 1);
         setFOV(FastMath.interpolateLinear(fov, defaultFOV, aimZoomRatio * defaultFOV));
-        System.out.println("\t upateWeaponAiming: " + fov);
     }
 
     private void setFOV(float fov) {
@@ -150,10 +151,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         camera.setFrustumPerspective(fov, aspect, .2f, 100f);
     }
 
-    public void setAiming(boolean enable) {
-        isAiming = enable;
-        // collCamera.setZooming(enable);
-        weapon.crosshair.setEnabled(enabled);
+    public void setAiming(boolean isAiming) {
+        this.isAiming = isAiming;
+        // collCamera.setZooming(isAiming);
+        weapon.crosshair.setEnabled(isAiming);
         setAnimTrigger(IAnimation.Draw_Arrow);
     }
 
