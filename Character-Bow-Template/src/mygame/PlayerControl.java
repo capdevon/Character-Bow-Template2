@@ -36,6 +36,9 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     ParticleManager particleManager;
     Camera camera;
     Weapon weapon;
+    AudioNode footsteps;
+    AudioNode shoot;
+    AudioNode reload;
 
     float fov = 0;
     float aimingSpeed = 5f;
@@ -73,6 +76,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
             this.animator   = getComponent(MocapControl.class);
             animator.addListener(this);
             setFOV(defaultFOV);
+            
+            footsteps   = SoundManager.getSound("footsteps");
+            shoot       = SoundManager.getSound("shoot");
+            reload      = SoundManager.getSound("reload");
         }
     }
 
@@ -90,7 +97,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         if (isAiming) {
             bcc.setWalkDirection(walkDirection);
             bcc.setViewDirection(camDir);
-            SoundManager.getSound("footsteps").stop();
+            footsteps.stop();
 
         } else {
             if (_MoveForward) {
@@ -123,14 +130,13 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
 
             if (isMoving) {
                 setAnimTrigger(isRunning ? IAnimation.Running_2 : IAnimation.Running);
-                AudioNode footsteps = SoundManager.getSound("footsteps");
                 footsteps.setVolume(isRunning ? 2f : .4f);
                 footsteps.setPitch(isRunning ? 1f : .85f);
                 footsteps.play();
 
             } else {
                 setAnimTrigger(IAnimation.Idle);
-                SoundManager.getSound("footsteps").stop();
+                footsteps.stop();
             }
         }
     }
@@ -144,6 +150,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         fov = (isAiming) ? (fov + m) : (fov - m);
         fov = FastMath.clamp(fov, 0, 1);
         setFOV(FastMath.interpolateLinear(fov, defaultFOV, aimZoomRatio * defaultFOV));
+        // System.out.println("\t upateWeaponAiming: " + fov);
     }
 
     private void setFOV(float fov) {
@@ -169,7 +176,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     private void shooting(Weapon weapon) {
         if (isAiming && canShooting) {
 
-            SoundManager.getSound("shoot").playInstance();
+            shoot.playInstance();
             setAnimTrigger(IAnimation.Aim_Recoil);
 
             // Aim the ray from character location in camera direction.
@@ -267,12 +274,12 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     void setWeaponReady() {
         canShooting = true;
         weapon.crosshair.setColor(ColorRGBA.White);
-        SoundManager.getSound("reload").play();
+        reload.play();
     }
 
     void setWeaponCharging() {
         canShooting = false;
         weapon.crosshair.setColor(ColorRGBA.Red);
-        SoundManager.getSound("reload").stop();
+        reload.stop();
     }
 }
