@@ -33,109 +33,109 @@ import mygame.camera.TPSChaseCamera;
  */
 public class PlayerManager extends SimpleAppState {
 
-	private Node player;
-	private PlayerControl playerCtrl;
-	private PlayerInput playerInput;
+    private Node player;
+    private PlayerControl playerCtrl;
+    private PlayerInput playerInput;
 
-	@Override
-	protected void simpleInit() {
-		setupPlayer();
-	}
+    @Override
+    protected void simpleInit() {
+        setupPlayer();
+    }
 
-	@Override
-	protected void registerInput() {
-		GInputAppState ginput = stateManager.getState(GInputAppState.class);
-		ginput.addActionListener(playerInput);
-	}
+    @Override
+    protected void registerInput() {
+        GInputAppState ginput = stateManager.getState(GInputAppState.class);
+        ginput.addActionListener(playerInput);
+    }
 
-	private void setupPlayer() {
-		// Create a node for the character model
-		player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+    private void setupPlayer() {
+        // Create a node for the character model
+        player = (Node) assetManager.loadModel(AnimDefs.MODEL);
 
-		player.addControl(new Animator());
-		player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
+        player.addControl(new Animator());
+        player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
 
-		initCamera();
+        initCamera();
 
-		playerCtrl = new PlayerControl();
-		playerCtrl.camera = camera;
-		playerCtrl.particleManager = stateManager.getState(ParticleManager.class);
-		playerCtrl.weapon = initWeapons();
-		playerCtrl.footstepsSFX = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
-		playerCtrl.shootSFX = getAudioClip(AudioLib.ARROW_HIT);
-		playerCtrl.reloadSFX = getAudioClip(AudioLib.BOW_PULL);
-		player.addControl(playerCtrl);
+        playerCtrl = new PlayerControl();
+        playerCtrl.camera = camera;
+        playerCtrl.particleManager = stateManager.getState(ParticleManager.class);
+        playerCtrl.weapon = initWeapons();
+        playerCtrl.footstepsSFX = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
+        playerCtrl.shootSFX = getAudioClip(AudioLib.ARROW_HIT);
+        playerCtrl.reloadSFX = getAudioClip(AudioLib.BOW_PULL);
+        player.addControl(playerCtrl);
 
-		playerInput = new PlayerInput();
-		player.addControl(playerInput);
+        playerInput = new PlayerInput();
+        player.addControl(playerInput);
 
-		physics.getPhysicsSpace().add(player);
-		rootNode.attachChild(player);
-	}
+        physics.getPhysicsSpace().add(player);
+        rootNode.attachChild(player);
+    }
 
-	private void initCamera() {
-		TPSChaseCamera chaseCam = new TPSChaseCamera(camera, player);
-		chaseCam.registerWithInput(inputManager, settings.useJoysticks());
-		chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
-		chaseCam.setMaxDistance(3f);
-		chaseCam.setMinDistance(1f);
-		chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
-		chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
-		chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI);
-		chaseCam.setRotationSensitivity(1.5f);
-		chaseCam.setZoomSensitivity(3f);
-		chaseCam.setDownRotateOnCloseViewOnly(false);
+    private void initCamera() {
+        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, player);
+        chaseCam.registerWithInput(inputManager, settings.useJoysticks());
+        chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
+        chaseCam.setMaxDistance(3f);
+        chaseCam.setMinDistance(1f);
+        chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
+        chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
+        chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI);
+        chaseCam.setRotationSensitivity(1.5f);
+        chaseCam.setZoomSensitivity(3f);
+        chaseCam.setDownRotateOnCloseViewOnly(false);
 
-		Spatial scene = find("MainScene");
-		CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, player, scene);
-	}
+        Spatial scene = find("MainScene");
+        CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, player, scene);
+    }
 
-	private Weapon initWeapons() {
-		Node rh = AnimUtils.getAttachments(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
+    private Weapon initWeapons() {
+        Node rh = AnimUtils.getAttachments(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
-		Node model = new Node("weapon-node");
-		Geometry geo = getRuntimeWeapon("weapon-geomesh", ColorRGBA.Green);
-		model.setCullHint(Spatial.CullHint.Never);
-		model.setLocalScale(100);
-		model.attachChild(geo);
-		rh.attachChild(model);
+        Node model = new Node("weapon-node");
+        Geometry geo = getRuntimeWeapon("weapon-geomesh", ColorRGBA.Green);
+        model.setCullHint(Spatial.CullHint.Never);
+        model.setLocalScale(100);
+        model.attachChild(geo);
+        rh.attachChild(model);
 
-		Weapon weapon = new Weapon("Bow", rh, model);
-		weapon.crosshair = new CrosshairData(guiNode, getCrossHair());
-		weapon.addAmmoType("Scenes/jMonkey/Flame.j3o");
-		weapon.addAmmoType("Scenes/jMonkey/Poison.j3o");
-		return weapon;
-	}
+        Weapon weapon = new Weapon("Bow", rh, model);
+        weapon.crosshair = new CrosshairData(guiNode, getCrossHair());
+        weapon.addAmmoType("Scenes/jMonkey/Flame.j3o");
+        weapon.addAmmoType("Scenes/jMonkey/Poison.j3o");
+        return weapon;
+    }
 
-	private Geometry getRuntimeWeapon(String name, ColorRGBA color) {
-		Sphere mesh = new Sphere(8, 8, .05f);
-		Geometry geo = new Geometry(name, mesh);
-		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat.setColor("Color", color);
-		geo.setMaterial(mat);
-		return geo;
-	}
+    private Geometry getRuntimeWeapon(String name, ColorRGBA color) {
+        Sphere mesh = new Sphere(8, 8, .05f);
+        Geometry geo = new Geometry(name, mesh);
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", color);
+        geo.setMaterial(mat);
+        return geo;
+    }
 
-	/* A centered plus sign to help the player aim. */
-	private BitmapText getCrossHair() {
-		BitmapText ch = new BitmapText(guiFont, false);
-		ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-		ch.setText("+");
-		float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
-		float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
-		ch.setLocalTranslation(width, height, 0);
-		return ch;
-	}
+    /* A centered plus sign to help the player aim. */
+    private BitmapText getCrossHair() {
+        BitmapText ch = new BitmapText(guiFont, false);
+        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+        ch.setText("+");
+        float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
+        float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
+        ch.setLocalTranslation(width, height, 0);
+        return ch;
+    }
 
-	/**
-	 * @param sound
-	 * @return
-	 */
-	private AudioNode getAudioClip(AudioClip sound) {
-		AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Buffer);
-		audio.setVolume(sound.volume);
-		audio.setLooping(sound.looping);
-		audio.setPositional(sound.positional);
-		return audio;
-	}
+    /**
+     * @param sound
+     * @return
+     */
+    private AudioNode getAudioClip(AudioClip sound) {
+        AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Buffer);
+        audio.setVolume(sound.volume);
+        audio.setLooping(sound.looping);
+        audio.setPositional(sound.positional);
+        return audio;
+    }
 }
