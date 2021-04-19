@@ -22,6 +22,9 @@ public class TrackUtils {
 
     private static final Logger logger = Logger.getLogger(TrackUtils.class.getName());
 
+    private TrackUtils () {
+    	// private constructor.
+    }
 
     /**
      * @param sp
@@ -34,7 +37,7 @@ public class TrackUtils {
         AudioTrack track = new AudioTrack(audio, anim.getLength(), startOffset);
         anim.addTrack(track);
     }
-    
+
     public static void addAudioTrack(Spatial sp, AudioNode audio, String animName) {
         addAudioTrack(sp, audio, animName, 0f);
     }
@@ -51,7 +54,7 @@ public class TrackUtils {
         EffectTrack track = new EffectTrack(emitter, anim.getLength(), startOffset);
         anim.addTrack(track);
     }
-    
+
     public static void addEffectTrack(Spatial sp, ParticleEmitter emitter, String animName) {
         addEffectTrack(sp, emitter, animName, 0f);
     }
@@ -68,7 +71,7 @@ public class TrackUtils {
         CallbackTrack track = new CallbackTrack(tween, anim.getLength(), startOffset);
         anim.addTrack(track);
     }
-    
+
     public static void addActionTrack(Spatial sp, Tween tween, String animName) {
         addCallbackTrack(sp, tween, animName, 0f);
     }
@@ -89,10 +92,7 @@ public class TrackUtils {
             throw new IllegalArgumentException("Animation not found: " + sp);
         }
 
-        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[] {
-            animName,
-            anim.getLength()
-        });
+        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[] { animName, anim.getLength() });
         return anim;
     }
 
