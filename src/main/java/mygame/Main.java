@@ -24,28 +24,28 @@ import mygame.states.SceneAppState;
  * @author capdevon
  */
 public class Main extends SimpleApplication {
-    
+
     /**
      * Start the jMonkeyEngine application
      * @param args
      */
     public static void main(String[] args) {
-    	//Get the Resolution of the main/default display
+        //Get the Resolution of the main/default display
         GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         DisplayMode display = device.getDisplayMode();
-        
+
         Main app = new Main();
-        
+
         AppSettings settings = new AppSettings(true);
-		settings.setResolution(1280, 720);
-		settings.setFrameRate(60);
-		settings.setBitsPerPixel(display.getBitDepth());
+        settings.setResolution(1280, 720);
+        settings.setFrameRate(60);
+        settings.setBitsPerPixel(display.getBitDepth());
         settings.setFrequency(display.getRefreshRate());
-		settings.setSamples(4);
-		settings.setVSync(true);
-		settings.setGammaCorrection(true);
-//		settings.setUseJoysticks(true);
-        
+        settings.setSamples(4);
+        settings.setVSync(true);
+        settings.setGammaCorrection(true);
+        // settings.setUseJoysticks(true);
+
         app.setSettings(settings);
         app.setShowSettings(true);
         app.setPauseOnLostFocus(false);
@@ -57,19 +57,18 @@ public class Main extends SimpleApplication {
         // disable the default 1st-person flyCam!
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
         flyCam.setEnabled(false);
-        
-		/** Initialize the physics simulation */
-		BulletAppState physics = new BulletAppState();
-		stateManager.attach(physics);
-		physics.setDebugEnabled(false);
 
-		stateManager.attach(new SceneAppState());
-		stateManager.attach(new CubeAppState());
+        /** Initialize the physics simulation */
+        BulletAppState physics = new BulletAppState();
+        stateManager.attach(physics);
+        physics.setDebugEnabled(false);
+
+        stateManager.attach(new SceneAppState());
+        stateManager.attach(new CubeAppState());
         stateManager.attach(new PhysxDebugAppState());
         stateManager.attach(new GInputAppState());
         stateManager.attach(new ParticleManager());
         stateManager.attach(new PlayerManager());
     }
-    
-}
 
+}
