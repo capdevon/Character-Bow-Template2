@@ -14,6 +14,7 @@ import com.jme3.scene.shape.Cylinder;
 
 /**
  *
+ * @author capdevon
  */
 public class CylinderTrigger extends EnterableTrigger {
 
