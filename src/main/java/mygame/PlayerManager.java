@@ -59,8 +59,9 @@ public class PlayerManager extends SimpleAppState {
 
         playerCtrl = new PlayerControl();
         playerCtrl.camera = camera;
+        playerCtrl.weaponUI = getBitmapText(20, settings.getHeight() - 20);
         playerCtrl.particleManager = stateManager.getState(ParticleManager.class);
-        playerCtrl.weapon = initWeapons();
+        playerCtrl.weapon = initWeapon();
         playerCtrl.footstepsSFX = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
         playerCtrl.shootSFX = getAudioClip(AudioLib.ARROW_HIT);
         playerCtrl.reloadSFX = getAudioClip(AudioLib.BOW_PULL);
@@ -90,7 +91,7 @@ public class PlayerManager extends SimpleAppState {
         CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, player, scene);
     }
 
-    private Weapon initWeapons() {
+    private Weapon initWeapon() {
         Node rh = AnimUtils.getAttachments(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
         Node model = new Node("weapon-node");
@@ -101,9 +102,22 @@ public class PlayerManager extends SimpleAppState {
         rh.attachChild(model);
 
         Weapon weapon = new Weapon("Bow", rh, model);
-        weapon.crosshair = new CrosshairData(guiNode, getCrossHair());
-        weapon.addAmmoType("Scenes/jMonkey/Flame.j3o");
-        weapon.addAmmoType("Scenes/jMonkey/Poison.j3o");
+        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
+
+        AmmoType flameArrow = new AmmoType();
+        flameArrow.name = "Flame";
+        flameArrow.effect = "Scenes/jMonkey/Flame.j3o";
+        flameArrow.explosionRadius = 5f;
+        flameArrow.baseStrength = 10f;
+
+        AmmoType poisonArrow = new AmmoType();
+        poisonArrow.name = "Poison";
+        poisonArrow.effect = "Scenes/jMonkey/Poison.j3o";
+        poisonArrow.explosionRadius = 4f;
+        poisonArrow.baseStrength = 6f;
+
+        weapon.addAmmoType(flameArrow);
+        weapon.addAmmoType(poisonArrow);
         return weapon;
     }
 
@@ -116,11 +130,20 @@ public class PlayerManager extends SimpleAppState {
         return geo;
     }
 
+    private BitmapText getBitmapText(float xPos, float yPos) {
+        BitmapText hud = new BitmapText(guiFont, false);
+        hud.setSize(guiFont.getCharSet().getRenderedSize());
+        hud.setLocalTranslation(xPos, yPos, 0);
+        hud.setColor(ColorRGBA.Red);
+        guiNode.attachChild(hud);
+        return hud;
+    }
+
     /* A centered plus sign to help the player aim. */
-    private BitmapText getCrossHair() {
+    private BitmapText getCrossHair(String text) {
         BitmapText ch = new BitmapText(guiFont, false);
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-        ch.setText("+");
+        ch.setText(text);
         float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
         float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
         ch.setLocalTranslation(width, height, 0);
