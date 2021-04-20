@@ -11,26 +11,30 @@ import java.io.File;
  */
 public class Capture {
 
-	/**
-	 * @param app
-	 * @param quality [0.5f]
-	 * @param dirName
-	 */
-	public static void captureVideo(Application app, float quality, String dirName) {
-		AppSettings settings = app.getContext().getSettings();
-		long fileId = (System.currentTimeMillis() / 1000);
-		String fileName = settings.getTitle() + "-" + fileId + ".avi";
-		File file = new File(dirName, fileName);
+    private Capture() {
+        // private constructor.
+    }
 
-		int frameRate = settings.getFrameRate();
-		if (settings.getFrameRate() < 0) {
-			throw new IllegalArgumentException("FrameRate must not be negative: " + frameRate);
-		}
+    /**
+     * @param app
+     * @param quality [0.5f]
+     * @param dirName
+     */
+    public static void captureVideo(Application app, float quality, String dirName) {
+        AppSettings settings = app.getContext().getSettings();
+        long fileId = (System.currentTimeMillis() / 1000);
+        String fileName = settings.getTitle() + "-" + fileId + ".avi";
+        File file = new File(dirName, fileName);
 
-		VideoRecorderAppState recorder = new VideoRecorderAppState(file, quality, frameRate);
-		app.getStateManager().attach(recorder);
+        int frameRate = settings.getFrameRate();
+        if (settings.getFrameRate() < 0) {
+            throw new IllegalArgumentException("FrameRate must not be negative: " + frameRate);
+        }
 
-		System.out.println("Start VideoRecorder=" + file.getAbsolutePath());
-	}
+        VideoRecorderAppState recorder = new VideoRecorderAppState(file, quality, frameRate);
+        app.getStateManager().attach(recorder);
+
+        System.out.println("Start VideoRecorder=" + file.getAbsolutePath());
+    }
 
 }
