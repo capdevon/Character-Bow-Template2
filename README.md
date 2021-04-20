@@ -16,13 +16,24 @@ The demo contains:
 * Particles
 * Postprocessing
 
-Resource Used:
+# Keyboard Commands:
+- WASD: Basic movements
+- E: Aiming
+- R: Switch arrow type
+- LMB: Left Mouse Button to fire
+- LSHIFT: Running
+- CAMERA: Use the mouse to orient the camera
+- KEY_0: Toggle Physics Debug
+
+# Resource Used:
 
 - Code
     - [jMonkeyEngine](https://jmonkeyengine.org/)
+    - [Minie](https://stephengold.github.io/Minie/minie/overview.html)
     
 - Assets
-    - [mixamo](https://www.mixamo.com/#/)
+    - [Mixamo](https://www.mixamo.com/)
+    - [Blender](https://www.blender.org/download/)
 
 ![Screenshot](media/image2.jpg)
 
