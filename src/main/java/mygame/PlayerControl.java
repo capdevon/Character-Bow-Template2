@@ -5,6 +5,7 @@
  */
 package mygame;
 
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -45,6 +47,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
 
     ParticleManager particleManager;
     Camera camera;
+    BitmapText weaponUI;
     Weapon weapon;
     AudioNode footstepsSFX;
     AudioNode shootSFX;
@@ -69,7 +72,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     private final Vector3f camLeft = new Vector3f();
     private final Vector2f velocity = new Vector2f();
 
-    float m_RunSpeed  = 5.5f;
+    float m_RunSpeed = 5.5f;
     float m_MoveSpeed = 4.5f;
     float m_TurnSpeed = 10f;
 
@@ -83,10 +86,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode 	= addEmptyNode("aim-node", new Vector3f(0, 2, 0));
-            this.chaseCamera	= getComponent(ChaseCamera.class);
-            this.bcc 		= getComponent(BetterCharacterControl.class);
-            this.animator 	= getComponent(Animator.class);
+            this.aimNode = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.chaseCamera = getComponent(ChaseCamera.class);
+            this.bcc = getComponent(BetterCharacterControl.class);
+            this.animator = getComponent(Animator.class);
             animator.addAnimListener(this);
 
             _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
@@ -99,6 +102,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         // TODO Auto-generated method stub
 
         updateWeaponAiming(tpf);
+        weaponUI.setText(weapon.getDescription());
 
         camera.getDirection(camDir).setY(0);
         camera.getLeft(camLeft).setY(0);
@@ -181,7 +185,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     }
 
     public void changeAmmo() {
-        weapon.onChangeAmmo();
+        weapon.nextAmmo();
     }
 
     public void shooting() {
@@ -189,13 +193,14 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     }
 
     private void shooting(Weapon weapon) {
-        if (isAiming && canShooting) {
+        if (isAiming && canShooting && weapon.currAmmo > 0) {
 
+            weapon.currAmmo--;
             shootSFX.playInstance();
             setAnimTrigger(AnimDefs.Aim_Recoil);
 
             // Aim the ray from character location in camera direction.
-            if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.distance)) {
+            if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.range)) {
                 System.out.println(" * You shot: " + shootHit);
                 applyExplosion(shootHit, weapon);
 
@@ -210,19 +215,19 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
      * @param weapon
      */
     private void applyExplosion(RaycastHit hit, Weapon weapon) {
-        float explosionRadius = 5;
-        float baseStrength = 10f;
-        ColorRGBA color = ColorRGBA.randomColor();
+        AmmoType ammoType = weapon.getAmmoType();
         int shootLayer = PhysicsCollisionObject.COLLISION_GROUP_03;
+        Function<PhysicsRigidBody, Boolean> dynamicObjects = (x) -> x.getMass() > 0;
+        ColorRGBA color = ColorRGBA.randomColor();
 
-        for (PhysicsRigidBody rb: PhysxQuery.overlapSphere(hit.point, explosionRadius, shootLayer)) {
+        for (PhysicsRigidBody rb: PhysxQuery.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
 
-            Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
+            Physics.addExplosionForce(rb, ammoType.baseStrength, hit.point, ammoType.explosionRadius);
             Spatial userObj = (Spatial) rb.getUserObject();
             applyDamage(userObj, color);
         }
 
-        particleManager.playEffect(weapon.getAmmoType(), shootHit.point, 10f);
+        particleManager.playEffect(ammoType.effect, shootHit.point, 10f);
     }
 
     private void applyDamage(Spatial sp, ColorRGBA color) {
