@@ -7,6 +7,7 @@ package com.capdevon.trigger;
 
 /**
  *
+ * @author capdevon
  */
 public interface TriggerListener {
 
