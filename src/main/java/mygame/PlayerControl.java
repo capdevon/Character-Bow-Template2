@@ -40,8 +40,8 @@ import mygame.camera.MainCamera;
  * @author capdevon
  */
 public class PlayerControl extends AdapterControl implements AnimEventListener {
-	
-	private static final Logger logger = Logger.getLogger(PlayerControl.class.getName());
+
+    private static final Logger logger = Logger.getLogger(PlayerControl.class.getName());
 
     ParticleManager particleManager;
     Camera camera;
@@ -69,7 +69,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     private final Vector3f camLeft = new Vector3f();
     private final Vector2f velocity = new Vector2f();
 
-    float m_RunSpeed = 5.5f;
+    float m_RunSpeed  = 5.5f;
     float m_MoveSpeed = 4.5f;
     float m_TurnSpeed = 10f;
 
@@ -83,12 +83,12 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode    = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
-            this.chaseCamera = getComponent(ChaseCamera.class);
-            this.bcc        = getComponent(BetterCharacterControl.class);
-            this.animator   = getComponent(Animator.class);
+            this.aimNode 	= addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.chaseCamera	= getComponent(ChaseCamera.class);
+            this.bcc 		= getComponent(BetterCharacterControl.class);
+            this.animator 	= getComponent(Animator.class);
             animator.addAnimListener(this);
-            
+
             _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
             logger.log(Level.INFO, "Initialized");
         }
@@ -106,14 +106,14 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         walkDirection.set(0, 0, 0);
 
         if (isAiming) {
-        	Vector3f lookDir = camera.getDirection();
+            Vector3f lookDir = camera.getDirection();
             lookDir.y = 0;
             lookDir.normalizeLocal();
             Quaternion lookRotation = FRotator.lookRotation(lookDir);
             spatial.getLocalRotation().slerp(lookRotation, m_TurnSpeed * tpf);
             spatial.getLocalRotation().mult(Vector3f.UNIT_Z, viewDirection);
             bcc.setViewDirection(viewDirection);
-            
+
             //bcc.setViewDirection(camDir);
             bcc.setWalkDirection(walkDirection);
             footstepsSFX.stop();
@@ -160,21 +160,21 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
             }
         }
     }
-    
-	private void updateWeaponAiming(float tpf) {
-		if (isAiming) {
-			fov += tpf * aimingSpeed;
-		} else {
-			fov -= tpf * aimingSpeed;
-		}
-		
-		fov = FastMath.clamp(fov, 0, 1);
-		_MainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
-	}
+
+    private void updateWeaponAiming(float tpf) {
+        if (isAiming) {
+            fov += tpf * aimingSpeed;
+        } else {
+            fov -= tpf * aimingSpeed;
+        }
+
+        fov = FastMath.clamp(fov, 0, 1);
+        _MainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
+    }
 
     public void setAiming(boolean isAiming) {
         this.isAiming = isAiming;
-//        chaseCamera.setDefaultDistance(isAiming ? chaseCamera.getMinDistance() : chaseCamera.getMaxDistance());
+        //chaseCamera.setDefaultDistance(isAiming ? chaseCamera.getMinDistance() : chaseCamera.getMaxDistance());
         chaseCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         weapon.crosshair.setEnabled(isAiming);
         setAnimTrigger(AnimDefs.Draw_Arrow);
@@ -215,21 +215,20 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         ColorRGBA color = ColorRGBA.randomColor();
         int shootLayer = PhysicsCollisionObject.COLLISION_GROUP_03;
 
-        for (PhysicsRigidBody rb : PhysxQuery.overlapSphere(hit.point, explosionRadius, shootLayer)) {
-        	
-        	Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
+        for (PhysicsRigidBody rb: PhysxQuery.overlapSphere(hit.point, explosionRadius, shootLayer)) {
+
+            Physics.addExplosionForce(rb, baseStrength, hit.point, explosionRadius);
             Spatial userObj = (Spatial) rb.getUserObject();
             applyDamage(userObj, color);
         }
-        
+
         particleManager.playEffect(weapon.getAmmoType(), shootHit.point, 10f);
     }
 
     private void applyDamage(Spatial sp, ColorRGBA color) {
-        if (sp instanceof Geometry) {
-            Geometry geom = (Geometry) sp;
-            geom.getMaterial().setColor("Color", color);
-        }
+        Node root = (Node) sp;
+        Geometry geom = (Geometry) root.getChild(0);
+        geom.getMaterial().setColor("Color", color);
     }
 
     private void setAnimTrigger(Animation3 newAnim) {
