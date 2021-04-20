@@ -15,6 +15,7 @@ import com.jme3.scene.control.AbstractControl;
 
 /**
  *
+ * @author capdevon
  */
 public abstract class EnterableTrigger extends AbstractControl {
 
