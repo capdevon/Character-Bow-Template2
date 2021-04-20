@@ -19,12 +19,13 @@ public class Weapon {
     private Node model;
 
     CrosshairData crosshair;
-    float distance = 30f;
+    float range = 30f;
     float damage = 50f;
-    int ammo = 20;
+    int currAmmo = 20;
+    int maxAmmo = 40;
 
     private int ammoTypeIndex = 0;
-    private final ArrayList<String> ammoTypes;
+    private final ArrayList<AmmoType> ammoTypes;
 
     /**
      * Create new Weapon
@@ -48,16 +49,25 @@ public class Weapon {
         }
     }
 
-    public void onChangeAmmo() {
+    public void nextAmmo() {
         ammoTypeIndex = (ammoTypeIndex + 1) % ammoTypes.size();
         System.out.println("AmmoType: " + ammoTypeIndex);
     }
 
-    public String getAmmoType() {
+    public AmmoType getAmmoType() {
         return ammoTypes.get(ammoTypeIndex);
     }
 
-    public void addAmmoType(String model) {
-        ammoTypes.add(model);
+    public void addAmmoType(AmmoType ammoType) {
+        ammoTypes.add(ammoType);
+    }
+
+    public String getDescription() {
+        return "Weapon[" +
+            " name: " + name +
+            " damage: " + damage +
+            " ammo: " + currAmmo + " / " + getAmmoType().name +
+            " range: " + range +
+            " ]";
     }
 }
