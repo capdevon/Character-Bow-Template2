@@ -14,6 +14,7 @@ import com.jme3.scene.debug.WireBox;
 
 /**
  *
+ * @author capdevon
  */
 public class BoxTrigger extends EnterableTrigger {
 
