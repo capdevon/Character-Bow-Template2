@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  *
+ * @author capdevon
  */
 public class TriggerManager {
     
