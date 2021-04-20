@@ -13,6 +13,7 @@ import com.jme3.scene.debug.WireSphere;
 
 /**
  *
+ * @author capdevon
  */
 public class SphereTrigger extends EnterableTrigger {
 
