@@ -11,10 +11,10 @@ import mygame.prefabs.CubePrefab;
  * @author capdevon
  */
 public class CubeAppState extends SimpleAppState {
-	
-	@Override
-	protected void simpleInit() {
-		Node cubes = new Node("CubeSpawner");
+
+    @Override
+    protected void simpleInit() {
+        Node cubes = new Node("CubeSpawner");
         rootNode.attachChild(cubes);
 
         Spawner spawner = new Spawner();
@@ -24,10 +24,9 @@ public class CubeAppState extends SimpleAppState {
         spawner.spawnTime = 5f;
         spawner.prefab = new CubePrefab(app);
         cubes.addControl(spawner);
-	}
-	
-	@Override
-	public void update(float tpf) {
-	}
+    }
+
+    @Override
+    public void update(float tpf) {}
 
 }
