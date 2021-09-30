@@ -1,6 +1,6 @@
 # Character-Bow-Template
 
-A Third Person Shooter demo made with jMonkeyEngine.
+A Third Person Shooter demo made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
 The demo contains:
 
@@ -26,14 +26,8 @@ The demo contains:
 - KEY_0: Toggle Physics Debug
 
 # Resource Used:
-
-- Code
-    - [jMonkeyEngine](https://jmonkeyengine.org/)
-    - [Minie](https://stephengold.github.io/Minie/minie/overview.html)
-    
-- Assets
-    - [Mixamo](https://www.mixamo.com/)
-    - [Blender](https://www.blender.org/download/)
+- [Mixamo](https://www.mixamo.com/)
+- [Blender](https://www.blender.org/download/)
 
 ![Screenshot](media/image2.jpg)
 
