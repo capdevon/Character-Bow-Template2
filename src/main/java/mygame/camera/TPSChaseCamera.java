@@ -14,7 +14,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class TPSChaseCamera extends ChaseCamera {
 
