@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.camera;
 
 import com.capdevon.physx.RaycastHit;
@@ -19,7 +14,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class CameraCollisionControl extends AbstractControl {
 
@@ -80,24 +76,27 @@ public class CameraCollisionControl extends AbstractControl {
      * perform simple raycast
      */
     private boolean doRaycast(Vector3f origin, Vector3f dir, float maxDistance, RaycastHit out) {
+    	
+    	out.clear();
+    	
         Ray ray = new Ray(origin, dir);
         ray.setLimit(maxDistance); // FIXME: Bug!
-        
+
         CollisionResults results = new CollisionResults();
         scene.collideWith(ray, results);
-        
-        boolean hit = false;
-		if (results.size() > 0) {
-			CollisionResult closest = results.getClosestCollision();
-			out.userObject 	= closest.getGeometry();
-			out.normal 		= closest.getContactNormal();
-			out.point 		= closest.getContactPoint();
-			out.distance 	= closest.getDistance();
 
-			if (out.distance < maxDistance)
-				hit = true;
-		}
-        
+        boolean hit = false;
+        if (results.size() > 0) {
+            CollisionResult closest = results.getClosestCollision();
+            out.userObject 	= closest.getGeometry();
+            out.normal 		= closest.getContactNormal();
+            out.point 		= closest.getContactPoint();
+            out.distance 	= closest.getDistance();
+
+            if (out.distance < maxDistance)
+                hit = true;
+        }
+
         return hit;
     }
 
