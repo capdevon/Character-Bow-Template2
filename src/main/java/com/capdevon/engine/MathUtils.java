@@ -1,16 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import com.jme3.math.FastMath;
 
 /**
- *
+ * @author capdevon
  */
 public class MathUtils {
+
+    /**
+     * Clamps value between 0 and 1 and returns value. If the value is negative then
+     * zero is returned. If value is greater than one then one is returned.
+     * 
+     * @param value
+     * @return
+     */
+    public static int clamp01(int value) {
+        return clamp(value, 0, 1);
+    }
 
     public static int clamp(int value, int min, int max) {
         if (value < min) return min;
@@ -18,10 +24,15 @@ public class MathUtils {
         return value;
     }
 
-    public static long clamp(long value, long min, long max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
+    /**
+     * Clamps value between 0 and 1 and returns value. If the value is negative then
+     * zero is returned. If value is greater than one then one is returned.
+     * 
+     * @param value
+     * @return
+     */
+    public static float clamp01(float value) {
+        return clamp(value, 0, 1);
     }
 
     public static float clamp(float value, float min, float max) {
@@ -30,12 +41,23 @@ public class MathUtils {
         return value;
     }
 
+    /**
+     * Clamps value between 0 and 1 and returns value. If the value is negative then
+     * zero is returned. If value is greater than one then one is returned.
+     * 
+     * @param value
+     * @return
+     */
+    public static double clamp01(double value) {
+        return clamp(value, 0, 1);
+    }
+
     public static double clamp(double value, double min, double max) {
         if (value < min) return min;
         if (value > max) return max;
         return value;
     }
-    
+
     /**
      * Linearly interpolates between fromValue to toValue on progress position.
      * 
@@ -61,7 +83,7 @@ public class MathUtils {
         }
         return FastMath.nextRandomFloat() * (max - min) + min;
     }
-    
+
     /**
      * Returns true if a random value between 0 and 1 is less than the specified value.
      * @param chance
@@ -70,5 +92,5 @@ public class MathUtils {
     public static boolean randomBoolean(float chance) {
         return FastMath.nextRandomFloat() < chance;
     }
-    
+
 }
