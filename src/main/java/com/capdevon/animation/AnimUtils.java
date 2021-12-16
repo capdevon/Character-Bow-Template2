@@ -74,7 +74,7 @@ public class AnimUtils {
         AnimControl acFrom = getAnimControl(from);
         AnimControl acTo = getAnimControl(to);
 
-        for (String animName: acFrom.getAnimationNames()) {
+        for (String animName : acFrom.getAnimationNames()) {
             if (!acTo.getAnimationNames().contains(animName)) {
                 System.out.println("Copying Animation: " + animName);
                 Animation anim = acFrom.getAnim(animName);
@@ -154,13 +154,13 @@ public class AnimUtils {
      * @param clazz
      * @return
      */
-    private static <T extends Control> T findControl(Spatial sp, Class <T> clazz) {
+    private static <T extends Control> T findControl(Spatial sp, Class<T> clazz) {
         T control = sp.getControl(clazz);
         if (control != null) {
             return control;
         }
         if (sp instanceof Node) {
-            for (Spatial child: ((Node) sp).getChildren()) {
+            for (Spatial child : ((Node) sp).getChildren()) {
                 control = findControl(child, clazz);
                 if (control != null) {
                     return control;
