@@ -17,14 +17,14 @@ import com.jme3.animation.LoopMode;
 import com.jme3.scene.Spatial;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Animator extends AdapterControl {
-	
-	private static final Logger logger = Logger.getLogger(Animator.class.getName());
 
-	private AnimComposer animComposer;
+    private static final Logger logger = Logger.getLogger(Animator.class.getName());
+
+    private AnimComposer animComposer;
     private SkinningControl skinningControl;
 
     private final Map<String, CustomAction> animationMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class Animator extends AdapterControl {
         if (spatial != null) {
             animComposer = getComponentInChild(AnimComposer.class);
             skinningControl = getComponentInChild(SkinningControl.class);
-            
+
             System.out.println(spatial.getName() + " --Animations: " + animComposer.getAnimClipsNames());
         }
     }
@@ -49,8 +49,8 @@ public class Animator extends AdapterControl {
     }
 
     /**
-     * @param anim
-     * @param animListener
+     * @param anim (not null)
+     * @param animListener (optional)
      */
     public void addAction(Animation3 anim, ActionAnimEventListener animListener) {
         String animName = anim.getName();
@@ -96,9 +96,9 @@ public class Animator extends AdapterControl {
     }
 
     /**
-     * 
+     *
      * @param anim
-     * @param overwrite 
+     * @param overwrite
      */
     public void setAnimation(Animation3 anim, boolean overwrite) {
         String animName = anim.getName();
@@ -119,4 +119,5 @@ public class Animator extends AdapterControl {
     public Spatial getAnimRoot() {
         return animComposer.getSpatial();
     }
+    
 }
