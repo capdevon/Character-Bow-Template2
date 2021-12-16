@@ -38,7 +38,7 @@ import com.jme3.scene.Spatial;
 import mygame.camera.MainCamera;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class PlayerControl extends AdapterControl implements AnimEventListener {
@@ -86,10 +86,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.aimNode     = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
             this.chaseCamera = getComponent(ChaseCamera.class);
-            this.bcc = getComponent(BetterCharacterControl.class);
-            this.animator = getComponent(Animator.class);
+            this.bcc         = getComponent(BetterCharacterControl.class);
+            this.animator    = getComponent(Animator.class);
             animator.addAnimListener(this);
 
             _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
@@ -99,7 +99,6 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
 
     @Override
     protected void controlUpdate(float tpf) {
-        // TODO Auto-generated method stub
 
         updateWeaponAiming(tpf);
         weaponUI.setText(weapon.getDescription());
@@ -220,7 +219,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
         Function<PhysicsRigidBody, Boolean> dynamicObjects = (x) -> x.getMass() > 0;
         ColorRGBA color = ColorRGBA.randomColor();
 
-        for (PhysicsRigidBody rb: PhysxQuery.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
+        for (PhysicsRigidBody rb : PhysxQuery.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
 
             Physics.addExplosionForce(rb, ammoType.baseStrength, hit.point, ammoType.explosionRadius);
             Spatial userObj = (Spatial) rb.getUserObject();
@@ -251,7 +250,6 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
 
     @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
-        //To change body of generated methods, choose Tools | Templates.
         if (animName.equals(AnimDefs.Aim_Recoil.getName())) {
             setAnimTrigger(AnimDefs.Draw_Arrow);
 
@@ -262,7 +260,6 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
 
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
-        // To change body of generated methods, choose Tools | Templates.
         if (animName.equals(AnimDefs.Aim_Recoil.getName()) || animName.equals(AnimDefs.Draw_Arrow.getName())) {
             setWeaponCharging();
 
