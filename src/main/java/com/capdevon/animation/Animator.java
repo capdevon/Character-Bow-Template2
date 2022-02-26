@@ -85,7 +85,7 @@ public class Animator extends AdapterControl {
         return skControl.getAttachmentsNode(boneName);
     }
 
-    public Spatial getRootMotion() {
+    public Spatial getAnimRoot() {
         return animControl.getSpatial();
     }
 

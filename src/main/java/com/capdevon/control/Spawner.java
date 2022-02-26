@@ -13,6 +13,8 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 
+import mygame.prefabs.PrefabComponent;
+
 /**
  *
  * @author capdevon

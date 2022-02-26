@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.physx;
 
 import com.jme3.bullet.PhysicsSpace;
@@ -23,13 +18,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class PhysxQuery {
-    
+
     private static final Logger logger = Logger.getLogger(PhysxQuery.class.getName());
-  
+
     /**
      * DefaultRaycastLayers ALL LAYERS
      */
@@ -39,10 +34,12 @@ public class PhysxQuery {
      */
     private static final Function<PhysicsRigidBody, Boolean> IdentityFunction = x -> true;
 
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
     private PhysxQuery() {
-    	// private constructor.
     }
-    
+
     /**
      * Computes and stores colliders inside the sphere.
      *
@@ -63,7 +60,9 @@ public class PhysxQuery {
 
                 // ghost is not linked to any Spatial, so one of the two nodes A and B is null.
                 PhysicsCollisionObject pco = event.getNodeA() != null ? event.getObjectA() : event.getObjectB();
-                logger.log(Level.INFO, "NodeA={0}, NodeB={1}, CollGroup={2}", new Object[]{event.getNodeA(), event.getNodeB(), pco.getCollisionGroup()});
+                
+                logger.log(Level.INFO, "NodeA={0}, NodeB={1}, CollGroup={2}", 
+                        new Object[]{event.getNodeA(), event.getNodeB(), pco.getCollisionGroup()});
 
                 if (applyMask(layerMask, pco.getCollisionGroup())) {
                     Spatial userObj = (Spatial) pco.getUserObject();
@@ -75,7 +74,7 @@ public class PhysxQuery {
         System.out.println("numContacts: " + numContacts);
         return overlappingObjects;
     }
-    
+
     public static Set<Spatial> contactTest(Vector3f position, float radius) {
         return contactTest(position, radius, DefaultRaycastLayers);
     }
@@ -83,12 +82,11 @@ public class PhysxQuery {
     /**
      * Computes and stores colliders inside the sphere.
      *
-     * @param position	- Center of the sphere.
-     * @param radius	- Radius of the sphere.
-     * @param layerMask	- A Layer mask defines which layers of colliders to include in the query.
-     * @param func		- Specifies a function to filter colliders.
-     * @return Returns an array with all PhysicsRigidBody touching or inside the
-     * sphere.
+     * @param position  - Center of the sphere.
+     * @param radius    - Radius of the sphere.
+     * @param layerMask - A Layer mask defines which layers of colliders to include in the query.
+     * @param func      - Specifies a function to filter colliders.
+     * @return Returns an array with all PhysicsRigidBody touching or inside the sphere.
      */
     public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Function<PhysicsRigidBody, Boolean> func) {
 
@@ -105,7 +103,7 @@ public class PhysxQuery {
         }
         return results;
     }
-    
+
     public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask) {
         return overlapSphere(position, radius, layerMask, IdentityFunction);
     }
@@ -113,7 +111,7 @@ public class PhysxQuery {
     public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius) {
         return overlapSphere(position, radius, DefaultRaycastLayers, IdentityFunction);
     }
-  
+
     /**
      * Computes and stores colliders inside the sphere into the provided buffer.
      * Does not attempt to grow the buffer if it runs out of space.

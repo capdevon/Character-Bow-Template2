@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package mygame;
+package mygame.player;
 
 import com.capdevon.animation.AnimUtils;
 import com.capdevon.animation.Animator;
@@ -26,6 +21,9 @@ import com.jme3.scene.shape.Sphere;
 
 import mygame.camera.CameraCollisionControl;
 import mygame.camera.TPSChaseCamera;
+import mygame.states.ParticleManager;
+import mygame.util.AnimDefs;
+import mygame.util.MixamoBodyBones;
 
 /**
  * 
@@ -34,7 +32,7 @@ import mygame.camera.TPSChaseCamera;
 public class PlayerManager extends SimpleAppState {
 
     private Node player;
-    private PlayerControl playerCtrl;
+    private PlayerControl playerControl;
     private PlayerInput playerInput;
 
     @Override
@@ -51,21 +49,21 @@ public class PlayerManager extends SimpleAppState {
     private void setupPlayer() {
         // Create a node for the character model
         player = (Node) assetManager.loadModel(AnimDefs.MODEL);
-
+        player.setLocalTranslation(0, -4f, 0);
         player.addControl(new Animator());
         player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
 
         initCamera();
 
-        playerCtrl = new PlayerControl();
-        playerCtrl.camera = camera;
-        playerCtrl.weaponUI = getBitmapText(20, settings.getHeight() - 20);
-        playerCtrl.particleManager = stateManager.getState(ParticleManager.class);
-        playerCtrl.weapon = initWeapon();
-        playerCtrl.footstepsSFX = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
-        playerCtrl.shootSFX = getAudioClip(AudioLib.ARROW_HIT);
-        playerCtrl.reloadSFX = getAudioClip(AudioLib.BOW_PULL);
-        player.addControl(playerCtrl);
+        playerControl = new PlayerControl();
+        playerControl.camera           = camera;
+        playerControl.weaponUI         = getBitmapText(20, settings.getHeight() - 20);
+        playerControl.particleManager  = stateManager.getState(ParticleManager.class);
+        playerControl.weapon           = initWeapon();
+        playerControl.footstepsSFX     = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
+        playerControl.shootSFX         = getAudioClip(AudioLib.ARROW_HIT);
+        playerControl.reloadSFX        = getAudioClip(AudioLib.BOW_PULL);
+        player.addControl(playerControl);
 
         playerInput = new PlayerInput();
         player.addControl(playerInput);
@@ -92,7 +90,7 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private Weapon initWeapon() {
-        Node rh = AnimUtils.getAttachments(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
+        Node rh = AnimUtils.getAttachmentsNode(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
         Node model = new Node("weapon-node");
         Geometry geo = getRuntimeWeapon("weapon-geomesh", ColorRGBA.Green);
@@ -105,16 +103,16 @@ public class PlayerManager extends SimpleAppState {
         weapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
 
         AmmoType flameArrow = new AmmoType();
-        flameArrow.name = "Flame";
-        flameArrow.effect = "Scenes/jMonkey/Flame.j3o";
-        flameArrow.explosionRadius = 5f;
-        flameArrow.baseStrength = 10f;
+        flameArrow.name             = "Flame";
+        flameArrow.effect           = "Scenes/jMonkey/Flame.j3o";
+        flameArrow.explosionRadius  = 5f;
+        flameArrow.baseStrength     = 10f;
 
         AmmoType poisonArrow = new AmmoType();
-        poisonArrow.name = "Poison";
-        poisonArrow.effect = "Scenes/jMonkey/Poison.j3o";
+        poisonArrow.name            = "Poison";
+        poisonArrow.effect          = "Scenes/jMonkey/Poison.j3o";
         poisonArrow.explosionRadius = 4f;
-        poisonArrow.baseStrength = 6f;
+        poisonArrow.baseStrength    = 6f;
 
         weapon.addAmmoType(flameArrow);
         weapon.addAmmoType(poisonArrow);

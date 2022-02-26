@@ -5,7 +5,6 @@
  */
 package mygame.prefabs;
 
-import com.capdevon.control.PrefabComponent;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -45,7 +44,7 @@ public class CubePrefab extends PrefabComponent {
         Node node = new Node("Cube." + sequenceId);
 
         Geometry body = new Geometry("Cube.GeoMesh." + sequenceId, mesh);
-        Material mat = new Material(getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);
         body.setMaterial(mat);
         node.attachChild(body);

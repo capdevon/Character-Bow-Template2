@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package mygame;
+package mygame.player;
 
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -36,6 +31,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import mygame.camera.MainCamera;
+import mygame.states.ParticleManager;
+import mygame.util.AnimDefs;
 
 /**
  *
@@ -86,10 +83,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode     = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.aimNode = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
             this.chaseCamera = getComponent(ChaseCamera.class);
-            this.bcc         = getComponent(BetterCharacterControl.class);
-            this.animator    = getComponent(Animator.class);
+            this.bcc = getComponent(BetterCharacterControl.class);
+            this.animator = getComponent(Animator.class);
             animator.addAnimListener(this);
 
             _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
@@ -112,9 +109,9 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
             Vector3f lookDir = camera.getDirection();
             lookDir.y = 0;
             lookDir.normalizeLocal();
+            
             Quaternion lookRotation = FRotator.lookRotation(lookDir);
-            spatial.getLocalRotation().slerp(lookRotation, m_TurnSpeed * tpf);
-            spatial.getLocalRotation().mult(Vector3f.UNIT_Z, viewDirection);
+            FRotator.smoothDamp(spatial.getWorldRotation(), lookRotation, m_TurnSpeed * tpf, viewDirection);
             bcc.setViewDirection(viewDirection);
 
             //bcc.setViewDirection(camDir);
@@ -139,8 +136,10 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
             if (walkDirection.lengthSquared() > 0) {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
-                spatial.getWorldRotation().slerp(dr, 1 - (tpf * m_TurnSpeed));
-                spatial.getWorldRotation().mult(Vector3f.UNIT_Z, viewDirection);
+
+                float smoothTime = 1 - (tpf * m_TurnSpeed);
+                FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
+
                 bcc.setViewDirection(viewDirection);
             }
 

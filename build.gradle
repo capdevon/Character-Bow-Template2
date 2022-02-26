@@ -7,16 +7,14 @@
  */
 
 plugins {
-    id 'application'
-    // Apply the java-library plugin to add support for Java Library
-    id 'java-library'
+    id 'java'
 }
 
 description = 'prototypical JMonkeyEngine application'
 
 // select one source-code (JDK) option
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 // select one version of the Engine:
 ext.jmonkeyengineVersion = '3.5.0-stable'

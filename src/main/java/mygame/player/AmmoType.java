@@ -1,4 +1,4 @@
-package mygame;
+package mygame.player;
 
 /**
  * 

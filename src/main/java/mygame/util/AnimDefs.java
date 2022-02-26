@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame;
+package mygame.util;
 
 import com.capdevon.animation.Animation3;
 import com.jme3.animation.LoopMode;

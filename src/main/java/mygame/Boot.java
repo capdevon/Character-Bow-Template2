@@ -8,7 +8,9 @@ import com.capdevon.physx.PhysxDebugAppState;
 import com.jme3.app.DetailedProfilerState;
 import com.jme3.bullet.BulletAppState;
 
+import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
+import mygame.states.ParticleManager;
 import mygame.states.SceneAppState;
 
 /**
@@ -28,8 +30,8 @@ public class Boot {
                 CubeAppState.class,
                 GInputAppState.class,
                 ParticleManager.class,
-                PlayerManager.class,
-                DetailedProfilerState.class
+                PlayerManager.class
+                //DetailedProfilerState.class
                 //BasicProfilerState.class
         );
     }
