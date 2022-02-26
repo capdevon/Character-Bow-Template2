@@ -11,7 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public class SoundManager {
     

@@ -29,7 +29,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 /**
- *
+ * 
+ * @author capdevon
  */
 public abstract class SimpleAppState extends AbstractAppState {
     

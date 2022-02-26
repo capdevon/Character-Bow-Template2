@@ -77,19 +77,11 @@ public class Animator extends AdapterControl {
         return result;
     }
 
-    public Bone getBone(String boneName) {
-        return skControl.getSkeleton().getBone(boneName);
-    }
-
-    public Node getAttachments(String boneName) {
-        return skControl.getAttachmentsNode(boneName);
-    }
-
     public Spatial getAnimRoot() {
         return animControl.getSpatial();
     }
 
-    public String getAnimationName() {
+    public String getCurrentAnimation() {
         return animChannel.getAnimationName();
     }
 

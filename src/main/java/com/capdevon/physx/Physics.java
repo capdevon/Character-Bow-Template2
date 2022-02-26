@@ -14,7 +14,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Physics {
@@ -27,18 +27,20 @@ public class Physics {
      * DefaultRaycastLayers
      */
     private static final int defaultRaycastLayers = ~0;
-    
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
     private Physics() {
-    	// private constructor.
     }
 
     /**
      * Applies a force to a rigidbody that simulates explosion effects.
-     * 
-     * @param rb                The rigidbody object.
-     * @param explosionForce    The force of the explosion (which may be modified by distance).
-     * @param explosionPosition The centre of the sphere within which the explosion has its effect.
-     * @param explosionRadius   The radius of the sphere within which the explosion has its effect.
+     *
+     * @param rb                - The rigidbody object.
+     * @param explosionForce    - The force of the explosion (which may be modified by distance).
+     * @param explosionPosition - The centre of the sphere within which the explosion has its effect.
+     * @param explosionRadius   - The radius of the sphere within which the explosion has its effect.
      */
     public static void addExplosionForce(PhysicsRigidBody rb, float explosionForce, Vector3f explosionPosition, float explosionRadius) {
         Vector3f expCenter2Body = rb.getPhysicsLocation().subtract(explosionPosition);
@@ -59,10 +61,10 @@ public class Physics {
 
     /**
      * Casts a ray through the scene and returns all hits.
-     * 
-     * @param ray         The starting point and direction of the ray.
-     * @param maxDistance The max distance the rayhit is allowed to be from the start of the ray.
-     * @param layerMask   A Layer mask that is used to selectively ignore colliders when casting a ray.
+     *
+     * @param ray           - The starting point and direction of the ray.
+     * @param maxDistance   - The max distance the rayhit is allowed to be from the start of the ray.
+     * @param layerMask     - A Layer mask that is used to selectively ignore colliders when casting a ray.
      * @return A list of RaycastHit objects.
      */
     public static List<RaycastHit> raycastAll(Ray ray, float maxDistance, int layerMask) {
@@ -107,13 +109,12 @@ public class Physics {
     /**
      * Casts a ray, from point origin, in direction direction, of length
      * maxDistance, against all colliders in the Scene.
-     * 
-     * @param origin      The starting point of the ray in world coordinates. (not null, unaffected)
-     * @param direction   The direction of the ray. (not null, unaffected)
-     * @param hitInfo     If true is returned, hitInfo will contain more information
-     *                    about where the closest collider was hit. (See Also: RaycastHit).
-     * @param maxDistance The max distance the ray should check for collisions.
-     * @param layerMask   A Layer mask that is used to selectively ignore Colliders when casting a ray.
+     *
+     * @param origin        - The starting point of the ray in world coordinates. (not null, unaffected)
+     * @param direction     - The direction of the ray. (not null, unaffected)
+     * @param hitInfo       - If true is returned, hitInfo will contain more information about where the closest collider was hit. (See Also: RaycastHit).
+     * @param maxDistance   - The max distance the ray should check for collisions.
+     * @param layerMask     - A Layer mask that is used to selectively ignore Colliders when casting a ray.
      * @return Returns true if the ray intersects with a Collider, otherwise false.
      */
     public static boolean doRaycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
@@ -149,19 +150,21 @@ public class Physics {
     }
 
     /**
-     * Returns true if there is any collider intersecting the line between beginVec and finalVec.
+     * Returns true if there is any collider intersecting the line between
+     * beginVec and finalVec.
      */
     public static boolean doLinecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo) {
         return doLinecast(beginVec, finalVec, hitInfo, defaultRaycastLayers);
     }
 
     /**
-     * Returns true if there is any collider intersecting the line between beginVec and finalVec.
-     * 
-     * @param beginVec  (not null, unaffected)
-     * @param finalVec  (not null, unaffected)
-     * @param hitInfo   If true is returned, hitInfo will contain more information
-     *                  about where the closest collider was hit. (See Also: RaycastHit).
+     * Returns true if there is any collider intersecting the line between
+     * beginVec and finalVec.
+     *
+     * @param beginVec (not null, unaffected)
+     * @param finalVec (not null, unaffected)
+     * @param hitInfo If true is returned, hitInfo will contain more information
+     * about where the closest collider was hit. (See Also: RaycastHit).
      * @param layerMask A Layer mask that is used to selectively ignore Colliders when casting a ray.
      * @return Returns true if the ray intersects with a Collider, otherwise false.
      */

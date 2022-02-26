@@ -10,15 +10,9 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 import com.capdevon.engine.SceneManager;
-import com.capdevon.input.GInputAppState;
-import com.capdevon.physx.PhysxDebugAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
-
-import mygame.states.CubeAppState;
-import mygame.states.SceneAppState;
 
 /**
  * 
@@ -43,9 +37,6 @@ public class Main extends SimpleApplication {
         settings.setFrameRate(60);
         settings.setBitsPerPixel(display.getBitDepth());
         settings.setFrequency(display.getRefreshRate());
-        settings.setSamples(4);
-        settings.setVSync(true);
-        settings.setGammaCorrection(true);
         settings.setUseJoysticks(true);
 
         app.setSettings(settings);

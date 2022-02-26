@@ -51,8 +51,8 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     AudioNode reloadSFX;
 
     private MainCamera _MainCamera;
-    public float nearClipPlane = 0.01f;
-    public float farClipPlane = 100f;
+    private float nearClipPlane = 0.01f;
+    private float farClipPlane = 100f;
     private float fov = 0;
     private float aimingSpeed = 5f;
     private float aimFOV = 45;
@@ -243,7 +243,7 @@ public class PlayerControl extends AdapterControl implements AnimEventListener {
     }
 
     private boolean checkTransition(Animation3 newAnim, Animation3 a, Animation3 b) {
-        String curAnim = animator.getAnimationName();
+        String curAnim = animator.getCurrentAnimation();
         return (newAnim.equals(a) && b.getName().equals(curAnim)) || (newAnim.equals(b) && a.getName().equals(curAnim));
     }
 

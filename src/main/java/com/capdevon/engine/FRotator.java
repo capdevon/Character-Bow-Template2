@@ -14,7 +14,7 @@ public class FRotator {
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-	private FRotator() {}
+    private FRotator() {}
 
     /**
      * Creates a rotation which rotates from fromDirection to toDirection.

@@ -32,7 +32,6 @@ import mygame.util.MixamoBodyBones;
 public class PlayerManager extends SimpleAppState {
 
     private Node player;
-    private PlayerControl playerControl;
     private PlayerInput playerInput;
 
     @Override
@@ -55,7 +54,7 @@ public class PlayerManager extends SimpleAppState {
 
         initCamera();
 
-        playerControl = new PlayerControl();
+        PlayerControl playerControl = new PlayerControl();
         playerControl.camera           = camera;
         playerControl.weaponUI         = getBitmapText(20, settings.getHeight() - 20);
         playerControl.particleManager  = stateManager.getState(ParticleManager.class);
@@ -92,15 +91,16 @@ public class PlayerManager extends SimpleAppState {
     private Weapon initWeapon() {
         Node rh = AnimUtils.getAttachmentsNode(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
+        // replace this with the bow's model
         Node model = new Node("weapon-node");
-        Geometry geo = getRuntimeWeapon("weapon-geomesh", ColorRGBA.Green);
+        Geometry geo = createWeapon("weapon-geomesh", ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);
         model.setLocalScale(100);
         model.attachChild(geo);
         rh.attachChild(model);
 
         Weapon weapon = new Weapon("Bow", rh, model);
-        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("-.-"));
+        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("- + -"));
 
         AmmoType flameArrow = new AmmoType();
         flameArrow.name             = "Flame";
@@ -119,7 +119,7 @@ public class PlayerManager extends SimpleAppState {
         return weapon;
     }
 
-    private Geometry getRuntimeWeapon(String name, ColorRGBA color) {
+    private Geometry createWeapon(String name, ColorRGBA color) {
         Sphere mesh = new Sphere(8, 8, .05f);
         Geometry geo = new Geometry(name, mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -129,7 +129,7 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private BitmapText getBitmapText(float xPos, float yPos) {
-        BitmapText hud = new BitmapText(guiFont, false);
+        BitmapText hud = new BitmapText(guiFont);
         hud.setSize(guiFont.getCharSet().getRenderedSize());
         hud.setLocalTranslation(xPos, yPos, 0);
         hud.setColor(ColorRGBA.Red);
@@ -139,8 +139,8 @@ public class PlayerManager extends SimpleAppState {
 
     /* A centered plus sign to help the player aim. */
     private BitmapText getCrossHair(String text) {
-        BitmapText ch = new BitmapText(guiFont, false);
-        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+        BitmapText ch = new BitmapText(guiFont);
+        ch.setSize(guiFont.getCharSet().getRenderedSize() * 1.6f);
         ch.setText(text);
         float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
         float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
