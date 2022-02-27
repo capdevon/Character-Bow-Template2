@@ -8,6 +8,10 @@ package mygame.util;
 import com.capdevon.animation.Animation3;
 import com.jme3.animation.LoopMode;
 
+/**
+ * 
+ * @author capdevon
+ */
 public interface AnimDefs {
     
     final String MODEL              = "Models/Archer/archer.j3o";

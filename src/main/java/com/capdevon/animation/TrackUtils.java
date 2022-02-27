@@ -21,8 +21,10 @@ public class TrackUtils {
 
     private static final Logger logger = Logger.getLogger(TrackUtils.class.getName());
 
-    private TrackUtils () {
-    	// private constructor.
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private TrackUtils() {
     }
 
     /**
@@ -76,7 +78,7 @@ public class TrackUtils {
     }
 
     /**
-     * 
+     *
      * @param sp
      * @param animName
      * @return
@@ -85,7 +87,7 @@ public class TrackUtils {
         AnimControl control = AnimUtils.getAnimControl(sp);
         Animation anim = control.getAnim(animName);
         Objects.requireNonNull(anim, "Animation not found: " + animName);
-        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[] { animName, anim.getLength() });
+        logger.log(Level.INFO, "Anim: {0}, length: {1}", new Object[]{animName, anim.getLength()});
         return anim;
     }
 

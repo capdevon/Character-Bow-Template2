@@ -1,11 +1,12 @@
 package mygame.player;
 
-import com.capdevon.animation.AnimUtils;
-import com.capdevon.animation.Animator;
+import com.capdevon.anim.AnimUtils;
+import com.capdevon.anim.Animator;
 import com.capdevon.engine.AudioClip;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.capdevon.util.AudioLib;
+import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -48,6 +49,7 @@ public class PlayerManager extends SimpleAppState {
     private void setupPlayer() {
         // Create a node for the character model
         player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+        AnimMigrationUtils.migrate(player);
         player.setLocalTranslation(0, -4f, 0);
         player.addControl(new Animator());
         player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
