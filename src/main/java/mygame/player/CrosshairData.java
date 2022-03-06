@@ -16,9 +16,9 @@ import com.jme3.scene.Node;
 public class CrosshairData {
 
     // The BitmapText that will be used for this weapon's crosshair
-    public BitmapText bitmapText;
+    public final BitmapText bitmapText;
     // parent node
-    public Node guiNode;
+    public final Node guiNode;
 
     /**
      * 
