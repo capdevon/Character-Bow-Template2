@@ -25,7 +25,7 @@ public class GameObject {
      * @param clazz
      * @return
      */
-    public static <T extends Control> T getComponentInChild(Spatial spatial, Class<T> clazz) {
+    public static <T extends Control> T getComponentInChildren(Spatial spatial, Class<T> clazz) {
         T control = spatial.getControl(clazz);
         if (control != null) {
             return control;
@@ -33,7 +33,7 @@ public class GameObject {
 
         if (spatial instanceof Node) {
             for (Spatial child : ((Node) spatial).getChildren()) {
-                control = getComponentInChild(child, clazz);
+                control = getComponentInChildren(child, clazz);
                 if (control != null) {
                     return control;
                 }
