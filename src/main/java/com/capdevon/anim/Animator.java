@@ -34,18 +34,28 @@ public class Animator extends AdapterControl {
         super.setSpatial(sp);
 
         if (spatial != null) {
-            logger.log(Level.INFO, "Setup: {0}", spatial);
             animComposer = getComponentInChild(AnimComposer.class);
             skinningControl = getComponentInChild(SkinningControl.class);
 
-            for (AnimClip animClip : animComposer.getAnimClips()) {
-                setAnimCallback(animClip.getName(), true);
-            }
+            initActions();
         }
     }
 
+    private void initActions() {
+        StringBuilder sb = new StringBuilder();
+        String r = String.format("Owner: %s, AnimRoot: %s", spatial, animComposer.getSpatial());
+        sb.append(r);
+
+        for (AnimClip clip : animComposer.getAnimClips()) {
+            String s = String.format("%n * %s (%d), Length: %f", clip.getName(), clip.getTracks().length, clip.getLength());
+            sb.append(s);
+            setAnimCallback(clip.getName(), true);
+        }
+
+        logger.log(Level.INFO, sb.toString());
+    }
+
     public void setAnimCallback(String animName, boolean loop) {
-        logger.log(Level.INFO, "setAnimCallback: {0}", animName);
         Action action = animComposer.action(animName);
         Tween callback = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
         action = new BaseAction(Tweens.sequence(action, callback));
@@ -57,7 +67,6 @@ public class Animator extends AdapterControl {
      */
     public void setAnimCallback(Animation3 anim) {
         String animName = anim.getName();
-        float speed = anim.getSpeed();
         boolean isLooping = (anim.getLoopMode() == LoopMode.Loop);
         setAnimCallback(animName, isLooping);
 
@@ -75,6 +84,7 @@ public class Animator extends AdapterControl {
 
     /**
      * Run an action on the default layer.
+     *
      * @param name The name of the action to run.
      */
     public void setAnimation(Animation3 anim) {
@@ -83,6 +93,7 @@ public class Animator extends AdapterControl {
 
     /**
      * Run an action on the default layer.
+     *
      * @param name The name of the action to run.
      */
     public void setAnimation(String animName, boolean override) {
@@ -103,7 +114,7 @@ public class Animator extends AdapterControl {
         notifyAnimChange(animName);
     }
 
-    public String getAnimation() {
+    public String getCurrentAnimation() {
         return currentAnim;
     }
 
@@ -149,7 +160,7 @@ public class Animator extends AdapterControl {
     }
 
     void notifyAnimChange(String name) {
-    	currentAnim = name;
+        currentAnim = name;
         for (ActionAnimEventListener listener : listeners) {
             listener.onAnimChange(animComposer, name);
         }

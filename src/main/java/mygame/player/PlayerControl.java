@@ -246,7 +246,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     }
 
     private boolean checkTransition(Animation3 newAnim, Animation3 a, Animation3 b) {
-        String curAnim = animator.getAnimation();
+        String curAnim = animator.getCurrentAnimation();
         return (newAnim.equals(a) && b.getName().equals(curAnim)) || (newAnim.equals(b) && a.getName().equals(curAnim));
     }
 

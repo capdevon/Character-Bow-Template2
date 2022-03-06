@@ -11,6 +11,7 @@ import com.capdevon.control.AdapterControl;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
+import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
@@ -18,7 +19,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Animator extends AdapterControl {
@@ -37,8 +38,21 @@ public class Animator extends AdapterControl {
             this.animControl = getComponentInChild(AnimControl.class);
             this.animChannel = animControl.createChannel();
 
-            System.out.println(spatial.getName() + " --Animations: " + animControl.getAnimationNames());
+            printDebugInfo();
         }
+    }
+
+    protected void printDebugInfo() {
+        StringBuilder sb = new StringBuilder();
+        String r = String.format("Owner: %s, AnimRoot: %s", spatial, animControl.getSpatial());
+        sb.append(r);
+
+        for (String name : animControl.getAnimationNames()) {
+            Animation anim = animControl.getAnim(name);
+            String s = String.format("%n * %s (%d), Length: %f", anim.getName(), anim.getTracks().length, anim.getLength());
+            sb.append(s);
+        }
+        logger.log(Level.INFO, sb.toString());
     }
 
     public void setAnimation(String animName, LoopMode loopMode) {
