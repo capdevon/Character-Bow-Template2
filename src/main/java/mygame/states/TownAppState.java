@@ -1,6 +1,5 @@
 package mygame.states;
 
-import com.capdevon.engine.SimpleAppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -28,7 +27,7 @@ import com.jme3.util.SkyFactory;
  * 
  * @author capdevon
  */
-public class SceneAppState extends SimpleAppState {
+public class TownAppState extends SimpleAppState {
 
     private DirectionalLight sun;
     private FilterPostProcessor fpp;

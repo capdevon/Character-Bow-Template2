@@ -8,7 +8,7 @@ import com.jme3.bullet.BulletAppState;
 import mygame.player.PlayerManager;
 import mygame.states.CubeAppState;
 import mygame.states.ParticleManager;
-import mygame.states.SceneAppState;
+import mygame.states.TownAppState;
 
 /**
  *
@@ -22,7 +22,7 @@ public enum Boot {
             Scene scene = new Scene("Scene 1");
             scene.addSystemPrefab(BulletAppState.class);
             scene.addSystemPrefab(PhysxDebugAppState.class);
-            scene.addSystemPrefab(SceneAppState.class);
+            scene.addSystemPrefab(TownAppState.class);
             scene.addSystemPrefab(CubeAppState.class);
             scene.addSystemPrefab(GInputAppState.class);
             scene.addSystemPrefab(ParticleManager.class);

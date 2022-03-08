@@ -1,7 +1,6 @@
 package mygame.states;
 
 import com.capdevon.control.Spawner;
-import com.capdevon.engine.SimpleAppState;
 import com.jme3.scene.Node;
 
 import mygame.prefabs.CubePrefab;

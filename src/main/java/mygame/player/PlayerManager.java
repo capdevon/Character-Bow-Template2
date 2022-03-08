@@ -2,8 +2,7 @@ package mygame.player;
 
 import com.capdevon.anim.AnimUtils;
 import com.capdevon.anim.Animator;
-import com.capdevon.engine.AudioClip;
-import com.capdevon.engine.SimpleAppState;
+import com.capdevon.audio.AudioClip;
 import com.capdevon.input.GInputAppState;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.audio.AudioData;
@@ -22,6 +21,7 @@ import com.jme3.scene.shape.Sphere;
 import mygame.camera.CameraCollisionControl;
 import mygame.camera.TPSChaseCamera;
 import mygame.states.ParticleManager;
+import mygame.states.SimpleAppState;
 import mygame.util.AnimDefs;
 import mygame.util.AudioLib;
 import mygame.util.MixamoBodyBones;
