@@ -4,6 +4,7 @@ import com.capdevon.anim.AnimUtils;
 import com.capdevon.anim.Animator;
 import com.capdevon.audio.AudioClip;
 import com.capdevon.input.GInputAppState;
+import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -95,7 +96,9 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private Weapon initWeapon() {
-        Node rh = AnimUtils.getAttachmentsNode(player, "Armature_mixamorig:" + MixamoBodyBones.RightHand);
+    	SkinningControl skControl = AnimUtils.getSkinningControl(player);
+    	//AnimUtils.addSkeletonDebugger(assetManager, skControl);
+        Node rh = skControl.getAttachmentsNode("Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
         // replace this with the bow's model
         Node model = new Node("weapon-node");

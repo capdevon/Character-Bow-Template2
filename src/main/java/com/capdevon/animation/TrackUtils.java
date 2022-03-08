@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.capdevon.anim.AnimUtils;
 import com.jme3.anim.tween.Tween;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
