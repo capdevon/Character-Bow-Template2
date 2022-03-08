@@ -55,6 +55,10 @@ public class PlayerManager extends SimpleAppState {
         player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
 
         initCamera();
+        
+        Node node = new Node("aim-node");
+        player.attachChild(node);
+        node.setLocalTranslation(new Vector3f(0, 2, 0));
 
         PlayerControl playerControl = new PlayerControl();
         playerControl.camera           = camera;

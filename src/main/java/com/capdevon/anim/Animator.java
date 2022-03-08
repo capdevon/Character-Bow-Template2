@@ -8,6 +8,7 @@ import com.capdevon.animation.Animation3;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
@@ -34,8 +35,8 @@ public class Animator extends AdapterControl {
         super.setSpatial(sp);
 
         if (spatial != null) {
-            animComposer = getComponentInChild(AnimComposer.class);
-            skinningControl = getComponentInChild(SkinningControl.class);
+            animComposer = getComponentInChildren(AnimComposer.class);
+            skinningControl = getComponentInChildren(SkinningControl.class);
 
             initActions();
         }
@@ -47,7 +48,8 @@ public class Animator extends AdapterControl {
         sb.append(r);
 
         for (AnimClip clip : animComposer.getAnimClips()) {
-            String s = String.format("%n * %s (%d), Length: %f", clip.getName(), clip.getTracks().length, clip.getLength());
+            AnimTrack[] tracks = clip.getTracks();
+            String s = String.format("%n * %s (%d), Length: %f", clip.getName(), tracks.length, clip.getLength());
             sb.append(s);
             setAnimCallback(clip.getName(), true);
         }

@@ -4,9 +4,9 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.animation.Animation3;
 import com.capdevon.anim.ActionAnimEventListener;
 import com.capdevon.anim.Animator;
+import com.capdevon.animation.Animation3;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.FRotator;
 import com.capdevon.physx.Physics;
@@ -22,7 +22,6 @@ import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -81,7 +80,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode     = addEmptyNode("aim-node", new Vector3f(0, 2, 0));
+            this.aimNode     = getChild("aim-node", Node.class);
             this.chaseCamera = getComponent(ChaseCamera.class);
             this.bcc         = getComponent(BetterCharacterControl.class);
             this.animator    = getComponent(Animator.class);

@@ -6,13 +6,15 @@ import com.jme3.system.AppSettings;
 import java.io.File;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public class Capture {
 
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
     private Capture() {
-        // private constructor.
     }
 
     /**

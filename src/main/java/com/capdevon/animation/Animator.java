@@ -12,10 +12,9 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
-import com.jme3.scene.Node;
+import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
 
 /**
@@ -34,8 +33,8 @@ public class Animator extends AdapterControl {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.skControl = getComponentInChild(SkeletonControl.class);
-            this.animControl = getComponentInChild(AnimControl.class);
+            this.skControl = getComponentInChildren(SkeletonControl.class);
+            this.animControl = getComponentInChildren(AnimControl.class);
             this.animChannel = animControl.createChannel();
 
             printDebugInfo();
@@ -49,7 +48,8 @@ public class Animator extends AdapterControl {
 
         for (String name : animControl.getAnimationNames()) {
             Animation anim = animControl.getAnim(name);
-            String s = String.format("%n * %s (%d), Length: %f", anim.getName(), anim.getTracks().length, anim.getLength());
+            Track[] tracks = anim.getTracks();
+            String s = String.format("%n * %s (%d), Length: %f", anim.getName(), tracks.length, anim.getLength());
             sb.append(s);
         }
         logger.log(Level.INFO, sb.toString());

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import com.jme3.app.Application;
@@ -34,7 +29,7 @@ public class SceneManager extends BaseAppState {
 
     /**
      * Unloads the Scene asynchronously in the background
-     * 
+     *
      * @param newScene
      * @return
      */
@@ -54,14 +49,14 @@ public class SceneManager extends BaseAppState {
 
     /**
      * Loads the Scene asynchronously in the background
-     * 
+     *
      * @param newScene
      * @return
      */
     public AsyncOperation loadSceneAsync(Scene newScene) {
         currScene = newScene;
         // Run a task specified by a Supplier object asynchronously
-        CompletableFuture < Boolean > future = CompletableFuture.supplyAsync(() -> loadScene(), executor);
+        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> loadScene(), executor);
         asyncOperation = new AsyncOperation(future);
         return asyncOperation;
     }
@@ -77,7 +72,7 @@ public class SceneManager extends BaseAppState {
         int i = 1;
         for (Class<? extends AppState> clazz : currScene.systemPrefabs) {
             try {
-                AppState appState = clazz.newInstance();
+                AppState appState = clazz.getDeclaredConstructor().newInstance();
                 getStateManager().attach(appState);
 
                 System.out.println("attaching ... AppState: " + clazz.getCanonicalName());
@@ -85,13 +80,13 @@ public class SceneManager extends BaseAppState {
                 while (!appState.isInitialized()) {
                     Thread.sleep(500);
                 }
-                */
+                 */
                 System.out.println("AppState Attached: " + clazz.getCanonicalName());
 
                 updateProgress(i);
                 i++;
 
-            } catch (InstantiationException | IllegalAccessException | InterruptedException ex) {
+            } catch (ReflectiveOperationException | InterruptedException ex) {
                 System.err.println(ex);
                 return false;
             }
@@ -113,7 +108,7 @@ public class SceneManager extends BaseAppState {
                     while (appState.isInitialized()) {
                         Thread.sleep(500);
                     }
-                    */
+                     */
                     System.out.println("AppState Detached: " + clazz.getCanonicalName());
 
                     updateProgress(i);

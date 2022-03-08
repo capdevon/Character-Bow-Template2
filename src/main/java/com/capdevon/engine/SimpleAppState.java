@@ -35,7 +35,7 @@ import com.jme3.system.AppSettings;
 public abstract class SimpleAppState extends AbstractAppState {
     
     // variables
-    public SimpleApplication app;
+    public SimpleApplication sapp;
     public BulletAppState    physics;
     public AppSettings       settings;
     public AppStateManager   stateManager;
@@ -60,13 +60,13 @@ public abstract class SimpleAppState extends AbstractAppState {
     }
     
     @Override
-    public void initialize(AppStateManager asm, Application appl) {
-        if (!(appl instanceof SimpleApplication)) {
+    public void initialize(AppStateManager asm, Application app) {
+        if (!(app instanceof SimpleApplication)) {
             throw new IllegalArgumentException("application should be a SimpleApplication");
         }
         
-        super.initialize(asm, appl);
-        this.app     = (SimpleApplication) appl;
+        super.initialize(asm, app);
+        this.sapp     = (SimpleApplication) app;
         this.physics = asm.getState(BulletAppState.class);
         
         refreshCacheFields();
@@ -75,16 +75,16 @@ public abstract class SimpleAppState extends AbstractAppState {
     }
     
     protected void refreshCacheFields() {
-        this.settings       = app.getContext().getSettings();
-        this.stateManager   = app.getStateManager();
-        this.assetManager   = app.getAssetManager();
-        this.inputManager   = app.getInputManager();
-        this.renderManager  = app.getRenderManager();
-        this.viewPort       = app.getViewPort();
-        this.camera         = app.getCamera();
-        this.flyCam         = app.getFlyByCamera();
-        this.rootNode       = app.getRootNode();
-        this.guiNode        = app.getGuiNode();
+        this.settings       = sapp.getContext().getSettings();
+        this.stateManager   = sapp.getStateManager();
+        this.assetManager   = sapp.getAssetManager();
+        this.inputManager   = sapp.getInputManager();
+        this.renderManager  = sapp.getRenderManager();
+        this.viewPort       = sapp.getViewPort();
+        this.camera         = sapp.getCamera();
+        this.flyCam         = sapp.getFlyByCamera();
+        this.rootNode       = sapp.getRootNode();
+        this.guiNode        = sapp.getGuiNode();
         this.guiFont        = assetManager.loadFont("Interface/Fonts/Default.fnt");
     }
     

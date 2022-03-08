@@ -66,9 +66,8 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        // To change body of generated methods, choose Tools | Templates.
         if (!sceneLoaded) {
-            stateManager.getState(SceneManager.class).loadScene(Boot.scene_01);
+            stateManager.getState(SceneManager.class).loadScene(Boot.Scene1.get());
             sceneLoaded = true;
         }
     }

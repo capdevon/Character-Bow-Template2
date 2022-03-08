@@ -28,6 +28,11 @@ public class FVector {
     public static final Vector3f negativeInfinity = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
     
     /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private FVector() {}
+    
+    /**
      * Spherically interpolates between start vector and the end vector by
      * alpha which is in the range [0,1].
      *
