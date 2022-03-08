@@ -97,7 +97,7 @@ public class PlayerManager extends SimpleAppState {
 
     private Weapon initWeapon() {
     	SkinningControl skControl = AnimUtils.getSkinningControl(player);
-    	//AnimUtils.addSkeletonDebugger(assetManager, skControl);
+    	//AnimUtils.addArmatureDebugger(assetManager, skControl);
         Node rh = skControl.getAttachmentsNode("Armature_mixamorig:" + MixamoBodyBones.RightHand);
 
         // replace this with the bow's model

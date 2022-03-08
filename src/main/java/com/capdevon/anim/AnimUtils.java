@@ -56,7 +56,7 @@ public class AnimUtils {
         animRoot.attachChild(debugger);
     }
 
-    public static void addSkeletonDebugger(AssetManager asm, SkinningControl sc) {
+    public static void addArmatureDebugger(AssetManager asm, SkinningControl sc) {
         Node animRoot = (Node) sc.getSpatial();
         String name = animRoot.getName() + "_Armature";
         Armature armature = sc.getArmature();
