@@ -1,5 +1,6 @@
 package mygame.states;
 
+import com.capdevon.engine.SimpleAppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
