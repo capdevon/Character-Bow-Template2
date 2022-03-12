@@ -31,7 +31,7 @@ public class SoundManager {
      * @param sound
      * @return
      */
-    public static AudioNode getAudioEnv(AudioClip sound) {
+    public static AudioNode createAudioStream(AudioClip sound) {
         AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Stream);
         audio.setVolume(sound.volume);
         audio.setLooping(sound.looping);
@@ -43,7 +43,7 @@ public class SoundManager {
      * @param sound
      * @return
      */
-    public static AudioNode getAudioClip(AudioClip sound) {
+    public static AudioNode createAudioBuffer(AudioClip sound) {
         AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Buffer);
         audio.setVolume(sound.volume);
         audio.setLooping(sound.looping);
@@ -59,7 +59,7 @@ public class SoundManager {
      */
     public static void registerAudioEnv(String name, AudioClip sound) {
         if (soundsMap.get(name) == null) {
-            soundsMap.put(name, getAudioEnv(sound));
+            soundsMap.put(name, createAudioStream(sound));
         }
     }
 
@@ -71,7 +71,7 @@ public class SoundManager {
      */
     public static void registerAudioClip(String name, AudioClip sound) {
         if (soundsMap.get(name) == null) {
-            soundsMap.put(name, getAudioClip(sound));
+            soundsMap.put(name, createAudioBuffer(sound));
         }
     }
 

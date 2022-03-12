@@ -22,7 +22,7 @@ public class CubeAppState extends SimpleAppState {
         spawner.radius = 6;
         spawner.height = 1f;
         spawner.spawnTime = 5f;
-        spawner.prefab = new CubePrefab(sapp);
+        spawner.prefab = new CubePrefab(app);
         cubes.addControl(spawner);
     }
 

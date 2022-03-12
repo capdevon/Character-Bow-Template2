@@ -83,7 +83,7 @@ public class TownAppState extends SimpleAppState {
         if (lightProbeEnabled) {
             EnvironmentCamera envCam = new EnvironmentCamera(); // Make an env camera
             stateManager.attach(envCam);
-            envCam.initialize(stateManager, sapp); // Manually initialize so we can add a probe before the next update happens
+            envCam.initialize(stateManager, app); // Manually initialize so we can add a probe before the next update happens
             LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
             probe.getArea().setRadius(100); // Set the probe's radius in world units
             rootNode.addLight(probe);

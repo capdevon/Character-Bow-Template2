@@ -39,10 +39,10 @@ public class PlayerManager extends SimpleAppState {
     @Override
     protected void simpleInit() {
         setupPlayer();
+        registerInput();
     }
 
-    @Override
-    protected void registerInput() {
+    private void registerInput() {
         GInputAppState ginput = stateManager.getState(GInputAppState.class);
         ginput.addActionListener(playerInput);
     }
@@ -74,7 +74,7 @@ public class PlayerManager extends SimpleAppState {
         playerInput = new PlayerInput();
         player.addControl(playerInput);
 
-        physics.getPhysicsSpace().add(player);
+        getPhysicsSpace().add(player);
         rootNode.attachChild(player);
     }
 

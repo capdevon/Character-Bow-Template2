@@ -80,7 +80,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.aimNode     = getChild("aim-node", Node.class);
+            this.aimNode     = (Node) getChild("aim-node");
             this.chaseCamera = getComponent(ChaseCamera.class);
             this.bcc         = getComponent(BetterCharacterControl.class);
             this.animator    = getComponent(Animator.class);
