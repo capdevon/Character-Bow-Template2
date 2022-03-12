@@ -16,16 +16,16 @@ import com.jme3.scene.Spatial;
  */
 public class FVector {
 	
-    public static final Vector3f zero    = new Vector3f(0f, 0f, 0f);
-    public static final Vector3f one     = new Vector3f(1f, 1f, 1f);
-    public static final Vector3f up      = new Vector3f(0f, 1f, 0f);
-    public static final Vector3f down    = new Vector3f(0f, -1f, 0f);
-    public static final Vector3f left    = new Vector3f(-1f, 0f, 0f);
-    public static final Vector3f right   = new Vector3f(1f, 0f, 0f);
-    public static final Vector3f forward = new Vector3f(0f, 0f, 1f);
-    public static final Vector3f back    = new Vector3f(0f, 0f, -1f);
-    public static final Vector3f positiveInfinity = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-    public static final Vector3f negativeInfinity = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+    public static final Vector3f Zero    = new Vector3f(0f, 0f, 0f);
+    public static final Vector3f One     = new Vector3f(1f, 1f, 1f);
+    public static final Vector3f Up      = new Vector3f(0f, 1f, 0f);
+    public static final Vector3f Down    = new Vector3f(0f, -1f, 0f);
+    public static final Vector3f Left    = new Vector3f(-1f, 0f, 0f);
+    public static final Vector3f Right   = new Vector3f(1f, 0f, 0f);
+    public static final Vector3f Forward = new Vector3f(0f, 0f, 1f);
+    public static final Vector3f Back    = new Vector3f(0f, 0f, -1f);
+    public static final Vector3f PositiveInfinity = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+    public static final Vector3f NegativeInfinity = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
     
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -186,19 +186,19 @@ public class FVector {
     }
 
     public static Vector3f forward(Spatial sp) {
-        return sp.getWorldRotation().mult(forward);
+        return sp.getWorldRotation().mult(Forward);
     }
 
     public static Vector3f up(Spatial sp) {
-        return sp.getWorldRotation().mult(up);
+        return sp.getWorldRotation().mult(Up);
     }
 
     public static Vector3f right(Spatial sp) {
-        return sp.getWorldRotation().mult(right);
+        return sp.getWorldRotation().mult(Right);
     }
 
     public static Vector3f left(Spatial sp) {
-        return sp.getWorldRotation().mult(left);
+        return sp.getWorldRotation().mult(Left);
     }
 
 }
