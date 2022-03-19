@@ -9,13 +9,19 @@ import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
 import com.jme3.anim.tween.action.BaseAction;
 import com.jme3.animation.LoopMode;
+import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
  *
@@ -29,6 +35,7 @@ public class Animator extends AdapterControl {
     private SkinningControl skinningControl;
     private String currentAnim;
     private ArrayList<ActionAnimEventListener> listeners = new ArrayList<>();
+    private ArmatureDebugger debugger;
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -130,6 +137,30 @@ public class Animator extends AdapterControl {
 
     public SkinningControl getSkinningControl() {
         return skinningControl;
+    }
+
+    public void disableArmatureDebug() {
+        debugger.removeFromParent();
+        debugger = null;
+    }
+
+    public void enableArmatureDebug(AssetManager asm) {
+        if (debugger == null) {
+            Node animRoot = (Node) skinningControl.getSpatial();
+            String name = animRoot.getName() + "_Armature";
+            Armature armature = skinningControl.getArmature();
+            debugger = new ArmatureDebugger(name, armature, armature.getJointList());
+            debugger.setMaterial(createWireMaterial(asm));
+            animRoot.attachChild(debugger);
+        }
+    }
+
+    private Material createWireMaterial(AssetManager asm) {
+        Material mat = new Material(asm, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        mat.getAdditionalRenderState().setWireframe(true);
+        mat.getAdditionalRenderState().setDepthTest(false);
+        return mat;
     }
 
     /**
