@@ -1,11 +1,14 @@
 package com.capdevon.control;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.capdevon.engine.GameObject;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -39,6 +42,22 @@ public class AdapterControl extends AbstractControl {
             return Objects.requireNonNull(objValue, String.format(error, key));
         }
         return objValue;
+    }
+
+    /**
+     * Returns all components of Type type in the GameObject.
+     */
+    public <T extends Control> T[] getComponents(Class<T> clazz) {
+        final List<Node> lst = new ArrayList<>(10);
+        spatial.breadthFirstTraversal(new SceneGraphVisitorAdapter() {
+            @Override
+            public void visit(Node node) {
+                if (node.getControl(clazz) != null) {
+                    lst.add(node);
+                }
+            }
+        });
+        return (T[]) lst.toArray();
     }
 
     /**
