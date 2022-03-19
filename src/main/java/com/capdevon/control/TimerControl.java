@@ -5,13 +5,13 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
 /**
- * 
+ *
  * @author capdevon
  */
 public abstract class TimerControl extends AbstractControl {
 
-    float lifeTime = 0;
-    float maxLifeTime = 0;
+    private float lifeTime = 0;
+    private float maxLifeTime = 0;
 
     public TimerControl(float maxLifeTime) {
         this.maxLifeTime = maxLifeTime;

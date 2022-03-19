@@ -36,6 +36,7 @@ public class Main extends SimpleApplication {
         settings.setResolution(1280, 720);
         settings.setBitsPerPixel(display.getBitDepth());
         settings.setFrequency(display.getRefreshRate());
+        settings.setFrameRate(60);
         settings.setUseJoysticks(true);
 
         app.setSettings(settings);

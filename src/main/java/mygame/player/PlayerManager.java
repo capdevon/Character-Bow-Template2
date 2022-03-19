@@ -34,17 +34,10 @@ import mygame.util.MixamoBodyBones;
 public class PlayerManager extends SimpleAppState {
 
     private Node player;
-    private PlayerInput playerInput;
 
     @Override
     protected void simpleInit() {
         setupPlayer();
-        registerInput();
-    }
-
-    private void registerInput() {
-        GInputAppState ginput = stateManager.getState(GInputAppState.class);
-        ginput.addActionListener(playerInput);
     }
 
     private void setupPlayer() {
@@ -71,8 +64,9 @@ public class PlayerManager extends SimpleAppState {
         playerControl.reloadSFX        = getAudioClip(AudioLib.BOW_PULL);
         player.addControl(playerControl);
 
-        playerInput = new PlayerInput();
+        PlayerInput playerInput = new PlayerInput();
         player.addControl(playerInput);
+        getState(GInputAppState.class).addActionListener(playerInput);
 
         getPhysicsSpace().add(player);
         rootNode.attachChild(player);
