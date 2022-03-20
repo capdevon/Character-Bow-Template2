@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +32,7 @@ public class PhysxQuery {
     /**
      * IdentityFunction
      */
-    private static final Function<PhysicsRigidBody, Boolean> IdentityFunction = x -> true;
+    private static final Predicate<PhysicsRigidBody> IdentityFunction = x -> true;
 
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -88,12 +88,12 @@ public class PhysxQuery {
      * @param func      - Specifies a function to filter colliders.
      * @return Returns an array with all PhysicsRigidBody touching or inside the sphere.
      */
-    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Function<PhysicsRigidBody, Boolean> func) {
+    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Predicate<PhysicsRigidBody> func) {
 
         List<PhysicsRigidBody> results = new ArrayList<>(10);
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
+            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
                 Vector3f distance = pco.getPhysicsLocation().subtract(position);
 
                 if (distance.length() < radius) {
@@ -123,12 +123,12 @@ public class PhysxQuery {
      * @param func      - Specifies a function to filter colliders.
      * @return Returns the amount of colliders stored into the results buffer.
      */
-    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask, Function<PhysicsRigidBody, Boolean> func) {
+    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask, Predicate<PhysicsRigidBody> func) {
 
         int numColliders = 0;
         for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.apply(pco)) {
+            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
                 Vector3f distance = pco.getPhysicsLocation().subtract(position);
 
                 if (distance.length() < radius) {

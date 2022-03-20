@@ -1,6 +1,6 @@
 package mygame.player;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -217,7 +217,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private void applyExplosion(RaycastHit hit, Weapon weapon) {
         AmmoType ammoType = weapon.getAmmoType();
         int shootLayer = PhysicsCollisionObject.COLLISION_GROUP_03;
-        Function<PhysicsRigidBody, Boolean> dynamicObjects = (x) -> x.getMass() > 0;
+        Predicate<PhysicsRigidBody> dynamicObjects = (x) -> x.getMass() > 0;
         ColorRGBA color = ColorRGBA.randomColor();
 
         for (PhysicsRigidBody rb : PhysxQuery.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
