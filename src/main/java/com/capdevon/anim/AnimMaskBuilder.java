@@ -1,6 +1,8 @@
 package com.capdevon.anim;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,7 +11,7 @@ import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 
 /**
- *
+ * An AnimationMask to select joints from a single Armature.
  * @author capdevon
  */
 public class AnimMaskBuilder implements AnimationMask {
@@ -20,7 +22,7 @@ public class AnimMaskBuilder implements AnimationMask {
     private final Armature armature;
 
     /**
-     * Instantiate a builder with Armature.
+     * Instantiate a mask that affects no joints.
      *
      * @param armature
      */
@@ -48,8 +50,8 @@ public class AnimMaskBuilder implements AnimationMask {
      * @param jointNames
      * @return AnimMaskBuilder
      */
-    public AnimMaskBuilder addJoints(String... jointNames) {
-        for (String jointName : jointNames) {
+    public AnimMaskBuilder addJoints(String...jointNames) {
+        for (String jointName: jointNames) {
             Joint joint = findJoint(jointName);
             affectedJoints.set(joint.getId());
         }
@@ -79,7 +81,7 @@ public class AnimMaskBuilder implements AnimationMask {
 
     private void addFromJoint(Joint joint) {
         affectedJoints.set(joint.getId());
-        for (Joint j : joint.getChildren()) {
+        for (Joint j: joint.getChildren()) {
             addFromJoint(j);
         }
     }
@@ -99,7 +101,7 @@ public class AnimMaskBuilder implements AnimationMask {
 
     private void removeFromJoint(Joint joint) {
         affectedJoints.clear(joint.getId());
-        for (Joint j : joint.getChildren()) {
+        for (Joint j: joint.getChildren()) {
             removeFromJoint(j);
         }
     }
@@ -146,36 +148,34 @@ public class AnimMaskBuilder implements AnimationMask {
      * @param jointNames the names of the joints to be removed
      * @return AnimMaskBuilder
      */
-    public AnimMaskBuilder removeJoints(String... jointNames) {
-        for (String jointName : jointNames) {
+    public AnimMaskBuilder removeJoints(String...jointNames) {
+        for (String jointName: jointNames) {
             Joint joint = findJoint(jointName);
             affectedJoints.clear(joint.getId());
         }
 
         return this;
     }
-
+    
     /**
-     * Build ArmatureMask
+     * Get the list of joints affected by this animation mask.
      *
      * @return
      */
-//    public ArmatureMask buildMask() {
-//        ArmatureMask mask = new ArmatureMask();
-//        for (int i = 0; i < affectedJoints.length(); i++) {
-//
-//            if (affectedJoints.get(i) == true) {
-//                String jointName = armature.getJoint(i).getName();
-//                mask.addBones(armature, jointName);
-//                logger.log(Level.INFO, "ArmatureMask Joint: {0}", jointName);
-//            }
-//        }
-//        return mask;
-//    }
-    
+    public List<Joint> getAffectedJoints() {
+        List<Joint> lst = new ArrayList<>();
+        for (Joint joint : armature.getJointList()) {
+            if (contains(joint)) {
+                lst.add(joint);
+            }
+        }
+        return lst;
+    }
+
     @Override
     public boolean contains(Object target) {
-        return affectedJoints.get(((Joint) target).getId());
+        Joint joint = (Joint) target;
+        return affectedJoints.get(joint.getId());
     }
 
 }
