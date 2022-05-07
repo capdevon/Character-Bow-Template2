@@ -15,7 +15,12 @@ import com.jme3.animation.Animation;
 import com.jme3.animation.LoopMode;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.Track;
+import com.jme3.asset.AssetManager;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.SkeletonDebugger;
 
 /**
  *
@@ -28,6 +33,7 @@ public class Animator extends AdapterControl {
     private SkeletonControl skControl;
     private AnimControl animControl;
     private AnimChannel animChannel;
+    private SkeletonDebugger debugger;
 
     @Override
     public void setSpatial(Spatial sp) {
@@ -37,11 +43,11 @@ public class Animator extends AdapterControl {
             this.animControl = getComponentInChildren(AnimControl.class);
             this.animChannel = animControl.createChannel();
 
-            printDebugInfo();
+            printInfo();
         }
     }
 
-    protected void printDebugInfo() {
+    protected void printInfo() {
         StringBuilder sb = new StringBuilder();
         String r = String.format("Owner: %s, AnimRoot: %s", spatial, animControl.getSpatial());
         sb.append(r);
@@ -109,6 +115,29 @@ public class Animator extends AdapterControl {
 
     public void removeAnimListener(AnimEventListener listener) {
         animControl.removeListener(listener);
+    }
+    
+    public void disableSkeletonDebug() {
+        debugger.removeFromParent();
+        debugger = null;
+    }
+
+    public void enableSkeletonDebug(AssetManager asm) {
+        if (debugger == null) {
+            Node animRoot = (Node) skControl.getSpatial();
+            String name = animRoot.getName() + "_Skeleton";
+            debugger = new SkeletonDebugger(name, skControl.getSkeleton());
+            debugger.setMaterial(createWireMaterial(asm));
+            animRoot.attachChild(debugger);
+        }
+    }
+
+    private Material createWireMaterial(AssetManager asm) {
+        Material mat = new Material(asm, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", ColorRGBA.Blue);
+        mat.getAdditionalRenderState().setWireframe(true);
+        mat.getAdditionalRenderState().setDepthTest(false);
+        return mat;
     }
 
 }
