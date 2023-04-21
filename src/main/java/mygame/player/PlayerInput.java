@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mygame.player;
 
 import com.capdevon.control.AdapterControl;
@@ -18,7 +13,7 @@ public class PlayerInput extends AdapterControl implements ActionListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.playerControl = getComponent(PlayerControl.class);
+            this.playerControl = spatial.getControl(PlayerControl.class);
         }
     }
 

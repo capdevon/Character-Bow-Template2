@@ -1,4 +1,4 @@
-package com.capdevon.animation;
+package com.capdevon.anim;
 
 import com.jme3.animation.LoopMode;
 import java.util.Objects;

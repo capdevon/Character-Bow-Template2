@@ -5,7 +5,7 @@
  */
 package mygame.util;
 
-import com.capdevon.animation.Animation3;
+import com.capdevon.anim.Animation3;
 import com.jme3.animation.LoopMode;
 
 /**

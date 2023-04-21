@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.capdevon.anim.ActionAnimEventListener;
+import com.capdevon.anim.Animation3;
 import com.capdevon.anim.Animator;
-import com.capdevon.animation.Animation3;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.FRotator;
 import com.capdevon.physx.Physics;
@@ -81,9 +81,9 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         super.setSpatial(sp);
         if (spatial != null) {
             this.aimNode     = (Node) getChild("aim-node");
-            this.chaseCamera = getComponent(ChaseCamera.class);
-            this.bcc         = getComponent(BetterCharacterControl.class);
-            this.animator    = getComponent(Animator.class);
+            this.chaseCamera = spatial.getControl(ChaseCamera.class);
+            this.bcc         = spatial.getControl(BetterCharacterControl.class);
+            this.animator    = spatial.getControl(Animator.class);
 
             animator.setAnimCallback(AnimDefs.Idle);
             animator.setAnimCallback(AnimDefs.Running);

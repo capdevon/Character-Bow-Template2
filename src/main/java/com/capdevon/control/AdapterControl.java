@@ -2,13 +2,11 @@ package com.capdevon.control;
 
 import java.util.Objects;
 
-import com.capdevon.engine.GameObject;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
 
 /**
  *
@@ -39,37 +37,6 @@ public class AdapterControl extends AbstractControl {
             return Objects.requireNonNull(objValue, String.format(error, key));
         }
         return objValue;
-    }
-
-    /**
-     * Returns all components of Type type in the GameObject.
-     */
-    public <T extends Control> T[] getComponents(Class<T> type) {
-        return GameObject.getComponents(spatial, type);
-    }
-
-    /**
-     * Returns the component of Type type if the game object has one attached,
-     * null if it doesn't.
-     */
-    public <T extends Control> T getComponent(Class<T> type) {
-        return spatial.getControl(type);
-    }
-
-    /**
-     * Returns the component of Type type in the GameObject or any of its
-     * children using depth first search.
-     */
-    public <T extends Control> T getComponentInChildren(Class<T> type) {
-        return GameObject.getComponentInChildren(spatial, type);
-    }
-
-    /**
-     * Retrieves the component of Type type in the GameObject or any of its
-     * parents.
-     */
-    public <T extends Control> T getComponentInParent(Class<T> type) {
-        return GameObject.getComponentInParent(spatial, type);
     }
 
     @Override

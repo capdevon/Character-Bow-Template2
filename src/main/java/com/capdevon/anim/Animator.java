@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.animation.Animation3;
-import com.capdevon.control.AdapterControl;
+import com.capdevon.engine.GameObject;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
@@ -19,15 +18,18 @@ import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
  *
  * @author capdevon
  */
-public class Animator extends AdapterControl {
+public class Animator extends AbstractControl {
 
     private static final Logger logger = Logger.getLogger(Animator.class.getName());
 
@@ -42,8 +44,8 @@ public class Animator extends AdapterControl {
         super.setSpatial(sp);
 
         if (spatial != null) {
-            animComposer = getComponentInChildren(AnimComposer.class);
-            skinningControl = getComponentInChildren(SkinningControl.class);
+            animComposer = GameObject.getComponentInChildren(spatial, AnimComposer.class);
+            skinningControl = GameObject.getComponentInChildren(spatial, SkinningControl.class);
 
             initActions();
         }
@@ -203,6 +205,14 @@ public class Animator extends AdapterControl {
         for (ActionAnimEventListener listener : listeners) {
             listener.onAnimCycleDone(animComposer, name, loop);
         }
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
 }

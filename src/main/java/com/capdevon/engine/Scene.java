@@ -11,8 +11,8 @@ import com.jme3.app.state.AppState;
  */
 public class Scene {
 
-    public final String name;
-    public final List<Class<? extends AppState>> systemPrefabs;
+    protected final String name;
+    protected final List<Class<? extends AppState>> systemPrefabs;
 
     public Scene(String name) {
         this.name = name;
@@ -21,6 +21,10 @@ public class Scene {
 
     public void addSystemPrefab(Class<? extends AppState> clazz) {
         systemPrefabs.add(clazz);
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

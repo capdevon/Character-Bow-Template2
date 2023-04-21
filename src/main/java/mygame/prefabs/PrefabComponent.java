@@ -12,7 +12,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.system.AppSettings;
 
 /**
  *
@@ -23,14 +22,12 @@ public abstract class PrefabComponent {
     public final Application app;
     public final AssetManager assetManager;
     public final AppStateManager stateManager;
-    public final AppSettings settings;
     private int objectId = 0;
 
     public PrefabComponent(Application app) {
         this.app = app;
-        this.assetManager   = app.getAssetManager();
-        this.stateManager   = app.getStateManager();
-        this.settings       = app.getContext().getSettings();
+        this.assetManager = app.getAssetManager();
+        this.stateManager = app.getStateManager();
     }
 
     public final <T extends AppState> T getState(Class<T> type) {
