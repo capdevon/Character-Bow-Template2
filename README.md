@@ -6,8 +6,7 @@ The demo contains:
 
 * Physics with [Minie](https://stephengold.github.io/Minie/minie/overview.html)
 * Physics raycast to detect hit collision
-* Animations (with gltf2 animations, file .blend included): 
-    * "Idle", "Running", "Running_2", "Aim_Idle", "Aim_Overdraw", "Aim_Recoil", "Draw_Arrow"
+* Animations
 * Third Person Camera with collision detection
 * Bow with two types of ammo and effect
 * Dynamic update of camera FOV when aiming
@@ -28,13 +27,3 @@ The demo contains:
 # Resource Used:
 - [Mixamo](https://www.mixamo.com/)
 - [Blender](https://www.blender.org/download/)
-
-![Screenshot](media/image2.jpg)
-
-------
-
-![Screenshot](media/image3.jpg)
-
-------
-
-![Screenshot](media/image4.jpg)
