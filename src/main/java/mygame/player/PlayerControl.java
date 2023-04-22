@@ -10,7 +10,6 @@ import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.FRotator;
 import com.capdevon.physx.Physics;
-import com.capdevon.physx.PhysxQuery;
 import com.capdevon.physx.RaycastHit;
 import com.jme3.anim.AnimComposer;
 import com.jme3.audio.AudioNode;
@@ -66,9 +65,9 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private final Vector3f camDir = new Vector3f();
     private final Vector3f camLeft = new Vector3f();
 
-    private float m_RunSpeed = 5.5f;
-    private float m_MoveSpeed = 4.5f;
-    private float m_TurnSpeed = 10f;
+    private float runSpeed = 5.5f;
+    private float moveSpeed = 4.5f;
+    private float rotateSpeed = 10f;
 
     boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
     boolean isRunning, isAiming, canShooting;
@@ -95,11 +94,11 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private void configureAnimClips() {
         animator.actionCycleDone(AnimDefs.Idle);
         animator.actionCycleDone(AnimDefs.Running);
-        animator.actionCycleDone(AnimDefs.Running_2);
-        animator.actionCycleDone(AnimDefs.Aim_Idle);
-        animator.actionCycleDone(AnimDefs.Aim_Overdraw);
-        animator.actionCycleDone(AnimDefs.Aim_Recoil);
-        animator.actionCycleDone(AnimDefs.Draw_Arrow);
+        animator.actionCycleDone(AnimDefs.Sprinting);
+        animator.actionCycleDone(AnimDefs.StandingAimIdle);
+        animator.actionCycleDone(AnimDefs.StandingAimOverdraw);
+        animator.actionCycleDone(AnimDefs.StandingAimRecoil);
+        animator.actionCycleDone(AnimDefs.StandingDrawArrow);
         animator.addListener(this);
     }
 
@@ -120,7 +119,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
             lookDir.normalizeLocal();
 
             Quaternion lookRotation = FRotator.lookRotation(lookDir);
-            FRotator.smoothDamp(spatial.getWorldRotation(), lookRotation, m_TurnSpeed * tpf, viewDirection);
+            FRotator.smoothDamp(spatial.getWorldRotation(), lookRotation, rotateSpeed * tpf, viewDirection);
             bcc.setViewDirection(viewDirection);
 
             //bcc.setViewDirection(camDir);
@@ -146,18 +145,18 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
 
-                float smoothTime = 1 - (tpf * m_TurnSpeed);
+                float smoothTime = 1 - (tpf * rotateSpeed);
                 FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
 
                 bcc.setViewDirection(viewDirection);
             }
 
-            float xSpeed = isRunning ? m_RunSpeed : m_MoveSpeed;
+            float xSpeed = isRunning ? runSpeed : moveSpeed;
             bcc.setWalkDirection(walkDirection.multLocal(xSpeed));
 
             boolean isMoving = walkDirection.lengthSquared() > 0;
             if (isMoving) {
-                playAnim(isRunning ? AnimDefs.Running_2 : AnimDefs.Running);
+                playAnim(isRunning ? AnimDefs.Sprinting : AnimDefs.Running);
                 footstepsSFX.setVolume(isRunning ? 2f : .4f);
                 footstepsSFX.setPitch(isRunning ? 1f : .85f);
                 footstepsSFX.play();
@@ -185,7 +184,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         //chaseCamera.setDefaultDistance(isAiming ? chaseCamera.getMinDistance() : chaseCamera.getMaxDistance());
         chaseCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         weapon.crosshair.setEnabled(isAiming);
-        playAnim(AnimDefs.Draw_Arrow);
+        playAnim(AnimDefs.StandingDrawArrow);
     }
 
     public void changeAmmo() {
@@ -201,7 +200,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
             weapon.currAmmo--;
             shootSFX.playInstance();
-            playAnim(AnimDefs.Aim_Recoil);
+            playAnim(AnimDefs.StandingAimRecoil);
 
             // Aim the ray from character location in camera direction.
             if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.range)) {
@@ -224,7 +223,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         Predicate<PhysicsRigidBody> dynamicObjects = (x) -> x.getMass() > 0;
         ColorRGBA color = ColorRGBA.randomColor();
 
-        for (PhysicsRigidBody rb : PhysxQuery.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
+        for (PhysicsRigidBody rb : Physics.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
 
             Physics.addExplosionForce(rb, ammoType.baseStrength, hit.point, ammoType.explosionRadius);
             Spatial userObj = (Spatial) rb.getUserObject();
@@ -241,7 +240,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     }
 
     private void playAnim(Animation3 newAnim) {
-        if (checkTransition(newAnim, AnimDefs.Running, AnimDefs.Running_2)) {
+        if (checkTransition(newAnim, AnimDefs.Running, AnimDefs.Sprinting)) {
             animator.crossFade(newAnim);
         } else {
             animator.setAnimation(newAnim);
@@ -256,11 +255,11 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
     @Override
     public void onAnimCycleDone(AnimComposer animComposer, String animName, boolean loop) {
-        if (animName.equals(AnimDefs.Aim_Recoil.getName())) {
-            playAnim(AnimDefs.Draw_Arrow);
+        if (animName.equals(AnimDefs.StandingAimRecoil.getName())) {
+            playAnim(AnimDefs.StandingDrawArrow);
 
-        } else if (animName.equals(AnimDefs.Draw_Arrow.getName())) {
-            playAnim(AnimDefs.Aim_Overdraw);
+        } else if (animName.equals(AnimDefs.StandingDrawArrow.getName())) {
+            playAnim(AnimDefs.StandingAimOverdraw);
 
         } else if (!loop) {
             animComposer.removeCurrentAction();
@@ -269,11 +268,11 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
     @Override
     public void onAnimChange(AnimComposer animComposer, String animName) {
-        if (animName.equals(AnimDefs.Aim_Recoil.getName())
-                || animName.equals(AnimDefs.Draw_Arrow.getName())) {
+        if (animName.equals(AnimDefs.StandingAimRecoil.getName())
+                || animName.equals(AnimDefs.StandingDrawArrow.getName())) {
             setWeaponCharging();
 
-        } else if (animName.equals(AnimDefs.Aim_Overdraw.getName())) {
+        } else if (animName.equals(AnimDefs.StandingAimOverdraw.getName())) {
             setWeaponReady();
         }
     }

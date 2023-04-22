@@ -10,7 +10,6 @@ import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
-import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -48,8 +47,6 @@ public class PlayerManager extends SimpleAppState {
     private void setupPlayer() {
         // Create a node for the character model
         player = (Node) assetManager.loadModel(AnimDefs.ARCHER_ASSET_MODEL);
-        AnimMigrationUtils.migrate(player);
-        
         player.setName("Player");
         player.setUserData(GameObject.TAG_NAME, "TagPlayer");
         player.setLocalTranslation(0, -4f, 0);
@@ -111,18 +108,16 @@ public class PlayerManager extends SimpleAppState {
 
     private Weapon initWeapon() {
     	SkinningControl skControl = AnimUtils.getSkinningControl(player);
-        Node rh = skControl.getAttachmentsNode("Armature_mixamorig:" + MixamoBodyBones.RightHand);
+        Node rh = skControl.getAttachmentsNode("mixamorig:" + MixamoBodyBones.LeftHand);
         
         SkeletonVisualizer sv = new SkeletonVisualizer(assetManager, skControl);
         player.addControl(sv);
-        sv.setLineColor(ColorRGBA.Green);
         sv.setEnabled(true);
 
         // replace this with the bow's model
-        Node model = new Node("weapon-node");
-        Geometry geo = createWeapon("weapon-geomesh", ColorRGBA.Green);
+        Node model = new Node("Bow");
+        Geometry geo = createWeapon("Bow.GeoMesh", ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);
-        model.setLocalScale(100);
         model.attachChild(geo);
         rh.attachChild(model);
 

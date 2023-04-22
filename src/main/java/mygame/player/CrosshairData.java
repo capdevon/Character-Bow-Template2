@@ -11,7 +11,7 @@ import com.jme3.scene.Node;
 public class CrosshairData {
 
     // The BitmapText that will be used for this weapon's crosshair
-    public final BitmapText bitmapText;
+    public final BitmapText bmp;
     // parent node
     public final Node guiNode;
 
@@ -22,31 +22,31 @@ public class CrosshairData {
      */
     public CrosshairData(Node guiNode, BitmapText bmp) {
         this.guiNode = guiNode;
-        this.bitmapText = bmp;
+        this.bmp = bmp;
     }
 
     public void setEnabled(boolean enabled) {
         if (enabled) {
-            guiNode.attachChild(bitmapText);
+            guiNode.attachChild(bmp);
         } else {
-            guiNode.detachChild(bitmapText);
+            guiNode.detachChild(bmp);
         }
     }
 
     public float getSize() {
-        return bitmapText.getSize();
+        return bmp.getSize();
     }
 
     public void setSize(float size) {
-        bitmapText.setSize(size);
+        bmp.setSize(size);
     }
 
     public ColorRGBA getColor() {
-        return bitmapText.getColor();
+        return bmp.getColor();
     }
 
     public void setColor(ColorRGBA color) {
-        bitmapText.setColor(color);
+        bmp.setColor(color);
     }
 
 }

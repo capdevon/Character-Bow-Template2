@@ -4,10 +4,6 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.action.BaseAction;
 
-/**
- *
- * @author capdevon
- */
 public class CustomAction extends BaseAction {
 
     private AnimComposer animComposer;
@@ -47,7 +43,10 @@ public class CustomAction extends BaseAction {
 
     @Override
     public String toString() {
-        return "CustomAction [animName=" + animName + ", layer=" + layer + ", loop=" + loop + "]";
+        return "CustomAction [animName=" + animName
+                + ", layer=" + layer
+                + ", loop=" + loop
+                + "]";
     }
 
 }
