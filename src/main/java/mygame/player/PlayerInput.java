@@ -39,6 +39,8 @@ public class PlayerInput extends AdapterControl implements ActionListener {
             playerControl.shooting();
         } else if (action.equals(KeyMapping.SWITCH_WEAPON) && keyPressed) {
             playerControl.changeAmmo();
+        } else if (action.equals(KeyMapping.RELOAD_WEAPON) && keyPressed) {
+            playerControl.reload();
         }
     }
 }

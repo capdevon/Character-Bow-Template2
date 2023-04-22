@@ -1,6 +1,5 @@
 package mygame.player;
 
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -190,12 +189,12 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     public void changeAmmo() {
         weapon.nextAmmo();
     }
-
-    public void shooting() {
-        shooting(weapon);
+    
+    public void reload() {
+        weapon.currAmmo = weapon.maxAmmo;
     }
 
-    private void shooting(Weapon weapon) {
+    public void shooting() {
         if (isAiming && canShooting && weapon.currAmmo > 0) {
 
             weapon.currAmmo--;
@@ -220,14 +219,17 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private void applyExplosion(RaycastHit hit, Weapon weapon) {
         AmmoType ammoType = weapon.getAmmoType();
         int shootLayer = PhysicsCollisionObject.COLLISION_GROUP_03;
-        Predicate<PhysicsRigidBody> dynamicObjects = (x) -> x.getMass() > 0;
         ColorRGBA color = ColorRGBA.randomColor();
 
-        for (PhysicsRigidBody rb : Physics.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer, dynamicObjects)) {
-
-            Physics.addExplosionForce(rb, ammoType.baseStrength, hit.point, ammoType.explosionRadius);
-            Spatial userObj = (Spatial) rb.getUserObject();
-            applyDamage(userObj, color);
+        for (PhysicsCollisionObject pco : Physics.overlapSphere(hit.point, ammoType.explosionRadius, shootLayer)) {
+            if (pco instanceof PhysicsRigidBody) {
+                PhysicsRigidBody rb = (PhysicsRigidBody) pco;
+                if (rb.getMass() > 0) {
+                    Physics.addExplosionForce(rb, ammoType.baseStrength, hit.point, ammoType.explosionRadius);
+                    Spatial userObj = (Spatial) rb.getUserObject();
+                    applyDamage(userObj, color);
+                }
+            }
         }
 
         particleManager.playEffect(ammoType.effect, shootHit.point, 10f);
