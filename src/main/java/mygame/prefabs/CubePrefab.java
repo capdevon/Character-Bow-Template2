@@ -1,5 +1,6 @@
 package mygame.prefabs;
 
+import com.capdevon.engine.GameObject;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -37,7 +38,6 @@ public class CubePrefab extends PrefabComponent {
     private Spatial loadModel() {
         int sequenceId = nextSeqId();
         Node node = new Node("Cube." + sequenceId);
-
         Geometry body = new Geometry("Cube.GeoMesh." + sequenceId, mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);
@@ -50,7 +50,9 @@ public class CubePrefab extends PrefabComponent {
     @Override
     public Spatial instantiate(Vector3f position, Quaternion rotation, Node parent) {
         Spatial model = loadModel();
+        model.setUserData(GameObject.TAG_NAME, "TagCube");
         model.setLocalTranslation(position);
+        model.setLocalRotation(rotation);
         parent.attachChild(model);
 
         RigidBodyControl rb = new RigidBodyControl(collShape, mass);

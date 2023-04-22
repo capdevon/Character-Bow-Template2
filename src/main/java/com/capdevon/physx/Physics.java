@@ -1,17 +1,23 @@
 package com.capdevon.physx;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Set;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.SphereCollisionShape;
+import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Spatial;
 import com.jme3.util.TempVars;
 
 /**
@@ -23,7 +29,6 @@ public class Physics {
     public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81f, 0).multLocal(2);
 
     private static final int DefaulRaycastLayers = ~0; // All Layers
-    private static final Predicate<PhysicsRigidBody> IdentityFunction = x -> true;
 
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -72,12 +77,9 @@ public class Physics {
         Vector3f finalVec = t.vect2.set(ray.direction).scaleAdd(maxDistance, ray.origin);
 
         List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
-
         for (PhysicsRayTestResult phRay : results) {
             PhysicsCollisionObject pco = phRay.getCollisionObject();
-
             if (applyMask(layerMask, pco.getCollisionGroup())) {
-
                 RaycastHit hitInfo = new RaycastHit();
                 hitInfo.set(beginVec, finalVec, phRay);
                 lstResults.add(hitInfo);
@@ -110,7 +112,7 @@ public class Physics {
      */
     public static boolean doRaycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance, int layerMask) {
 
-    	hitInfo.clear();
+        hitInfo.clear();
         boolean collision = false;
         float hf = maxDistance;
 
@@ -127,7 +129,7 @@ public class Physics {
                 hitInfo.set(beginVec, finalVec, ray);
             }
         }
-        
+
         t.release();
         return collision;
     }
@@ -152,30 +154,18 @@ public class Physics {
      */
     public static boolean doLinecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo, int layerMask) {
 
+        hitInfo.clear();
         boolean collision = false;
         float hf = Float.MAX_VALUE;
 
-        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTestRaw(beginVec, finalVec);
         for (PhysicsRayTestResult ray : results) {
-
             PhysicsCollisionObject pco = ray.getCollisionObject();
-
             if (ray.getHitFraction() < hf && applyMask(layerMask, pco.getCollisionGroup())) {
-
                 collision = true;
                 hf = ray.getHitFraction();
-
-                hitInfo.rigidBody   = pco;
-                hitInfo.collider    = pco.getCollisionShape();
-                hitInfo.userObject  = (Spatial) pco.getUserObject();
-                hitInfo.distance    = finalVec.subtract(beginVec).length() * hf;
-                hitInfo.point.interpolateLocal(beginVec, finalVec, hf);
-                ray.getHitNormalLocal(hitInfo.normal);
+                hitInfo.set(beginVec, finalVec, ray);
             }
-        }
-        
-        if (!collision) {
-            hitInfo.clear();
         }
 
         return collision;
@@ -183,73 +173,74 @@ public class Physics {
 
     /**
      * Computes and stores colliders inside the sphere.
+     * https://docs.unity3d.com/ScriptReference/Physics.OverlapSphere.html
      *
-     * @param position  - Center of the sphere.
-     * @param radius    - Radius of the sphere.
-     * @param layerMask - A Layer mask defines which layers of colliders to include in the query.
-     * @param func      - Specifies a function to filter colliders.
-     * @return Returns an array with all PhysicsRigidBody touching or inside the sphere.
+     * @param position  Center of the sphere.
+     * @param radius    Radius of the sphere.
+     * @param layerMask A Layer mask defines which layers of colliders to include in the query.
+     * @return Returns all colliders that overlap with the given sphere.
      */
-    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask, Predicate<PhysicsRigidBody> func) {
+    public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius, int layerMask) {
 
-        List<PhysicsRigidBody> results = new ArrayList<>(10);
-        for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
+        Set<PhysicsCollisionObject> overlappingObjects = new HashSet<>(5);
+        PhysicsGhostObject ghost = new PhysicsGhostObject(new SphereCollisionShape(radius));
+        ghost.setPhysicsLocation(position);
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
-                Vector3f distance = pco.getPhysicsLocation().subtract(position);
-
-                if (distance.length() < radius) {
-                    results.add(pco);
-                }
-            }
-        }
-        return results;
+        contactTest(ghost, overlappingObjects, layerMask);
+        return overlappingObjects;
     }
 
-    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius, int layerMask) {
-        return overlapSphere(position, radius, layerMask, IdentityFunction);
+    public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius) {
+        return overlapSphere(position, radius, DefaulRaycastLayers);
+    }
+    
+    /**
+     * Find all colliders touching or inside of the given box.
+     * https://docs.unity3d.com/ScriptReference/Physics.OverlapBox.html
+     * 
+     * @param center      Center of the box.
+     * @param halfExtents Half of the size of the box in each dimension.
+     * @param rotation    Rotation of the box.
+     * @param layerMask   A Layer mask that is used to selectively ignore colliders when casting a ray.
+     * @return Returns all colliders that overlap with the given box.
+     */
+    public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation, int layerMask) {
+
+        Set<PhysicsCollisionObject> overlappingObjects = new HashSet<>(5);
+        PhysicsGhostObject ghost = new PhysicsGhostObject(new BoxCollisionShape(halfExtents));
+        ghost.setPhysicsLocation(center);
+        ghost.setPhysicsRotation(rotation);
+
+        contactTest(ghost, overlappingObjects, layerMask);
+        return overlappingObjects;
     }
 
-    public static List<PhysicsRigidBody> overlapSphere(Vector3f position, float radius) {
-        return overlapSphere(position, radius, DefaulRaycastLayers, IdentityFunction);
+    public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation) {
+        return overlapBox(center, halfExtents, rotation, DefaulRaycastLayers);
     }
 
     /**
-     * Computes and stores colliders inside the sphere into the provided buffer.
-     * Does not attempt to grow the buffer if it runs out of space.
-     *
-     * @param position  - Center of the sphere.
-     * @param radius    - Radius of the sphere.
-     * @param results   - The buffer to store the results into.
-     * @param layerMask - A Layer mask defines which layers of colliders to include in the query.
-     * @param func      - Specifies a function to filter colliders.
-     * @return Returns the amount of colliders stored into the results buffer.
+     * Perform a contact test. This will not detect contacts with soft bodies.
      */
-    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask, Predicate<PhysicsRigidBody> func) {
+    private static int contactTest(PhysicsGhostObject ghost, final Set<PhysicsCollisionObject> overlappingObjects, int layerMask) {
 
-        int numColliders = 0;
-        for (PhysicsRigidBody pco : PhysicsSpace.getPhysicsSpace().getRigidBodyList()) {
+        overlappingObjects.clear();
 
-            if (applyMask(layerMask, pco.getCollisionGroup()) && func.test(pco)) {
-                Vector3f distance = pco.getPhysicsLocation().subtract(position);
-
-                if (distance.length() < radius) {
-                    results[numColliders++] = pco;
-                    if (numColliders == results.length) {
-                        break;
+        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
+        int numContacts = physicsSpace.contactTest(ghost, new PhysicsCollisionListener() {
+            @Override
+            public void collision(PhysicsCollisionEvent event) {
+                if (event.getDistance1() > 0f) {
+                    // bug: Discard contacts with positive distance between the colliding objects.
+                } else {
+                    PhysicsCollisionObject pco = event.getNodeA() != null ? event.getObjectA() : event.getObjectB();
+                    if (applyMask(layerMask, pco.getCollisionGroup())) {
+                        overlappingObjects.add(pco);
                     }
                 }
             }
-        }
-        return numColliders;
-    }
-
-    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results, int layerMask) {
-        return overlapSphereNonAlloc(position, radius, results, layerMask, IdentityFunction);
-    }
-
-    public static int overlapSphereNonAlloc(Vector3f position, float radius, PhysicsRigidBody[] results) {
-        return overlapSphereNonAlloc(position, radius, results, DefaulRaycastLayers, IdentityFunction);
+        });
+        return numContacts;
     }
     
     /**
