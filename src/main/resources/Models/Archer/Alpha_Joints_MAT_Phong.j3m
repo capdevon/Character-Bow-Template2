@@ -1,0 +1,17 @@
+Material Alpha_Joints_MAT : Common/MatDefs/Light/Lighting.j3md {
+
+    MaterialParameters {
+      Diffuse : 0.12284123 0.1703151 0.17777371 1.0
+      UseMaterialColors : true
+      ParallaxHeight : 0.05
+      Ambient : 1.0 1.0 1.0 1.0
+      BackfaceShadows : false
+      VertexLighting : true
+      Specular : 0.0 0.0 0.0 1.0
+      Shininess : 0.0
+    }
+
+    AdditionalRenderState {
+      PointSprite On
+    }
+}
