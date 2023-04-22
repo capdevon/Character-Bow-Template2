@@ -28,7 +28,7 @@ public class Physics {
 
     public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81f, 0).multLocal(2);
 
-    private static final int DefaulRaycastLayers = ~0; // All Layers
+    private static final int DefaultRaycastLayers = ~0; // All Layers
 
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -57,7 +57,7 @@ public class Physics {
      * Casts a ray through the scene and returns all hits.
      */
     public static List<RaycastHit> raycastAll(Ray ray, float maxDistance) {
-        return raycastAll(ray, maxDistance, DefaulRaycastLayers);
+        return raycastAll(ray, maxDistance, DefaultRaycastLayers);
     }
 
     /**
@@ -95,7 +95,7 @@ public class Physics {
      * maxDistance, against all colliders in the Scene.
      */
     public static boolean doRaycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance) {
-        return doRaycast(origin, direction, hitInfo, maxDistance, DefaulRaycastLayers);
+        return doRaycast(origin, direction, hitInfo, maxDistance, DefaultRaycastLayers);
     }
 
     /**
@@ -139,7 +139,7 @@ public class Physics {
      * beginVec and finalVec.
      */
     public static boolean doLinecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo) {
-        return doLinecast(beginVec, finalVec, hitInfo, DefaulRaycastLayers);
+        return doLinecast(beginVec, finalVec, hitInfo, DefaultRaycastLayers);
     }
 
     /**
@@ -191,7 +191,7 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius) {
-        return overlapSphere(position, radius, DefaulRaycastLayers);
+        return overlapSphere(position, radius, DefaultRaycastLayers);
     }
     
     /**
@@ -216,7 +216,7 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation) {
-        return overlapBox(center, halfExtents, rotation, DefaulRaycastLayers);
+        return overlapBox(center, halfExtents, rotation, DefaultRaycastLayers);
     }
 
     /**
