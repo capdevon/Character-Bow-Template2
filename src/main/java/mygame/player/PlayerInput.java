@@ -5,6 +5,10 @@ import com.capdevon.input.KeyMapping;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.scene.Spatial;
 
+/**
+ * 
+ * @author capdevon
+ */
 public class PlayerInput extends AdapterControl implements ActionListener {
 
     private PlayerControl playerControl;
@@ -13,7 +17,7 @@ public class PlayerInput extends AdapterControl implements ActionListener {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.playerControl = spatial.getControl(PlayerControl.class);
+            this.playerControl = getComponent(PlayerControl.class);
         }
     }
 

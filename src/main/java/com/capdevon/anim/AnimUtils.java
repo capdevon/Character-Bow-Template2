@@ -3,9 +3,7 @@ package com.capdevon.anim;
 import java.util.Objects;
 
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.Armature;
 import com.jme3.anim.SkinningControl;
-import com.jme3.animation.AnimControl;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -14,7 +12,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.SkeletonDebugger;
-import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
  *
@@ -38,29 +35,10 @@ public class AnimUtils {
         return Objects.requireNonNull(control, "SkinningControl not found: " + sp);
     }
 
-    public static AnimControl getAnimControl(Spatial sp) {
-        AnimControl control = findControl(sp, AnimControl.class);
-        return Objects.requireNonNull(control, "AnimControl not found: " + sp);
-    }
-
-    public static SkeletonControl getSkeletonControl(Spatial sp) {
-        SkeletonControl control = findControl(sp, SkeletonControl.class);
-        return Objects.requireNonNull(control, "SkeletonControl not found: " + sp);
-    }
-
     public static void addSkeletonDebugger(AssetManager asm, SkeletonControl sc) {
         Node animRoot = (Node) sc.getSpatial();
         String name = animRoot.getName() + "_Skeleton";
         SkeletonDebugger debugger = new SkeletonDebugger(name, sc.getSkeleton());
-        debugger.setMaterial(createWireMaterial(asm));
-        animRoot.attachChild(debugger);
-    }
-
-    public static void addArmatureDebugger(AssetManager asm, SkinningControl sc) {
-        Node animRoot = (Node) sc.getSpatial();
-        String name = animRoot.getName() + "_Armature";
-        Armature armature = sc.getArmature();
-        ArmatureDebugger debugger = new ArmatureDebugger(name, armature, armature.getJointList());
         debugger.setMaterial(createWireMaterial(asm));
         animRoot.attachChild(debugger);
     }

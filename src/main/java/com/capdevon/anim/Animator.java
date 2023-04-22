@@ -1,35 +1,30 @@
 package com.capdevon.anim;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.engine.GameObject;
+import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.AnimTrack;
+import com.jme3.anim.AnimationMask;
 import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
-import com.jme3.anim.tween.action.BaseAction;
-import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
  *
  * @author capdevon
  */
-public class Animator extends AbstractControl {
+public class Animator extends AdapterControl {
 
     private static final Logger logger = Logger.getLogger(Animator.class.getName());
 
@@ -44,88 +39,65 @@ public class Animator extends AbstractControl {
         super.setSpatial(sp);
 
         if (spatial != null) {
-            animComposer = GameObject.getComponentInChildren(spatial, AnimComposer.class);
-            skinningControl = GameObject.getComponentInChildren(spatial, SkinningControl.class);
-
-            initActions();
+            animComposer = getComponentInChildren(AnimComposer.class);
+            skinningControl = getComponentInChildren(SkinningControl.class);
         }
     }
 
-    private void initActions() {
-        StringBuilder sb = new StringBuilder();
-        String r = String.format("Owner: %s, AnimRoot: %s", spatial, animComposer.getSpatial());
-        sb.append(r);
-
+    public void createDefaultActions() {
         for (AnimClip clip : animComposer.getAnimClips()) {
-            AnimTrack[] tracks = clip.getTracks();
-            String s = String.format("%n * %s (%d), Length: %f", clip.getName(), tracks.length, clip.getLength());
-            sb.append(s);
-            setAnimCallback(clip.getName(), true);
+            actionCycleDone(clip.getName(), true);
         }
-
-        logger.log(Level.INFO, sb.toString());
-    }
-
-    public void setAnimCallback(String animName, boolean loop) {
-        Action action = animComposer.action(animName);
-        Tween callback = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
-        action = new BaseAction(Tweens.sequence(action, callback));
-        animComposer.addAction(animName, action);
     }
 
     /**
      * @param anim (not null)
      */
-    public void setAnimCallback(Animation3 anim) {
+    public void actionCycleDone(Animation3 anim) {
         String animName = anim.getName();
-        boolean isLooping = (anim.getLoopMode() == LoopMode.Loop);
-        setAnimCallback(animName, isLooping);
+        boolean isLooping = anim.isLooping();
+        actionCycleDone(animName, isLooping).setSpeed(anim.getSpeed());
+    }
 
-        /*
+    public Action actionCycleDone(String animName, boolean loop) {
         // Get action registered with specified name. It will make a new action if there isn't any.
-        Tween delegate = animComposer.action(animName);
-        // Configure custom action with specified name, layer, loop, speed and listener.
-        CustomAction action = new CustomAction(delegate, animComposer, animName, AnimComposer.DEFAULT_LAYER);
-        action.setLooping(isLooping);
-        action.setSpeed(speed);
+        Action action = animComposer.action(animName);
+        Tween doneTween = Tweens.callMethod(this, "notifyAnimCycleDone", animName, loop);
         // Register custom action with specified name.
-        animComposer.addAction(animName, action);
-         */
+        return animComposer.actionSequence(animName, action, doneTween);
     }
 
     /**
-     * Run an action on the default layer.
-     *
-     * @param name The name of the action to run.
+     * Run an action with specified anim params.
      */
     public void setAnimation(Animation3 anim) {
-        setAnimation(anim.getName(), false);
+        setAnimation(anim.getName(), anim.getLayer());
     }
 
     /**
-     * Run an action on the default layer.
-     *
-     * @param name The name of the action to run.
+     * Run an action on specified layer.
      */
-    public void setAnimation(String animName, boolean override) {
-        if (override || !animName.equals(currentAnim)) {
-            animComposer.setCurrentAction(animName);
-            notifyAnimChange(animName);
+    public void setAnimation(String animName, String layerName) {
+        if (!animName.equals(currentAnim)) {
+            currentAnim = animName;
+            animComposer.setCurrentAction(currentAnim, layerName);
+            notifyAnimChange(currentAnim);
         }
     }
 
-    public void crossFade(Animation3 newAnim) {
-        crossFade(newAnim.getName());
+    public void crossFade(Animation3 anim) {
+        crossFade(anim.getName(), anim.getLayer());
     }
 
-    public void crossFade(String animName) {
-        double dt = animComposer.getTime();
-        animComposer.setCurrentAction(animName);
-        animComposer.setTime(dt);
-        notifyAnimChange(animName);
+    public void crossFade(String animName, String layerName) {
+        currentAnim = animName;
+        double dt = animComposer.getTime(layerName);
+        animComposer.setCurrentAction(currentAnim, layerName);
+        animComposer.setTime(layerName, dt);
+        notifyAnimChange(currentAnim);
     }
 
-    public String getCurrentAnimation() {
+    public String getCurrentAnimName() {
         return currentAnim;
     }
 
@@ -133,12 +105,27 @@ public class Animator extends AbstractControl {
         return animComposer.getSpatial();
     }
 
-    public AnimComposer getAnimComposer() {
-        return animComposer;
+    public Joint getJoint(String name) {
+        return skinningControl.getArmature().getJoint(name);
     }
 
-    public SkinningControl getSkinningControl() {
-        return skinningControl;
+    public Node getAttachments(String jointName) {
+        return skinningControl.getAttachmentsNode(jointName);
+    }
+    
+    public Armature getArmature() {
+        return skinningControl.getArmature();
+    }
+
+    /**
+     * Set mask with specified layer name. 
+     * It will make a new layer if there isn't any.
+     *
+     * @param layerName the desired name for the new layer
+     * @param mask the desired mask for the new layer (alias created)
+     */
+    public void setAnimMask(String layerName, AnimationMask mask) {
+        animComposer.makeLayer(layerName, mask);
     }
 
     public void disableArmatureDebug() {
@@ -170,8 +157,7 @@ public class Animator extends AbstractControl {
      */
     public void addListener(ActionAnimEventListener listener) {
         if (listeners.contains(listener)) {
-            throw new IllegalArgumentException("The given listener is already "
-                    + "registered at this Animator");
+            throw new IllegalArgumentException("The given listener is already registered at this Animator");
         }
 
         listeners.add(listener);
@@ -182,8 +168,7 @@ public class Animator extends AbstractControl {
      */
     public void removeListener(ActionAnimEventListener listener) {
         if (!listeners.remove(listener)) {
-            throw new IllegalArgumentException("The given listener is not "
-                    + "registered at this Animator");
+            throw new IllegalArgumentException("The given listener is not registered at this Animator");
         }
     }
 
@@ -195,7 +180,6 @@ public class Animator extends AbstractControl {
     }
 
     void notifyAnimChange(String name) {
-        currentAnim = name;
         for (ActionAnimEventListener listener : listeners) {
             listener.onAnimChange(animComposer, name);
         }
@@ -205,14 +189,6 @@ public class Animator extends AbstractControl {
         for (ActionAnimEventListener listener : listeners) {
             listener.onAnimCycleDone(animComposer, name, loop);
         }
-    }
-
-    @Override
-    protected void controlUpdate(float tpf) {
-    }
-
-    @Override
-    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 
 }

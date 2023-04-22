@@ -66,9 +66,9 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private final Vector3f camDir = new Vector3f();
     private final Vector3f camLeft = new Vector3f();
 
-    float m_RunSpeed = 5.5f;
-    float m_MoveSpeed = 4.5f;
-    float m_TurnSpeed = 10f;
+    private float m_RunSpeed = 5.5f;
+    private float m_MoveSpeed = 4.5f;
+    private float m_TurnSpeed = 10f;
 
     boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
     boolean isRunning, isAiming, canShooting;
@@ -81,22 +81,26 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         super.setSpatial(sp);
         if (spatial != null) {
             this.aimNode     = (Node) getChild("aim-node");
-            this.chaseCamera = spatial.getControl(ChaseCamera.class);
-            this.bcc         = spatial.getControl(BetterCharacterControl.class);
-            this.animator    = spatial.getControl(Animator.class);
+            this.chaseCamera = getComponent(ChaseCamera.class);
+            this.bcc         = getComponent(BetterCharacterControl.class);
+            this.animator    = getComponent(Animator.class);
 
-            animator.setAnimCallback(AnimDefs.Idle);
-            animator.setAnimCallback(AnimDefs.Running);
-            animator.setAnimCallback(AnimDefs.Running_2);
-            animator.setAnimCallback(AnimDefs.Aim_Idle);
-            animator.setAnimCallback(AnimDefs.Aim_Overdraw);
-            animator.setAnimCallback(AnimDefs.Aim_Recoil);
-            animator.setAnimCallback(AnimDefs.Draw_Arrow);
-            animator.addListener(this);
+            configureAnimClips();
 
             _MainCamera = new MainCamera(camera, defaultFOV, nearClipPlane, farClipPlane);
             logger.log(Level.INFO, "Initialized");
         }
+    }
+    
+    private void configureAnimClips() {
+        animator.actionCycleDone(AnimDefs.Idle);
+        animator.actionCycleDone(AnimDefs.Running);
+        animator.actionCycleDone(AnimDefs.Running_2);
+        animator.actionCycleDone(AnimDefs.Aim_Idle);
+        animator.actionCycleDone(AnimDefs.Aim_Overdraw);
+        animator.actionCycleDone(AnimDefs.Aim_Recoil);
+        animator.actionCycleDone(AnimDefs.Draw_Arrow);
+        animator.addListener(this);
     }
 
     @Override
@@ -245,8 +249,9 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     }
 
     private boolean checkTransition(Animation3 newAnim, Animation3 a, Animation3 b) {
-        String curAnim = animator.getCurrentAnimation();
-        return (newAnim.equals(a) && b.getName().equals(curAnim)) || (newAnim.equals(b) && a.getName().equals(curAnim));
+        String curAnim = animator.getCurrentAnimName();
+        return (newAnim.equals(a) && b.getName().equals(curAnim))
+                || (newAnim.equals(b) && a.getName().equals(curAnim));
     }
 
     @Override

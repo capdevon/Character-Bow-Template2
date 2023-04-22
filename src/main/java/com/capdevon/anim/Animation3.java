@@ -1,7 +1,8 @@
 package com.capdevon.anim;
 
-import com.jme3.animation.LoopMode;
 import java.util.Objects;
+
+import com.jme3.anim.AnimComposer;
 
 /**
  *
@@ -9,26 +10,32 @@ import java.util.Objects;
  */
 public class Animation3 {
 
-    String name;
-    LoopMode loopMode;
-    float blendTime = 0.15f;
-    float speed = 1f;
+    private String name;
+    private String layer = AnimComposer.DEFAULT_LAYER;
+    private boolean loop = true;
+    private float speed = 1.0f;
 
-    public Animation3(String name, LoopMode loopMode) {
+    public Animation3(String name, boolean loop) {
         this.name = name;
-        this.loopMode = loopMode;
+        this.loop = loop;
     }
 
-    public Animation3(String name, LoopMode loopMode, float blendTime) {
+    public Animation3(String name, String layer, boolean loop) {
         this.name = name;
-        this.loopMode = loopMode;
-        this.blendTime = blendTime;
+        this.layer = layer;
+        this.loop = loop;
     }
 
-    public Animation3(String name, LoopMode loopMode, float blendTime, float speed) {
+    public Animation3(String name, boolean loop, float speed) {
         this.name = name;
-        this.loopMode = loopMode;
-        this.blendTime = blendTime;
+        this.loop = loop;
+        this.speed = speed;
+    }
+
+    public Animation3(String name, String layer, boolean loop, float speed) {
+        this.name = name;
+        this.layer = layer;
+        this.loop = loop;
         this.speed = speed;
     }
 
@@ -36,12 +43,12 @@ public class Animation3 {
         return name;
     }
 
-    public LoopMode getLoopMode() {
-        return loopMode;
+    public String getLayer() {
+        return layer;
     }
 
-    public float getBlendTime() {
-        return blendTime;
+    public boolean isLooping() {
+        return loop;
     }
 
     public float getSpeed() {
@@ -50,9 +57,9 @@ public class Animation3 {
 
     @Override
     public String toString() {
-        return "Animation3[" + "name=" + name
-                + ", loopMode=" + loopMode
-                + ", blendTime=" + blendTime
+        return "Animation3[name=" + name
+                + ", layer=" + layer
+                + ", loop=" + loop
                 + ", speed=" + speed
                 + "]";
     }

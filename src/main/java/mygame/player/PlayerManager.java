@@ -2,9 +2,13 @@ package mygame.player;
 
 import com.capdevon.anim.AnimUtils;
 import com.capdevon.anim.Animator;
+import com.capdevon.anim.AvatarMask;
+import com.capdevon.anim.IKRig;
 import com.capdevon.audio.AudioClip;
+import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
+import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.audio.AudioData;
@@ -20,6 +24,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 
+import jme3utilities.debug.SkeletonVisualizer;
 import mygame.camera.CameraCollisionControl;
 import mygame.camera.TPSChaseCamera;
 import mygame.states.ParticleManager;
@@ -42,13 +47,28 @@ public class PlayerManager extends SimpleAppState {
 
     private void setupPlayer() {
         // Create a node for the character model
-        player = (Node) assetManager.loadModel(AnimDefs.MODEL);
+        player = (Node) assetManager.loadModel(AnimDefs.ARCHER_ASSET_MODEL);
         AnimMigrationUtils.migrate(player);
+        
+        player.setName("Player");
+        player.setUserData(GameObject.TAG_NAME, "TagPlayer");
         player.setLocalTranslation(0, -4f, 0);
-        player.addControl(new Animator());
         player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
+        
+        // Configure Animator
+        Animator animator = new Animator();
+        player.addControl(animator);
 
-        initCamera();
+        // Override the default layer mask
+        AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
+        animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
+
+        IKRig rig = new IKRig(avatarMask);
+        animator.getAnimRoot().addControl(rig);
+
+        player.addControl(new RespawnPlayer());
+
+        setupChaseCamera(player);
         
         Node node = new Node("aim-node");
         player.attachChild(node);
@@ -72,8 +92,8 @@ public class PlayerManager extends SimpleAppState {
         rootNode.attachChild(player);
     }
 
-    private void initCamera() {
-        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, player);
+    private void setupChaseCamera(Spatial target) {
+        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, target);
         chaseCam.registerWithInput(inputManager, settings.useJoysticks());
         chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
         chaseCam.setMaxDistance(3f);
@@ -86,13 +106,17 @@ public class PlayerManager extends SimpleAppState {
         chaseCam.setDownRotateOnCloseViewOnly(false);
 
         Spatial scene = find("MainScene");
-        CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, player, scene);
+        CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, target, scene);
     }
 
     private Weapon initWeapon() {
     	SkinningControl skControl = AnimUtils.getSkinningControl(player);
-    	//AnimUtils.addArmatureDebugger(assetManager, skControl);
         Node rh = skControl.getAttachmentsNode("Armature_mixamorig:" + MixamoBodyBones.RightHand);
+        
+        SkeletonVisualizer sv = new SkeletonVisualizer(assetManager, skControl);
+        player.addControl(sv);
+        sv.setLineColor(ColorRGBA.Green);
+        sv.setEnabled(true);
 
         // replace this with the bow's model
         Node model = new Node("weapon-node");
@@ -103,7 +127,7 @@ public class PlayerManager extends SimpleAppState {
         rh.attachChild(model);
 
         Weapon weapon = new Weapon("Bow", rh, model);
-        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("- + -"));
+        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("- . -"));
 
         AmmoType flameArrow = new AmmoType();
         flameArrow.name             = "Flame";
@@ -145,8 +169,8 @@ public class PlayerManager extends SimpleAppState {
         BitmapText ch = new BitmapText(guiFont);
         ch.setSize(guiFont.getCharSet().getRenderedSize() * 1.6f);
         ch.setText(text);
-        float width = settings.getWidth() / 2 - ch.getLineWidth() / 2;
-        float height = settings.getHeight() / 2 + ch.getLineHeight() / 2;
+        float width = settings.getWidth() / 2f - ch.getLineWidth() / 2f;
+        float height = settings.getHeight() / 2f + ch.getLineHeight() / 2f;
         ch.setLocalTranslation(width, height, 0);
         return ch;
     }
