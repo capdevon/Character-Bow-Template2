@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.jme3.app.Application;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
@@ -26,14 +28,28 @@ import com.jme3.util.TempVars;
  */
 public class Physics {
 
-    public static final Vector3f DEFAULT_GRAVITY = new Vector3f(0, -9.81f, 0).multLocal(2);
-
     private static final int DefaultRaycastLayers = ~0; // All Layers
+
+    private static PhysicsSpace physicsSpace;
+    private static boolean initialized;
 
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private Physics() {}
+    private Physics() {
+    }
+
+    public static void initEngine(Application app) {
+        if (initialized) {
+            throw new IllegalStateException("PhysicsEngine already initialized");
+        }
+
+        BulletAppState physics = new BulletAppState();
+        physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
+        app.getStateManager().attach(physics);
+        physicsSpace = physics.getPhysicsSpace();
+        initialized = true;
+    }
 
     /**
      * Applies a force to a rigidbody that simulates explosion effects.
@@ -76,7 +92,7 @@ public class Physics {
         Vector3f beginVec = t.vect1.set(ray.origin);
         Vector3f finalVec = t.vect2.set(ray.direction).scaleAdd(maxDistance, ray.origin);
 
-        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTest(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = physicsSpace.rayTest(beginVec, finalVec);
         for (PhysicsRayTestResult phRay : results) {
             PhysicsCollisionObject pco = phRay.getCollisionObject();
             if (applyMask(layerMask, pco.getCollisionGroup())) {
@@ -120,7 +136,7 @@ public class Physics {
         Vector3f beginVec = t.vect1.set(origin);
         Vector3f finalVec = t.vect2.set(direction).scaleAdd(maxDistance, origin);
 
-        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTestRaw(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = physicsSpace.rayTestRaw(beginVec, finalVec);
         for (PhysicsRayTestResult ray : results) {
             PhysicsCollisionObject pco = ray.getCollisionObject();
             if (ray.getHitFraction() < hf && applyMask(layerMask, pco.getCollisionGroup())) {
@@ -158,7 +174,7 @@ public class Physics {
         boolean collision = false;
         float hf = Float.MAX_VALUE;
 
-        List<PhysicsRayTestResult> results = PhysicsSpace.getPhysicsSpace().rayTestRaw(beginVec, finalVec);
+        List<PhysicsRayTestResult> results = physicsSpace.rayTestRaw(beginVec, finalVec);
         for (PhysicsRayTestResult ray : results) {
             PhysicsCollisionObject pco = ray.getCollisionObject();
             if (ray.getHitFraction() < hf && applyMask(layerMask, pco.getCollisionGroup())) {
@@ -226,7 +242,6 @@ public class Physics {
 
         overlappingObjects.clear();
 
-        PhysicsSpace physicsSpace = PhysicsSpace.getPhysicsSpace();
         int numContacts = physicsSpace.contactTest(ghost, new PhysicsCollisionListener() {
             @Override
             public void collision(PhysicsCollisionEvent event) {

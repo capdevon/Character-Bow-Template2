@@ -4,7 +4,6 @@ import com.capdevon.engine.SimpleAppState;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -33,7 +32,7 @@ public class TownAppState extends SimpleAppState {
     private DirectionalLight sun;
     private FilterPostProcessor fpp;
 
-    boolean lightProbeEnabled = false;
+    boolean lightProbeEnabled = true;
 
     @Override
     public void simpleInit() {
@@ -62,7 +61,7 @@ public class TownAppState extends SimpleAppState {
         CollisionShape shape = CollisionShapeFactory.createMeshShape(scene);
         RigidBodyControl rgb = new RigidBodyControl(shape, 0f);
         scene.addControl(rgb);
-        PhysicsSpace.getPhysicsSpace().add(rgb);
+        getPhysicsSpace().add(rgb);
 
         /* nature sound - keeps playing in a loop. */
         AudioNode audio = new AudioNode(assetManager, "Sound/Environment/Nature.ogg", AudioData.DataType.Stream);
