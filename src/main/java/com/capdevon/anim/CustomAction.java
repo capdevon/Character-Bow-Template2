@@ -4,6 +4,7 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.action.BaseAction;
 
+@Deprecated
 public class CustomAction extends BaseAction {
 
     private AnimComposer animComposer;
