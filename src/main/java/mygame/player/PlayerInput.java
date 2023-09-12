@@ -24,13 +24,13 @@ public class PlayerInput extends AdapterControl implements ActionListener {
     @Override
     public void onAction(String action, boolean keyPressed, float tpf) {
         if (action.equals(KeyMapping.MOVE_LEFT)) {
-            playerControl._MoveLeft = keyPressed;
+            playerControl.bMoveLeft = keyPressed;
         } else if (action.equals(KeyMapping.MOVE_RIGHT)) {
-            playerControl._MoveRight = keyPressed;
+            playerControl.bMoveRight = keyPressed;
         } else if (action.equals(KeyMapping.MOVE_FORWARD)) {
-            playerControl._MoveForward = keyPressed;
+            playerControl.bMoveForward = keyPressed;
         } else if (action.equals(KeyMapping.MOVE_BACKWARD)) {
-            playerControl._MoveBackward = keyPressed;
+            playerControl.bMoveBackward = keyPressed;
         } else if (action.equals(KeyMapping.RUNNING)) {
             playerControl.isRunning = keyPressed;
         } else if (action.equals(KeyMapping.AIMING)) {

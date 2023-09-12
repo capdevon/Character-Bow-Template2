@@ -3,7 +3,7 @@ package mygame.player;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.anim.ActionAnimEventListener;
+import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animation3;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
@@ -34,7 +34,7 @@ import mygame.util.AnimDefs;
  *
  * @author capdevon
  */
-public class PlayerControl extends AdapterControl implements ActionAnimEventListener {
+public class PlayerControl extends AdapterControl implements AnimationListener {
 
     private static final Logger logger = Logger.getLogger(PlayerControl.class.getName());
 
@@ -68,7 +68,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
     private float moveSpeed = 4.5f;
     private float rotateSpeed = 10f;
 
-    boolean _MoveForward, _MoveBackward, _MoveLeft, _MoveRight;
+    boolean bMoveForward, bMoveBackward, bMoveLeft, bMoveRight;
     boolean isRunning, isAiming, canShooting;
 
     private Node aimNode;
@@ -126,15 +126,15 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
             footstepsSFX.stop();
 
         } else {
-            if (_MoveForward) {
+            if (bMoveForward) {
                 walkDirection.addLocal(camDir);
-            } else if (_MoveBackward) {
+            } else if (bMoveBackward) {
                 walkDirection.addLocal(camDir.negateLocal());
             }
 
-            if (_MoveLeft) {
+            if (bMoveLeft) {
                 walkDirection.addLocal(camLeft);
-            } else if (_MoveRight) {
+            } else if (bMoveRight) {
                 walkDirection.addLocal(camLeft.negateLocal());
             }
 
@@ -155,13 +155,13 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
             boolean isMoving = walkDirection.lengthSquared() > 0;
             if (isMoving) {
-                playAnim(isRunning ? AnimDefs.Sprinting : AnimDefs.Running);
+                playAnimation(isRunning ? AnimDefs.Sprinting : AnimDefs.Running);
                 footstepsSFX.setVolume(isRunning ? 2f : .4f);
                 footstepsSFX.setPitch(isRunning ? 1f : .85f);
                 footstepsSFX.play();
 
             } else {
-                playAnim(AnimDefs.Idle);
+                playAnimation(AnimDefs.Idle);
                 footstepsSFX.stop();
             }
         }
@@ -183,7 +183,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         //chaseCamera.setDefaultDistance(isAiming ? chaseCamera.getMinDistance() : chaseCamera.getMaxDistance());
         chaseCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         weapon.crosshair.setEnabled(isAiming);
-        playAnim(AnimDefs.StandingDrawArrow);
+        playAnimation(AnimDefs.StandingDrawArrow);
     }
 
     public void changeAmmo() {
@@ -199,7 +199,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
             weapon.currAmmo--;
             shootSFX.playInstance();
-            playAnim(AnimDefs.StandingAimRecoil);
+            playAnimation(AnimDefs.StandingAimRecoil);
 
             // Aim the ray from character location in camera direction.
             if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.range)) {
@@ -241,7 +241,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
         geom.getMaterial().setColor("Color", color);
     }
 
-    private void playAnim(Animation3 newAnim) {
+    private void playAnimation(Animation3 newAnim) {
         if (checkTransition(newAnim, AnimDefs.Running, AnimDefs.Sprinting)) {
             animator.crossFade(newAnim);
         } else {
@@ -257,12 +257,13 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
     @Override
     public void onAnimCycleDone(AnimComposer animComposer, String animName, boolean loop) {
+        System.out.println("onAnimCycleDone: " + animName);
         if (animName.equals(AnimDefs.StandingAimRecoil.getName())) {
-            playAnim(AnimDefs.StandingDrawArrow);
+            playAnimation(AnimDefs.StandingDrawArrow);
 
         } else if (animName.equals(AnimDefs.StandingDrawArrow.getName())) {
-            playAnim(AnimDefs.StandingAimOverdraw);
-
+            playAnimation(AnimDefs.StandingAimOverdraw);
+            
         } else if (!loop) {
             animComposer.removeCurrentAction();
         }
@@ -270,6 +271,7 @@ public class PlayerControl extends AdapterControl implements ActionAnimEventList
 
     @Override
     public void onAnimChange(AnimComposer animComposer, String animName) {
+        System.out.println("onAnimChange: " + animName);
         if (animName.equals(AnimDefs.StandingAimRecoil.getName())
                 || animName.equals(AnimDefs.StandingDrawArrow.getName())) {
             setWeaponCharging();
