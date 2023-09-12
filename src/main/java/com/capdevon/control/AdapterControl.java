@@ -1,6 +1,5 @@
 package com.capdevon.control;
 
-import java.util.List;
 import java.util.Objects;
 
 import com.capdevon.engine.GameObject;
@@ -46,18 +45,6 @@ public abstract class AdapterControl extends AbstractControl {
     public <T extends Control> T getComponent(Class<T> type) {
         T control = spatial.getControl(type);
         return Objects.requireNonNull(control, type + " not found: " + spatial);
-    }
-
-    /**
-     * Returns all components of Type type in the GameObject or any of its
-     * children using depth first search. Works recursively.
-     *
-     * @param <T>
-     * @param type
-     * @return
-     */
-    public <T extends Control> List<T> getComponentsInChildren(Class<T> type) {
-        return GameObject.getComponentsInChildren(spatial, type);
     }
 
     /**

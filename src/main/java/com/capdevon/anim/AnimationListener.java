@@ -6,7 +6,7 @@ import com.jme3.anim.AnimComposer;
  *
  * @author capdevon
  */
-public interface ActionAnimEventListener {
+public interface AnimationListener {
 
     /**
      * Invoked when an animation "cycle" is done. For non-looping animations,
