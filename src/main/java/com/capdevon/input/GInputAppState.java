@@ -33,18 +33,6 @@ public class GInputAppState extends AbstractInputAppState {
 
         // Map it differently if there are Z axis
         if (joypad.getAxis(JoystickAxis.Z_ROTATION) != null && joypad.getAxis(JoystickAxis.Z_AXIS) != null) {
-
-            // And let the dpad be up and down
-            //assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.TRIGGER_ACTION);
-            //assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_FLASHLIGHT);
-            //assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.TOGGLE_CROUCH);
-            assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
-            //assignButton(joypad, JoystickButton.BUTTON_5, KeyMapping.AUTO_AIM);
-            assignButton(joypad, JoystickButton.BUTTON_6, KeyMapping.AIMING);
-            assignButton(joypad, JoystickButton.BUTTON_7, KeyMapping.FIRE);
-            //assignButton(joypad, JoystickButton.BUTTON_8, KeyMapping.TOGGLE_INVENTORY);
-            //assignButton(joypad, JoystickButton.BUTTON_9, KeyMapping.TOGGLE_PAUSE);
-
             // Make the left stick move
             assignAxis(joypad.getXAxis(), KeyMapping.MOVE_RIGHT, KeyMapping.MOVE_LEFT);
             assignAxis(joypad.getYAxis(), KeyMapping.MOVE_BACKWARD, KeyMapping.MOVE_FORWARD);
@@ -52,6 +40,16 @@ public class GInputAppState extends AbstractInputAppState {
             // And let the dpad be up and down
             assignAxis(joypad.getPovYAxis(), KeyMapping.SWITCH_WEAPON, KeyMapping.SWITCH_WEAPON);
         }
+        
+        //assignButton(joypad, JoystickButton.BUTTON_0, KeyMapping.TRIGGER_ACTION);
+        //assignButton(joypad, JoystickButton.BUTTON_1, KeyMapping.TOGGLE_FLASHLIGHT);
+        //assignButton(joypad, JoystickButton.BUTTON_2, KeyMapping.TOGGLE_CROUCH);
+        assignButton(joypad, JoystickButton.BUTTON_4, KeyMapping.RUNNING);
+        //assignButton(joypad, JoystickButton.BUTTON_5, KeyMapping.AUTO_AIM);
+        assignButton(joypad, JoystickButton.BUTTON_6, KeyMapping.AIMING);
+        assignButton(joypad, JoystickButton.BUTTON_7, KeyMapping.FIRE);
+        //assignButton(joypad, JoystickButton.BUTTON_8, KeyMapping.TOGGLE_INVENTORY);
+        //assignButton(joypad, JoystickButton.BUTTON_9, KeyMapping.TOGGLE_PAUSE);
     }
 
 }
