@@ -28,6 +28,14 @@ public class SceneManager extends BaseAppState {
         System.out.println(".....................SceneManager cleanup");
     }
     
+    @Override
+    protected void onEnable() {
+    }
+
+    @Override
+    protected void onDisable() {
+    }
+    
     /**
      * Unloads the Scene asynchronously in the background
      * @param newScene
@@ -138,14 +146,4 @@ public class SceneManager extends BaseAppState {
         Thread.sleep(500);
     }
 
-    @Override
-    protected void onEnable() {
-        //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void onDisable() {
-        //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }
