@@ -1,19 +1,42 @@
-
 plugins {
     id 'java'
     id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 group 'com.mygame'
 version '1.0'
 
 application {
-    applicationName = 'Character-Bow-Template2'
     mainClass = 'mygame.Main'
-    // Mac OS with LWJGL 3 needs to be started with this JVM argument
-    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-        applicationDefaultJvmArgs = ['-XstartOnFirstThread']
+}
+
+tasks.withType(JavaCompile).configureEach { // Java compile-time options:
+    options.compilerArgs << '-Xdiags:verbose'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true // to provide detailed deprecation warnings
+    options.encoding = 'UTF-8'
+    options.release = 11
+}
+
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+Boolean isMacOS = DefaultNativePlatform.currentOperatingSystem.isMacOsX()
+
+tasks.withType(JavaExec).configureEach { // Java runtime options:
+    if (isMacOS) {
+        jvmArgs '-XstartOnFirstThread'
     }
+    classpath sourceSets.main.runtimeClasspath
+    enableAssertions true
+    //jvmArgs '-verbose:gc'
+    //jvmArgs '-Xbatch'
+    //jvmArgs '-Xms256m', '-Xmx256m' // to enlarge the Java heap
+    //jvmArgs '-XX:+PrintCompilation'
+    //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
 repositories {
@@ -48,10 +71,6 @@ dependencies {
 
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jmeVersion
     runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.4.0-alpha6'
-    
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation 'org.apache.commons:commons-lang3:3.15.0'
-
 }
 
 jar {
@@ -60,12 +79,23 @@ jar {
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 wrapper {
     gradleVersion = '8.4'
+}
+
+// Register cleanup tasks:
+
+clean.dependsOn('cleanDLLs', 'cleanDyLibs', 'cleanLogs', 'cleanSOs')
+
+tasks.register('cleanDLLs', Delete) { // extracted Windows native libraries
+    delete fileTree(dir: '.', include: '*.dll')
+}
+tasks.register('cleanDyLibs', Delete) { // extracted macOS native libraries
+    delete fileTree(dir: '.', include: '*.dylib')
+}
+tasks.register('cleanLogs', Delete) { // JVM crash logs
+    delete fileTree(dir: '.', include: 'hs_err_pid*.log')
+}
+tasks.register('cleanSOs', Delete) { // extracted Linux and Android native libraries
+    delete fileTree(dir: '.', include: '*.so')
 }
