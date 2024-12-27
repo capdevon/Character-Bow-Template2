@@ -1,59 +1,42 @@
 
 plugins {
     id 'java'
+    id 'application'
 }
 
-description = 'Tech Demo'
+group 'com.mygame'
+version '1.0'
 
-// select one source-code (JDK) option
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
-
-// select one version of the Engine:
-ext.jmeVersion = '3.6.1-stable'
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) { // compile-time options:
-        options.compilerArgs << '-Xdiags:verbose'
-        options.compilerArgs << '-Xlint:unchecked'
-        options.deprecation = true
-        options.encoding = 'UTF-8'
-    }
-    tasks.withType(JavaExec) { // runtime options:
-        args = []
-        classpath sourceSets.main.runtimeClasspath
-        //debug true
-        enableAssertions true
-        //jvmArgs '-verbose:gc'
-        //jvmArgs '-Xbatch'
-        //jvmArgs '-Xms512m', '-Xmx512m'
-        //jvmArgs '-XX:+PrintCompilation'
-        //jvmArgs '-XX:+UseConcMarkSweepGC'
-        jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
+application {
+    applicationName = 'Character-Bow-Template2'
+    mainClass = 'mygame.Main'
+    // Mac OS with LWJGL 3 needs to be started with this JVM argument
+    if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+        applicationDefaultJvmArgs = ['-XstartOnFirstThread']
     }
 }
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-        
-    // Read more about repositories here:
-    //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:repositories
+}
+
+project.ext {
+    jmeVersion = '3.7.0-stable'
 }
 
 dependencies {
-    // You can read more about how to add dependencies here:
-    //   https://docs.gradle.org/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
 
     // jMonkeyEngine
     implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
     implementation 'org.jmonkeyengine:jme3-effects:' + jmeVersion
-    //implementation 'org.jmonkeyengine:jme3-niftygui:' + jmeVersion
-    //implementation 'org.jmonkeyengine:jme3-terrain:' + jmeVersion
-    runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jmeVersion
     
-    // PhysicsEngine
+    // Mac OS with LWJGL 3 doesn't allow AWT/Swing
+    if (!System.getProperty("os.name").toLowerCase().contains("mac")) {
+        runtimeOnly 'org.jmonkeyengine:jme3-awt-dialogs:' + jmeVersion
+    }
+    
+    // Physics
     implementation 'com.github.stephengold:Minie:8.2.0+big4'
 
     // select one version of LWJGL
@@ -71,17 +54,18 @@ dependencies {
 
 }
 
-// cleanup tasks
-clean.dependsOn('cleanDLLs', 'cleanDyLibs', 'cleanLogs', 'cleanSOs')
-task cleanDLLs(type: Delete) {
-    delete fileTree(dir: '.', include: '*.dll')
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
 }
-task cleanDyLibs(type: Delete) {
-    delete fileTree(dir: '.', include: '*.dylib')
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
-task cleanLogs(type: Delete) {
-    delete fileTree(dir: '.', include: 'hs_err_pid*.log')
-}
-task cleanSOs(type: Delete) {
-    delete fileTree(dir: '.', include: '*.so')
+
+wrapper {
+    gradleVersion = '8.4'
 }
