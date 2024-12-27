@@ -1,9 +1,5 @@
 package mygame;
 
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-
 import com.capdevon.engine.AsyncOperation;
 import com.capdevon.engine.Scene;
 import com.capdevon.engine.SceneManager;
@@ -11,7 +7,6 @@ import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxDebugAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 
 /**
@@ -26,21 +21,14 @@ public class Main extends SimpleApplication {
      * @param args
      */
     public static void main(String[] args) {
-        // Get the Resolution of the main/default display
-        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        DisplayMode display = device.getDisplayMode();
-
         Main app = new Main();
-
         AppSettings settings = new AppSettings(true);
         settings.setResolution(800, 600);
-        settings.setBitsPerPixel(display.getBitDepth());
-        settings.setFrequency(display.getRefreshRate());
-        //settings.setFrameRate(60);
-        //settings.setUseJoysticks(true);
+        settings.setFrameRate(60);
+        settings.setUseJoysticks(true);
 
         app.setSettings(settings);
-        app.setShowSettings(true);
+        app.setShowSettings(false);
         app.setPauseOnLostFocus(false);
         app.start();
     }

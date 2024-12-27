@@ -49,7 +49,7 @@ public class AsyncOperation {
      * Event that is invoked upon operation completion
      * @param action
      */
-    public void onCompleted(Consumer action) {
+    public void onCompleted(Consumer<? super Boolean> action) {
         future.thenAccept(action);
     }
 
