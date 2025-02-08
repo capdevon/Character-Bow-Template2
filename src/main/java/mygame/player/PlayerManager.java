@@ -25,7 +25,7 @@ import com.jme3.scene.shape.Sphere;
 
 import jme3utilities.debug.SkeletonVisualizer;
 import mygame.camera.CameraCollisionControl;
-import mygame.camera.TPSChaseCamera;
+import mygame.camera.ThirdPersonCamera;
 import mygame.states.ParticleManager;
 import mygame.util.AnimDefs;
 import mygame.util.AudioLib;
@@ -90,7 +90,7 @@ public class PlayerManager extends SimpleAppState {
     }
 
     private void setupChaseCamera(Spatial target) {
-        TPSChaseCamera chaseCam = new TPSChaseCamera(camera, target);
+        ThirdPersonCamera chaseCam = new ThirdPersonCamera(camera, target);
         chaseCam.registerWithInput(inputManager, settings.useJoysticks());
         chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
         chaseCam.setMaxDistance(3f);
