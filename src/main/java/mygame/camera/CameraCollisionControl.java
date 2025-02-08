@@ -43,7 +43,7 @@ public class CameraCollisionControl extends AbstractControl {
         this.scene = scene;
     }
 
-	public void setZooming(boolean isZooming) {
+    public void setZooming(boolean isZooming) {
         this.isZooming = isZooming;
         chaseCam.setRotationSpeed( isZooming ? .5f : 1 );
 //        chaseCam.setDefaultDistance( isZooming ? chaseCam.getMinDistance() : chaseCam.getMaxDistance() );
