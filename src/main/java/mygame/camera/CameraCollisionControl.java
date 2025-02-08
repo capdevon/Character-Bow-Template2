@@ -61,27 +61,34 @@ public class CameraCollisionControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         
-        float distMin = chaseCam.getMinDistance();
-        float distMax = chaseCam.getMaxDistance();
+    	// Retrieve camera settings
+        float minDistance = chaseCam.getMinDistance();
+        float maxDistance = chaseCam.getMaxDistance();
         float zSensitivity = chaseCam.getZoomSensitivity();
         
-        if (isZooming) {
-            if (chaseCam.getDistanceToTarget() > distMin) {
-                chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
-            }
-            return;
-        }
+		// Handle zooming in
+		if (isZooming) {
+			if (chaseCam.getDistanceToTarget() > minDistance) {
+				chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
+			}
+			return;
+		}
 
+		// Update target location and direction to camera
         targetLocation.set( spatial.getWorldTranslation() ).addLocal(chaseCam.getLookAtOffset());
         targetToCamDirection.set( camera.getLocation() ).subtractLocal(targetLocation).normalizeLocal();
 
-        if (doRaycast(targetLocation, targetToCamDirection, distMax, hitInfo)) {
-            if (chaseCam.getDistanceToTarget() + hitInfo.normal.length() > hitInfo.distance) {
-                chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
-            }
-        } else if (chaseCam.getDistanceToTarget() < distMax) {
-            chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMOUT, tpf * zSensitivity, tpf);
-        }
+		// Perform raycast to check for obstacles between the camera and the target
+		if (doRaycast(targetLocation, targetToCamDirection, maxDistance, hitInfo)) {
+			
+			// Zoom in if an obstacle is detected within the camera's current distance
+			if (chaseCam.getDistanceToTarget() + hitInfo.normal.length() > hitInfo.distance) {
+				chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMIN, tpf * zSensitivity, tpf);
+			}
+		} else if (chaseCam.getDistanceToTarget() < maxDistance) {
+			// Zoom out if no obstacles are detected and the camera is closer than the max distance
+			chaseCam.onAnalog(CameraInput.CHASECAM_ZOOMOUT, tpf * zSensitivity, tpf);
+		}
     }
     
 	/**
