@@ -89,22 +89,25 @@ public class PlayerManager extends SimpleAppState {
         rootNode.attachChild(player);
     }
 
-    private void setupChaseCamera(Spatial target) {
-        ThirdPersonCamera chaseCam = new ThirdPersonCamera(camera, target);
-        chaseCam.registerWithInput(inputManager, settings.useJoysticks());
-        chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
-        chaseCam.setMaxDistance(3f);
-        chaseCam.setMinDistance(1f);
-        chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
-        chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
-        chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI);
-        chaseCam.setRotationSensitivity(1.5f);
-        chaseCam.setZoomSensitivity(3f);
-        chaseCam.setDownRotateOnCloseViewOnly(false);
+	private void setupChaseCamera(Spatial target) {
+		ThirdPersonCamera chaseCam = new ThirdPersonCamera(camera, target);
+		chaseCam.registerWithInput(inputManager, settings.useJoysticks());
+		chaseCam.setLookAtOffset(new Vector3f(0f, 2f, 0f));
+		chaseCam.setMaxDistance(3f);
+		chaseCam.setMinDistance(1f);
+		chaseCam.setDefaultDistance(chaseCam.getMaxDistance());
+		chaseCam.setMaxVerticalRotation(FastMath.QUARTER_PI);
+		chaseCam.setMinVerticalRotation(-FastMath.QUARTER_PI);
+		chaseCam.setRotationSensitivity(1.5f);
+		chaseCam.setZoomSensitivity(3f);
+		chaseCam.setDownRotateOnCloseViewOnly(false);
 
-        Spatial scene = find("MainScene");
-        CameraCollisionControl cameraCollision = new CameraCollisionControl(camera, target, scene);
-    }
+		Spatial scene = find("MainScene");
+		
+		CameraCollisionControl cameraCollision = new CameraCollisionControl(camera);
+		cameraCollision.setScene(scene);
+		target.addControl(cameraCollision);
+	}
 
     private Weapon initWeapon() {
     	SkinningControl skControl = AnimUtils.getSkinningControl(player);

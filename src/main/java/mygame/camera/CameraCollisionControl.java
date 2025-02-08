@@ -1,5 +1,7 @@
 package mygame.camera;
 
+import java.util.Objects;
+
 import com.capdevon.physx.RaycastHit;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -19,31 +21,41 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class CameraCollisionControl extends AbstractControl {
 
-    private final Spatial scene;
-    private final Camera camera;
-    private final ChaseCamera chaseCam;
+    private Spatial scene;
+    private Camera camera;
+    private ChaseCamera chaseCam;
+    
     private final Vector3f targetLocation = new Vector3f();
     private final Vector3f targetToCamDirection = new Vector3f();
     private final RaycastHit hitInfo = new RaycastHit();
+    
     private boolean isZooming;
 
-    /**
-     * 
-     * @param camera
-     * @param target
-     * @param scene 
-     */
-    public CameraCollisionControl(Camera camera, Spatial target, Spatial scene) {
-        this.scene = scene;
+    public CameraCollisionControl(Camera camera) {
         this.camera = camera;
-        this.chaseCam = target.getControl(ChaseCamera.class);
-        target.addControl(this);
     }
     
-    public void setZooming(boolean isZooming) {
+    public Spatial getScene() {
+		return scene;
+	}
+
+	public void setScene(Spatial scene) {
+		this.scene = scene;
+	}
+
+	public void setZooming(boolean isZooming) {
         this.isZooming = isZooming;
         chaseCam.setRotationSpeed( isZooming ? .5f : 1 );
 //        chaseCam.setDefaultDistance( isZooming ? chaseCam.getMinDistance() : chaseCam.getMaxDistance() );
+    }
+    
+    @Override
+    public void setSpatial(Spatial sp) {
+        super.setSpatial(sp);
+        if (spatial != null) {
+        	this.chaseCam = spatial.getControl(ChaseCamera.class);
+        	Objects.requireNonNull(chaseCam, "ChaseCamera not found: " + spatial);
+        }
     }
 
     @Override
@@ -72,37 +84,47 @@ public class CameraCollisionControl extends AbstractControl {
         }
     }
     
-    /**
-     * perform simple raycast
-     */
-    private boolean doRaycast(Vector3f origin, Vector3f dir, float maxDistance, RaycastHit out) {
-    	
-    	out.clear();
-    	
-        Ray ray = new Ray(origin, dir);
-        ray.setLimit(maxDistance); // FIXME: Bug!
+	/**
+	 * Performs a raycast from the given origin in the specified direction up to the
+	 * maximum distance.
+	 *
+	 * @param origin      The starting point of the ray.
+	 * @param direction   The direction of the ray.
+	 * @param maxDistance The maximum distance the ray should travel.
+	 * @param hitResult   The object to store the results of the raycast.
+	 * @return true if the ray hits an object within the maximum distance, false otherwise.
+	 */
+	private boolean doRaycast(Vector3f origin, Vector3f dir, float maxDistance, RaycastHit out) {
 
-        CollisionResults results = new CollisionResults();
-        scene.collideWith(ray, results);
+		// Clear previous hit results
+		out.clear();
 
-        boolean hit = false;
-        if (results.size() > 0) {
-            CollisionResult closest = results.getClosestCollision();
-            out.userObject 	= closest.getGeometry();
-            out.normal 		= closest.getContactNormal();
-            out.point 		= closest.getContactPoint();
-            out.distance 	= closest.getDistance();
+		// Create a new ray from the origin in the specified direction
+		Ray ray = new Ray(origin, dir);
+		ray.setLimit(maxDistance); // FIXME: Bug! Ensure this is correctly limiting the ray's distance
 
-            if (out.distance < maxDistance)
-                hit = true;
-        }
+		// Collect collision results
+		CollisionResults results = new CollisionResults();
+		scene.collideWith(ray, results);
 
-        return hit;
-    }
+		boolean hit = false;
+		if (results.size() > 0) {
+			CollisionResult closest = results.getClosestCollision();
+			out.userObject 	= closest.getGeometry();
+			out.normal 		= closest.getContactNormal();
+			out.point 		= closest.getContactPoint();
+			out.distance 	= closest.getDistance();
+
+			if (out.distance < maxDistance) {
+				hit = true;
+			}
+		}
+
+		return hit;
+	}
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //To change body of generated methods, choose Tools | Templates.
     }
 
 }
