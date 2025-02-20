@@ -3,8 +3,8 @@ package mygame.player;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animation3;
+import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.engine.FRotator;
@@ -17,14 +17,15 @@ import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
+import com.jme3.material.MatParamOverride;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shader.VarType;
 
 import mygame.camera.MainCamera;
 import mygame.states.ParticleManager;
@@ -182,7 +183,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         this.isAiming = isAiming;
         //chaseCamera.setDefaultDistance(isAiming ? chaseCamera.getMinDistance() : chaseCamera.getMaxDistance());
         chaseCamera.setRotationSpeed(isAiming ? 0.5f : 1);
-        weapon.crosshair.setEnabled(isAiming);
+        weapon.getCrosshair().setEnabled(isAiming);
         playAnimation(AnimDefs.StandingDrawArrow);
     }
 
@@ -191,18 +192,18 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     }
     
     public void reload() {
-        weapon.currAmmo = weapon.maxAmmo;
+        weapon.reload();
     }
 
     public void shooting() {
-        if (isAiming && canShooting && weapon.currAmmo > 0) {
+        if (isAiming && canShooting && weapon.canShooting()) {
 
-            weapon.currAmmo--;
+            weapon.shoot();
             shootSFX.playInstance();
             playAnimation(AnimDefs.StandingAimRecoil);
 
             // Aim the ray from character location in camera direction.
-            if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.range)) {
+            if (Physics.doRaycast(aimNode.getWorldTranslation(), camera.getDirection(), shootHit, weapon.getRange())) {
                 System.out.println(" * You shot: " + shootHit);
                 applyExplosion(shootHit, weapon);
 
@@ -236,9 +237,18 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     }
 
     private void applyDamage(Spatial sp, ColorRGBA color) {
-        Node root = (Node) sp;
-        Geometry geom = (Geometry) root.getChild(0);
-        geom.getMaterial().setColor("Color", color);
+        boolean found = false;
+        for (MatParamOverride mpo : sp.getLocalMatParamOverrides()) {
+            if (mpo.getName().equals("Color")) {
+                mpo.setValue(color);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            MatParamOverride mpo = new MatParamOverride(VarType.Vector4, "Color", color);
+            sp.addMatParamOverride(mpo);
+        }
     }
 
     private void playAnimation(Animation3 newAnim) {
@@ -283,13 +293,13 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     private void setWeaponReady() {
         canShooting = true;
-        weapon.crosshair.setColor(ColorRGBA.White);
+        weapon.getCrosshair().setColor(ColorRGBA.White);
         reloadSFX.play();
     }
 
     private void setWeaponCharging() {
         canShooting = false;
-        weapon.crosshair.setColor(ColorRGBA.Red);
+        weapon.getCrosshair().setColor(ColorRGBA.Red);
         reloadSFX.stop();
     }
 

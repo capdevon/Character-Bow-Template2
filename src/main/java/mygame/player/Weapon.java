@@ -13,11 +13,11 @@ public class Weapon {
     private Node weaponHook;
     private Node model;
 
-    CrosshairData crosshair;
-    float range = 30f;
-    float damage = 50f;
-    int currAmmo = 20;
-    int maxAmmo = 40;
+    private CrosshairData crosshair;
+    private float range = 30f;
+    private float damage = 50f;
+    private int currAmmo = 20;
+    private int maxAmmo = 40;
 
     private int ammoTypeIndex = 0;
     private final ArrayList<AmmoType> ammoTypes;
@@ -43,6 +43,18 @@ public class Weapon {
             weaponHook.detachChild(model);
         }
     }
+    
+    public boolean canShooting() {
+        return currAmmo > 0;
+    }
+    
+    public void shoot() {
+        currAmmo--;
+    }
+    
+    public void reload() {
+        currAmmo = maxAmmo;
+    }
 
     public void nextAmmo() {
         ammoTypeIndex = (ammoTypeIndex + 1) % ammoTypes.size();
@@ -55,6 +67,40 @@ public class Weapon {
 
     public void addAmmoType(AmmoType ammoType) {
         ammoTypes.add(ammoType);
+    }
+    
+    // Getters/Setters
+
+    public CrosshairData getCrosshair() {
+        return crosshair;
+    }
+
+    public void setCrosshair(CrosshairData crosshair) {
+        this.crosshair = crosshair;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
+    }
+
+    public float getDamage() {
+        return damage;
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
+
+    public int getMaxAmmo() {
+        return maxAmmo;
+    }
+
+    public void setMaxAmmo(int maxAmmo) {
+        this.maxAmmo = maxAmmo;
     }
 
     public String getDescription() {

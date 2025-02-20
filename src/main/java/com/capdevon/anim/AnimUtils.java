@@ -2,6 +2,7 @@ package com.capdevon.anim;
 
 import java.util.Objects;
 
+import com.capdevon.engine.GameObject;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.anim.SkinningControl;
@@ -10,7 +11,6 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.custom.ArmatureDebugger;
 
 /**
@@ -22,55 +22,56 @@ public class AnimUtils {
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private AnimUtils() {}
+    private AnimUtils() {
+    }
 
+    /**
+     * Retrieves the AnimComposer component from the given spatial.
+     *
+     * @param sp the spatial from which to retrieve the AnimComposer
+     * @return the AnimComposer component
+     * @throws NullPointerException if the AnimComposer is not found
+     */
     public static AnimComposer getAnimCompser(Spatial sp) {
-        AnimComposer control = findControl(sp, AnimComposer.class);
+        AnimComposer control = GameObject.getComponentInChildren(sp, AnimComposer.class);
         return Objects.requireNonNull(control, "AnimComposer not found: " + sp);
     }
 
+    /**
+     * Retrieves the SkinningControl component from the given spatial.
+     *
+     * @param sp the spatial from which to retrieve the SkinningControl
+     * @return the SkinningControl component
+     * @throws NullPointerException if the SkinningControl is not found
+     */
     public static SkinningControl getSkinningControl(Spatial sp) {
-        SkinningControl control = findControl(sp, SkinningControl.class);
+        SkinningControl control = GameObject.getComponentInChildren(sp, SkinningControl.class);
         return Objects.requireNonNull(control, "SkinningControl not found: " + sp);
     }
 
+    /**
+     * Adds an ArmatureDebugger to the spatial associated with the given
+     * SkinningControl.
+     *
+     * @param asm the asset manager used to create the material for the debugger
+     * @param sc  the SkinningControl whose spatial will receive the
+     *            ArmatureDebugger
+     */
     public static void addArmatureDebugger(AssetManager asm, SkinningControl sc) {
         Node animRoot = (Node) sc.getSpatial();
         String name = animRoot.getName() + "_Armature";
         Armature armature = sc.getArmature();
         ArmatureDebugger debugger = new ArmatureDebugger(name, armature, armature.getJointList());
-        debugger.setMaterial(createWireMaterial(asm));
+        Material mat = createWireMaterial(asm, ColorRGBA.Blue);
+        debugger.setMaterial(mat);
         animRoot.attachChild(debugger);
     }
 
-    private static Material createWireMaterial(AssetManager asm) {
+    private static Material createWireMaterial(AssetManager asm, ColorRGBA color) {
         Material mat = new Material(asm, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Blue);
+        mat.setColor("Color", color);
         mat.getAdditionalRenderState().setWireframe(true);
-        mat.getAdditionalRenderState().setDepthTest(false);
         return mat;
-    }
-
-    /**
-     * @param <T>
-     * @param sp
-     * @param clazz
-     * @return
-     */
-    private static <T extends Control> T findControl(Spatial sp, Class<T> clazz) {
-        T control = sp.getControl(clazz);
-        if (control != null) {
-            return control;
-        }
-        if (sp instanceof Node) {
-            for (Spatial child : ((Node) sp).getChildren()) {
-                control = findControl(child, clazz);
-                if (control != null) {
-                    return control;
-                }
-            }
-        }
-        return null;
     }
 
 }

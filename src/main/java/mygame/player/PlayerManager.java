@@ -52,17 +52,22 @@ public class PlayerManager extends SimpleAppState {
         player.setLocalTranslation(0, -4f, 0);
         player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
         
-        // Configure Animator
-        Animator animator = new Animator();
-        player.addControl(animator);
+        AnimComposer animComposer = AnimUtils.getAnimCompser(player);
+        SkinningControl skinningControl = AnimUtils.getSkinningControl(player);
+        Spatial animRoot = animComposer.getSpatial();
+        
+        SkeletonVisualizer sv = new SkeletonVisualizer(assetManager, skinningControl);
+        animRoot.addControl(sv);
+        sv.setEnabled(true);
 
         // Override the default layer mask
-        AvatarMask avatarMask = new AvatarMask(animator.getArmature()).addAllJoints();
-        animator.setAnimMask(AnimComposer.DEFAULT_LAYER, avatarMask);
+        AvatarMask avatarMask = new AvatarMask(skinningControl.getArmature()).addAllJoints();
+        animComposer.makeLayer(AnimComposer.DEFAULT_LAYER, avatarMask);
 
         IKRig rig = new IKRig(avatarMask);
-        animator.getAnimRoot().addControl(rig);
+        animRoot.addControl(rig);
 
+        player.addControl(new Animator());
         player.addControl(new RespawnPlayer());
 
         setupChaseCamera(player);
@@ -75,7 +80,7 @@ public class PlayerManager extends SimpleAppState {
         playerControl.camera           = camera;
         playerControl.weaponUI         = getBitmapText(20, settings.getHeight() - 20);
         playerControl.particleManager  = stateManager.getState(ParticleManager.class);
-        playerControl.weapon           = initWeapon();
+        playerControl.weapon           = initWeapon(skinningControl);
         playerControl.footstepsSFX     = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
         playerControl.shootSFX         = getAudioClip(AudioLib.ARROW_HIT);
         playerControl.reloadSFX        = getAudioClip(AudioLib.BOW_PULL);
@@ -109,13 +114,9 @@ public class PlayerManager extends SimpleAppState {
         target.addControl(cameraCollision);
     }
 
-    private Weapon initWeapon() {
-    	SkinningControl skControl = AnimUtils.getSkinningControl(player);
-        Node rh = skControl.getAttachmentsNode("mixamorig:" + MixamoBodyBones.LeftHand);
+    private Weapon initWeapon(SkinningControl skinningControl) {
         
-        SkeletonVisualizer sv = new SkeletonVisualizer(assetManager, skControl);
-        player.addControl(sv);
-        sv.setEnabled(true);
+        Node rh = skinningControl.getAttachmentsNode("mixamorig:" + MixamoBodyBones.LeftHand);
 
         // replace this with the bow's model
         Node model = new Node("Bow");
@@ -125,7 +126,8 @@ public class PlayerManager extends SimpleAppState {
         rh.attachChild(model);
 
         Weapon weapon = new Weapon("Bow", rh, model);
-        weapon.crosshair = new CrosshairData(guiNode, getCrossHair("- . -"));
+        BitmapText ch = getCrossHair("- . -");
+        weapon.setCrosshair( new CrosshairData(guiNode, ch) );
 
         AmmoType flameArrow = new AmmoType();
         flameArrow.name             = "Flame";
@@ -164,13 +166,13 @@ public class PlayerManager extends SimpleAppState {
 
     /* A centered plus sign to help the player aim. */
     private BitmapText getCrossHair(String text) {
-        BitmapText ch = new BitmapText(guiFont);
-        ch.setSize(guiFont.getCharSet().getRenderedSize() * 1.6f);
-        ch.setText(text);
-        float width = settings.getWidth() / 2f - ch.getLineWidth() / 2f;
-        float height = settings.getHeight() / 2f + ch.getLineHeight() / 2f;
-        ch.setLocalTranslation(width, height, 0);
-        return ch;
+        BitmapText bmp = new BitmapText(guiFont);
+        bmp.setSize(guiFont.getCharSet().getRenderedSize() * 1.6f);
+        bmp.setText(text);
+        float width = settings.getWidth() / 2f - bmp.getLineWidth() / 2f;
+        float height = settings.getHeight() / 2f + bmp.getLineHeight() / 2f;
+        bmp.setLocalTranslation(width, height, 0);
+        return bmp;
     }
 
     /**
