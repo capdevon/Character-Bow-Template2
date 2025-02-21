@@ -1,6 +1,7 @@
 package mygame.states;
 
 import com.capdevon.engine.SimpleAppState;
+import com.jme3.app.Application;
 import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -35,7 +36,9 @@ public class TownAppState extends SimpleAppState {
     boolean lightProbeEnabled = true;
 
     @Override
-    public void simpleInit() {
+    public void initialize(Application app) {
+        super.initialize(app);
+        
         setupSkyBox();
         setupScene();
         setupLights();
@@ -82,7 +85,7 @@ public class TownAppState extends SimpleAppState {
         if (lightProbeEnabled) {
             EnvironmentCamera envCam = new EnvironmentCamera(); // Make an env camera
             stateManager.attach(envCam);
-            envCam.initialize(stateManager, app); // Manually initialize so we can add a probe before the next update happens
+            envCam.initialize(stateManager, getApplication()); // Manually initialize so we can add a probe before the next update happens
             LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
             probe.getArea().setRadius(100); // Set the probe's radius in world units
             rootNode.addLight(probe);
@@ -118,6 +121,18 @@ public class TownAppState extends SimpleAppState {
         fpp.addFilter(lsf);
         fpp.addFilter(fxaa);
         viewPort.addProcessor(fpp);
+    }
+
+    @Override
+    protected void cleanup(Application app) {
+    }
+
+    @Override
+    protected void onEnable() {
+    }
+
+    @Override
+    protected void onDisable() {
     }
 
 }

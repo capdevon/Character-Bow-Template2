@@ -10,6 +10,7 @@ import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
+import com.jme3.app.Application;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -40,7 +41,9 @@ public class PlayerManager extends SimpleAppState {
     private Node player;
 
     @Override
-    protected void simpleInit() {
+    public void initialize(Application app) {
+        super.initialize(app);
+        
         setupPlayer();
     }
 
@@ -78,12 +81,12 @@ public class PlayerManager extends SimpleAppState {
 
         PlayerControl playerControl = new PlayerControl();
         playerControl.camera           = camera;
-        playerControl.weaponUI         = getBitmapText(20, settings.getHeight() - 20);
+        playerControl.weaponUI         = createLabel(20, settings.getHeight() - 20);
         playerControl.particleManager  = stateManager.getState(ParticleManager.class);
         playerControl.weapon           = initWeapon(skinningControl);
-        playerControl.footstepsSFX     = getAudioClip(AudioLib.GRASS_FOOTSTEPS);
-        playerControl.shootSFX         = getAudioClip(AudioLib.ARROW_HIT);
-        playerControl.reloadSFX        = getAudioClip(AudioLib.BOW_PULL);
+        playerControl.footstepsSFX     = createAudioNode(AudioLib.GRASS_FOOTSTEPS);
+        playerControl.shootSFX         = createAudioNode(AudioLib.ARROW_HIT);
+        playerControl.reloadSFX        = createAudioNode(AudioLib.BOW_PULL);
         player.addControl(playerControl);
 
         PlayerInput playerInput = new PlayerInput();
@@ -126,7 +129,7 @@ public class PlayerManager extends SimpleAppState {
         rh.attachChild(model);
 
         Weapon weapon = new Weapon("Bow", rh, model);
-        BitmapText ch = getCrossHair("- . -");
+        BitmapText ch = createCrossHair("- . -");
         weapon.setCrosshair( new CrosshairData(guiNode, ch) );
 
         AmmoType flameArrow = new AmmoType();
@@ -155,7 +158,7 @@ public class PlayerManager extends SimpleAppState {
         return geo;
     }
 
-    private BitmapText getBitmapText(float xPos, float yPos) {
+    private BitmapText createLabel(float xPos, float yPos) {
         BitmapText hud = new BitmapText(guiFont);
         hud.setSize(guiFont.getCharSet().getRenderedSize());
         hud.setLocalTranslation(xPos, yPos, 0);
@@ -165,7 +168,7 @@ public class PlayerManager extends SimpleAppState {
     }
 
     /* A centered plus sign to help the player aim. */
-    private BitmapText getCrossHair(String text) {
+    private BitmapText createCrossHair(String text) {
         BitmapText bmp = new BitmapText(guiFont);
         bmp.setSize(guiFont.getCharSet().getRenderedSize() * 1.6f);
         bmp.setText(text);
@@ -179,11 +182,23 @@ public class PlayerManager extends SimpleAppState {
      * @param sound
      * @return
      */
-    private AudioNode getAudioClip(AudioClip sound) {
+    private AudioNode createAudioNode(AudioClip sound) {
         AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Buffer);
         audio.setVolume(sound.volume);
         audio.setLooping(sound.looping);
         audio.setPositional(sound.positional);
         return audio;
+    }
+
+    @Override
+    protected void cleanup(Application app) {
+    }
+
+    @Override
+    protected void onEnable() {
+    }
+
+    @Override
+    protected void onDisable() {
     }
 }

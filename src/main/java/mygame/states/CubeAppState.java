@@ -2,6 +2,7 @@ package mygame.states;
 
 import com.capdevon.control.Spawner;
 import com.capdevon.engine.SimpleAppState;
+import com.jme3.app.Application;
 import com.jme3.scene.Node;
 
 import mygame.prefabs.CubePrefab;
@@ -13,7 +14,9 @@ import mygame.prefabs.CubePrefab;
 public class CubeAppState extends SimpleAppState {
 
     @Override
-    protected void simpleInit() {
+    public void initialize(Application app) {
+        super.initialize(app);
+        
         Node cubes = new Node("CubeSpawner");
         rootNode.attachChild(cubes);
 
@@ -27,6 +30,15 @@ public class CubeAppState extends SimpleAppState {
     }
 
     @Override
-    public void update(float tpf) {}
+    protected void cleanup(Application app) {
+    }
+
+    @Override
+    protected void onEnable() {
+    }
+
+    @Override
+    protected void onDisable() {
+    }
 
 }
