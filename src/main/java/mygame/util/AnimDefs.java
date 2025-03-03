@@ -2,10 +2,6 @@ package mygame.util;
 
 import com.capdevon.anim.Animation3;
 
-/**
- *
- * @author capdevon
- */
 public interface AnimDefs {
 
     String ARCHER_ASSET_MODEL = "Models/Archer/YBot.j3o";

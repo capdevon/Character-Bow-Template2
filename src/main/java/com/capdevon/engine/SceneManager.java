@@ -102,14 +102,6 @@ public class SceneManager extends BaseAppState {
 
     private boolean unloadScene(boolean asynch) {
         // detach all systemPrefabs
-//        for (Class<? extends AppState> clazz : currScene.systemPrefabs) {
-//            AppState appState = getState(clazz);
-//            if (appState != null) {
-//                getStateManager().detach(appState);
-//                System.out.println("detaching ... AppState: " + clazz.getCanonicalName());
-//            }
-//        }
-        
         int i = 1;
         for (Class<? extends AppState> clazz : currScene.systemPrefabs) {
             try {
