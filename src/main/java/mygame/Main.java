@@ -8,6 +8,7 @@ import com.capdevon.physx.PhysxDebugAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
+import com.jme3.system.JmeVersion;
 
 /**
  *
@@ -23,9 +24,10 @@ public class Main extends SimpleApplication {
     public static void main(String[] args) {
         Main app = new Main();
         AppSettings settings = new AppSettings(true);
+        settings.setTitle("Demo " + JmeVersion.FULL_NAME);
         settings.setResolution(800, 600);
         settings.setFrameRate(60);
-        settings.setUseJoysticks(true);
+        //settings.setUseJoysticks(true);
 
         app.setSettings(settings);
         app.setShowSettings(false);
@@ -75,17 +77,17 @@ public class Main extends SimpleApplication {
         }
     }
 
+    private void loadSceneAsync() {
+        AsyncOperation operation = sceneManager.loadSceneAsync(currScene);
+        operation.onCompleted(b -> onLoadSceneComplete((boolean) b));
+        System.out.println("loading scene: " + currScene.getName());
+    }
+    
     private void onLoadSceneComplete(boolean sceneLoaded) {
         if (!sceneLoaded) {
             System.out.println("An error occurred while loading scene: " + currScene.getName());
         }
         System.out.println("loadLevel completed");
-    }
-
-    private void loadSceneAsync() {
-        AsyncOperation operation = sceneManager.loadSceneAsync(currScene);
-        operation.onCompleted(b -> onLoadSceneComplete((boolean) b));
-        System.out.println("loading scene: " + currScene.getName());
     }
 
 }
