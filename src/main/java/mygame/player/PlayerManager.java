@@ -3,16 +3,15 @@ package mygame.player;
 import com.capdevon.anim.AnimUtils;
 import com.capdevon.anim.Animator;
 import com.capdevon.anim.AvatarMask;
+import com.capdevon.anim.HumanBodyBones;
 import com.capdevon.anim.IKRig;
-import com.capdevon.audio.AudioClip;
+import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
 import com.capdevon.input.GInputAppState;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
 import com.jme3.app.Application;
-import com.jme3.audio.AudioData;
-import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -31,7 +30,6 @@ import mygame.camera.ThirdPersonCamera;
 import mygame.states.ParticleManager;
 import mygame.util.AnimDefs;
 import mygame.util.AudioLib;
-import mygame.util.MixamoBodyBones;
 
 /**
  * 
@@ -85,9 +83,9 @@ public class PlayerManager extends SimpleAppState {
         playerControl.weaponUI         = createLabel(20, settings.getHeight() - 20);
         playerControl.particleManager  = getState(ParticleManager.class);
         playerControl.weapon           = initWeapon(skinningControl);
-        playerControl.footstepsSFX     = createAudioNode(AudioLib.GRASS_FOOTSTEPS);
-        playerControl.shootSFX         = createAudioNode(AudioLib.ARROW_HIT);
-        playerControl.reloadSFX        = createAudioNode(AudioLib.BOW_PULL);
+        playerControl.footstepsSFX     = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
+        playerControl.shootSFX         = SoundManager.createAudioBuffer(AudioLib.ARROW_HIT);
+        playerControl.reloadSFX        = SoundManager.createAudioBuffer(AudioLib.BOW_PULL);
         player.addControl(playerControl);
 
         PlayerInput playerInput = new PlayerInput();
@@ -120,10 +118,10 @@ public class PlayerManager extends SimpleAppState {
 
     private Weapon initWeapon(SkinningControl skinningControl) {
         
-        Node leftHand = createBoneHook(skinningControl, "mixamorig:" + MixamoBodyBones.LeftHand);
+        Node leftHand = createBoneHook(skinningControl, "mixamorig:" + HumanBodyBones.LeftHand);
         
-        // Spatial model = assetManager.loadModel("Arrow.j3o");
-        Spatial model = makeGeometry("Arrow", new Sphere(8, 8, .05f), ColorRGBA.Green);
+        // Spatial model = assetManager.loadModel("Bow.j3o");
+        Spatial model = makeGeometry("Bow", new Sphere(8, 8, .05f), ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);
         leftHand.attachChild(model);
         
@@ -182,18 +180,6 @@ public class PlayerManager extends SimpleAppState {
         float height = settings.getHeight() / 2f + bmp.getLineHeight() / 2f;
         bmp.setLocalTranslation(width, height, 0);
         return bmp;
-    }
-
-    /**
-     * @param sound
-     * @return
-     */
-    private AudioNode createAudioNode(AudioClip sound) {
-        AudioNode audio = new AudioNode(assetManager, sound.file, AudioData.DataType.Buffer);
-        audio.setVolume(sound.volume);
-        audio.setLooping(sound.looping);
-        audio.setPositional(sound.positional);
-        return audio;
     }
 
     @Override

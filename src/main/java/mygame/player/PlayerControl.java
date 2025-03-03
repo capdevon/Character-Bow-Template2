@@ -48,7 +48,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     private MainCamera _MainCamera;
     private float nearClipPlane = 0.01f;
-    private float farClipPlane = 100f;
+    private float farClipPlane = 200f;
     private float fov = 0;
     private float aimingSpeed = 5f;
     private float aimFOV = 45;
