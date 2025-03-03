@@ -1,8 +1,10 @@
 package com.capdevon.input;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
+import com.jme3.app.state.BaseAppState;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
 import com.jme3.input.JoystickAxis;
@@ -10,14 +12,12 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.Trigger;
 import com.jme3.util.SafeArrayList;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author capdevon
  */
-public abstract class AbstractInputAppState extends AbstractAppState implements AnalogListener, ActionListener {
+public abstract class AbstractInputAppState extends BaseAppState implements AnalogListener, ActionListener {
 
     private InputManager inputManager;
     private List<ActionListener> actionListeners = new SafeArrayList<>(ActionListener.class);
@@ -25,9 +25,7 @@ public abstract class AbstractInputAppState extends AbstractAppState implements 
     private List<String> mappingNames = new ArrayList<>();
 
     @Override
-    public void initialize(AppStateManager asm, Application app) {
-        super.initialize(asm, app);
-        
+    public void initialize(Application app) {
         inputManager = app.getInputManager();
         registerInput();
         
@@ -38,49 +36,9 @@ public abstract class AbstractInputAppState extends AbstractAppState implements 
             }
         }
     }
-    
-    /**
-     * Create a new mapping to the given triggers.
-     *
-     * The given mapping will be assigned to the given triggers, when any of the
-     * triggers given raise an event, the listeners registered to the mappings
-     * will receive appropriate events
-     *
-     * @param bindingName
-     * @param triggers
-     */
-    public void addMapping(String bindingName, Trigger... triggers) {
-        mappingNames.add(bindingName);
-        inputManager.addMapping(bindingName, triggers);
-        inputManager.addListener(this, bindingName);
-    }
-    
-    /**
-     * Assign the mapping name to receive events from the given button index on the joystick
-     * @param joystick
-     * @param logicalId
-     * @param mappingName 
-     */
-    public void assignButton(Joystick joystick, String logicalId, String mappingName) {
-        joystick.getButton(logicalId).assignButton(mappingName);
-        inputManager.addListener(this, mappingName);
-    }
-    
-    /**
-     * Assign the mappings to receive events from the given joystick axis
-     * @param axis
-     * @param positiveMapping
-     * @param negativeMapping 
-     */
-    public void assignAxis(JoystickAxis axis, String positiveMapping, String negativeMapping) {
-        axis.assignAxis(positiveMapping, negativeMapping);
-        inputManager.addListener(this, positiveMapping, negativeMapping);
-    }
 
     @Override
-    public void cleanup() {
-        super.cleanup();
-        
+    public void cleanup(Application app) {
         for (String input : mappingNames) {
             if (inputManager.hasMapping(input)) {
                 inputManager.deleteMapping(input);
@@ -88,7 +46,54 @@ public abstract class AbstractInputAppState extends AbstractAppState implements 
         }
         inputManager.removeListener(this);
     }
+
+    @Override
+    protected void onEnable() {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected void onDisable() {
+        // TODO Auto-generated method stub
+    }
     
+    /**
+     * Creates a new input mapping for the specified triggers.
+     *
+     * @param bindingName The name of the input mapping.
+     * @param triggers    The triggers that activate this mapping.
+     */
+    public void addMapping(String bindingName, Trigger... triggers) {
+        mappingNames.add(bindingName);
+        inputManager.addMapping(bindingName, triggers);
+        inputManager.addListener(this, bindingName);
+    }
+
+    /**
+     * Assign the mapping name to receive events from the given button index on the
+     * joystick.
+     * 
+     * @param joystick    The joystick containing the button.
+     * @param logicalId   The logical ID of the button.
+     * @param mappingName The name of the input mapping.
+     */
+    public void assignButton(Joystick joystick, String logicalId, String mappingName) {
+        joystick.getButton(logicalId).assignButton(mappingName);
+        inputManager.addListener(this, mappingName);
+    }
+
+    /**
+     * Assign the mappings to receive events from the given joystick axis.
+     * 
+     * @param axis            The joystick axis.
+     * @param positiveMapping The name of the input mapping for positive axis movement.
+     * @param negativeMapping The name of the input mapping for negative axis movement.
+     */
+    public void assignAxis(JoystickAxis axis, String positiveMapping, String negativeMapping) {
+        axis.assignAxis(positiveMapping, negativeMapping);
+        inputManager.addListener(this, positiveMapping, negativeMapping);
+    }
+
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
         if (isEnabled()) {
@@ -129,10 +134,11 @@ public abstract class AbstractInputAppState extends AbstractAppState implements 
     protected abstract void registerInput();
     
     /**
+     * Maps joystick inputs to game actions using the provided Joystick object.
      * 
-     * @param joypad 
+     * @param joystick The Joystick object representing the connected joystick device.
      */
-    protected abstract void mapJoystick(Joystick joypad);
+    protected abstract void mapJoystick(Joystick joystick);
     
 }
 
