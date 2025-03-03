@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.control;
 
 import com.jme3.math.FastMath;
@@ -23,8 +18,7 @@ public class Spawner extends AbstractControl {
 
     public PrefabComponent prefab;
     public Vector3f center = new Vector3f(0, 0, 0);
-    public float height    = 0.2f;
-    public int radius      = 5;
+    public int radius      = 1;
     public int maxObjects  = 1;
     public float spawnTime = 2f;
     
@@ -32,7 +26,6 @@ public class Spawner extends AbstractControl {
 
     @Override
     protected void controlUpdate(float tpf) {
-        //To change body of generated methods, choose Tools | Templates.
         if (prefab == null) {
             return;
         }
@@ -51,13 +44,12 @@ public class Spawner extends AbstractControl {
     
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        //To change body of generated methods, choose Tools | Templates.
     }
     
     private Vector3f getRandomSpawnPoint() {
         float x = FastMath.nextRandomInt(-radius, radius);
         float z = FastMath.nextRandomInt(-radius, radius);
-        return new Vector3f(x, height, z);
+        return new Vector3f(x, 0, z);
     }
 
 }

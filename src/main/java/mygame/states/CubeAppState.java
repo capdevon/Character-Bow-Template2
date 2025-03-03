@@ -3,6 +3,7 @@ package mygame.states;
 import com.capdevon.control.Spawner;
 import com.capdevon.engine.SimpleAppState;
 import com.jme3.app.Application;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 import mygame.prefabs.CubePrefab;
@@ -22,9 +23,9 @@ public class CubeAppState extends SimpleAppState {
 
         Spawner spawner = new Spawner();
         spawner.maxObjects = 20;
-        spawner.radius = 6;
-        spawner.height = 1f;
-        spawner.spawnTime = 5f;
+        spawner.center = new Vector3f(20f, 2.5f, -7f);
+        spawner.radius = 5;
+        spawner.spawnTime = 3f;
         spawner.prefab = new CubePrefab(app);
         cubes.addControl(spawner);
     }
