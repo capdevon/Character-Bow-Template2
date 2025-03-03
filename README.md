@@ -2,6 +2,9 @@
 
 A demo of a third-person controller with a bow and arrow system made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
+🔔 If you found this project useful, please let me know by leaving a like to motivate me to improve it. 
+Thanks!
+
 The demo contains:
 
 * Animations
@@ -18,7 +21,7 @@ The demo contains:
 - E: Aiming
 - R: Switch arrow type
 - LMB: Left Mouse Button to fire
-- LSHIFT: Running
+- SPACEBAR: Running
 - CAMERA: Use the mouse to orient the camera
 - KEY_0: Toggle Physics Debug
 
