@@ -1,46 +1,59 @@
 package mygame.player;
 
-import com.jme3.scene.Node;
 import java.util.ArrayList;
+
+import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.ViewPort;
+import com.jme3.scene.Node;
+import com.jme3.scene.control.AbstractControl;
 
 /**
  * 
  * @author capdevon
  */
-public class Weapon {
+public class Weapon extends AbstractControl {
 
+    // The name of the weapon.
     private String name;
+    // The node where the weapon's spatial is attached.
     private Node weaponHook;
-    private Node model;
-
+    // Data related to the weapon's crosshair.
     private CrosshairData crosshair;
+    // The effective range of the weapon.
     private float range = 30f;
+    // The damage the weapon inflicts.
     private float damage = 50f;
+    // The current amount of ammunition available.
     private int currAmmo = 20;
+    // The maximum amount of ammunition the weapon can hold.
     private int maxAmmo = 40;
-
+    // The index of the currently selected ammo type.
     private int ammoTypeIndex = 0;
-    private final ArrayList<AmmoType> ammoTypes;
+    // A list of ammunition types the weapon can use.
+    private final ArrayList<AmmoType> ammoTypes = new ArrayList<>();
 
     /**
-     * Create new Weapon
-     * 
-     * @param name
-     * @param weaponHook
-     * @param model
+     * Constructs a new Weapon.
+     *
+     * @param name       The name of the weapon.
+     * @param weaponHook The node where the weapon's spatial will be attached.
      */
-    public Weapon(String name, Node weaponHook, Node model) {
+    public Weapon(String name, Node weaponHook) {
         this.weaponHook = weaponHook;
-        this.model = model;
         this.name = name;
-        this.ammoTypes = new ArrayList<>();
     }
 
+    /**
+     * Sets the active state of the weapon, attaching or detaching its spatial from
+     * the weapon hook.
+     *
+     * @param active True to activate the weapon, false to deactivate.
+     */
     public void setActive(boolean active) {
         if (active) {
-            weaponHook.attachChild(model);
+            weaponHook.attachChild(spatial);
         } else {
-            weaponHook.detachChild(model);
+            weaponHook.detachChild(spatial);
         }
     }
     
@@ -58,7 +71,6 @@ public class Weapon {
 
     public void nextAmmo() {
         ammoTypeIndex = (ammoTypeIndex + 1) % ammoTypes.size();
-        System.out.println("AmmoType: " + ammoTypeIndex);
     }
 
     public AmmoType getAmmoType() {
@@ -68,8 +80,10 @@ public class Weapon {
     public void addAmmoType(AmmoType ammoType) {
         ammoTypes.add(ammoType);
     }
-    
+
+    // ------------------------------------------
     // Getters/Setters
+    // ------------------------------------------
 
     public CrosshairData getCrosshair() {
         return crosshair;
@@ -104,11 +118,19 @@ public class Weapon {
     }
 
     public String getDescription() {
-        return "Weapon[" +
-            " name: " + name +
-            " damage: " + damage +
-            " ammo: " + currAmmo + " / " + getAmmoType().name +
-            " range: " + range +
-            " ]";
+        return "Weapon " +
+            "name: " + name +
+            ", type: " + getAmmoType().name +
+            ", ammo: " + currAmmo + " / " + maxAmmo + 
+            ", damage: " + damage +
+            ", range: " + range;
+    }
+
+    @Override
+    protected void controlUpdate(float tpf) {
+    }
+
+    @Override
+    protected void controlRender(RenderManager rm, ViewPort vp) {
     }
 }

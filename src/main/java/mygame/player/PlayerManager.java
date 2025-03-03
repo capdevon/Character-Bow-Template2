@@ -20,6 +20,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
@@ -53,7 +54,7 @@ public class PlayerManager extends SimpleAppState {
         player.setName("Player");
         player.setUserData(GameObject.TAG_NAME, "TagPlayer");
         player.setLocalTranslation(0, -4f, 0);
-        player.addControl(new BetterCharacterControl(.5f, 1.8f, 80f));
+        player.addControl(new BetterCharacterControl(.5f, 1.8f, 10f));
         
         AnimComposer animComposer = AnimUtils.getAnimCompser(player);
         SkinningControl skinningControl = AnimUtils.getSkinningControl(player);
@@ -71,7 +72,7 @@ public class PlayerManager extends SimpleAppState {
         animRoot.addControl(rig);
 
         player.addControl(new Animator());
-        player.addControl(new RespawnPlayer());
+        player.addControl(new PlayerRespawn());
 
         setupChaseCamera(player);
         
@@ -82,7 +83,7 @@ public class PlayerManager extends SimpleAppState {
         PlayerControl playerControl = new PlayerControl();
         playerControl.camera           = camera;
         playerControl.weaponUI         = createLabel(20, settings.getHeight() - 20);
-        playerControl.particleManager  = stateManager.getState(ParticleManager.class);
+        playerControl.particleManager  = getState(ParticleManager.class);
         playerControl.weapon           = initWeapon(skinningControl);
         playerControl.footstepsSFX     = createAudioNode(AudioLib.GRASS_FOOTSTEPS);
         playerControl.shootSFX         = createAudioNode(AudioLib.ARROW_HIT);
@@ -119,18 +120,15 @@ public class PlayerManager extends SimpleAppState {
 
     private Weapon initWeapon(SkinningControl skinningControl) {
         
-        Node rh = skinningControl.getAttachmentsNode("mixamorig:" + MixamoBodyBones.LeftHand);
-
-        // replace this with the bow's model
-        Node model = new Node("Bow");
-        Geometry geo = createWeapon("Bow.GeoMesh", ColorRGBA.Green);
+        Node leftHand = createBoneHook(skinningControl, "mixamorig:" + MixamoBodyBones.LeftHand);
+        
+        // Spatial model = assetManager.loadModel("Arrow.j3o");
+        Spatial model = makeGeometry("Arrow", new Sphere(8, 8, .05f), ColorRGBA.Green);
         model.setCullHint(Spatial.CullHint.Never);
-        model.attachChild(geo);
-        rh.attachChild(model);
-
-        Weapon weapon = new Weapon("Bow", rh, model);
-        BitmapText ch = createCrossHair("- . -");
-        weapon.setCrosshair( new CrosshairData(guiNode, ch) );
+        leftHand.attachChild(model);
+        
+        Weapon weapon = new Weapon("Bow", leftHand);
+        weapon.setCrosshair(new CrosshairData(guiNode, createCrossHair("- . -")));
 
         AmmoType flameArrow = new AmmoType();
         flameArrow.name             = "Flame";
@@ -146,11 +144,19 @@ public class PlayerManager extends SimpleAppState {
 
         weapon.addAmmoType(flameArrow);
         weapon.addAmmoType(poisonArrow);
+        
+        model.addControl(weapon);
         return weapon;
     }
 
-    private Geometry createWeapon(String name, ColorRGBA color) {
-        Sphere mesh = new Sphere(8, 8, .05f);
+    private Node createBoneHook(SkinningControl skinningControl, String jointName) {
+        Node aNode = skinningControl.getAttachmentsNode(jointName);
+        Node ref = new Node("Joint-" + jointName);
+        aNode.attachChild(ref);
+        return ref;
+    }
+
+    private Geometry makeGeometry(String name, Mesh mesh, ColorRGBA color) {
         Geometry geo = new Geometry(name, mesh);
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", color);

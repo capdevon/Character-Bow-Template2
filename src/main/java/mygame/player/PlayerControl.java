@@ -7,6 +7,7 @@ import com.capdevon.anim.Animation3;
 import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animator;
 import com.capdevon.control.AdapterControl;
+import com.capdevon.control.Damageable;
 import com.capdevon.engine.FRotator;
 import com.capdevon.physx.Physics;
 import com.capdevon.physx.RaycastHit;
@@ -17,7 +18,6 @@ import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
 import com.jme3.input.ChaseCamera;
-import com.jme3.material.MatParamOverride;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -25,7 +25,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.shader.VarType;
 
 import mygame.camera.MainCamera;
 import mygame.states.ParticleManager;
@@ -141,7 +140,8 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
             walkDirection.normalizeLocal();
 
-            if (walkDirection.lengthSquared() > 0) {
+            boolean isMoving = walkDirection.lengthSquared() > 0;
+            if (isMoving) {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
 
@@ -153,8 +153,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
             float xSpeed = isRunning ? runSpeed : moveSpeed;
             bcc.setWalkDirection(walkDirection.multLocal(xSpeed));
-
-            boolean isMoving = walkDirection.lengthSquared() > 0;
+            
             if (isMoving) {
                 playAnimation(isRunning ? AnimDefs.Sprinting : AnimDefs.Running);
                 footstepsSFX.setVolume(isRunning ? 2f : .4f);
@@ -237,17 +236,9 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     }
 
     private void applyDamage(Spatial sp, ColorRGBA color) {
-        boolean found = false;
-        for (MatParamOverride mpo : sp.getLocalMatParamOverrides()) {
-            if (mpo.getName().equals("Color")) {
-                mpo.setValue(color);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            MatParamOverride mpo = new MatParamOverride(VarType.Vector4, "Color", color);
-            sp.addMatParamOverride(mpo);
+        Damageable damageable = sp.getControl(Damageable.class);
+        if (damageable != null) {
+            damageable.takeDamage(color);
         }
     }
 
@@ -267,7 +258,6 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     @Override
     public void onAnimCycleDone(AnimComposer animComposer, String animName, boolean loop) {
-        System.out.println("onAnimCycleDone: " + animName);
         if (animName.equals(AnimDefs.StandingAimRecoil.getName())) {
             playAnimation(AnimDefs.StandingDrawArrow);
 
@@ -281,7 +271,6 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     @Override
     public void onAnimChange(AnimComposer animComposer, String animName) {
-        System.out.println("onAnimChange: " + animName);
         if (animName.equals(AnimDefs.StandingAimRecoil.getName())
                 || animName.equals(AnimDefs.StandingDrawArrow.getName())) {
             setWeaponCharging();
