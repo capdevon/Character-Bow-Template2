@@ -1,5 +1,6 @@
 package mygame;
 
+import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.AsyncOperation;
 import com.capdevon.engine.Scene;
 import com.capdevon.engine.SceneManager;
@@ -7,6 +8,8 @@ import com.capdevon.physx.Physics;
 import com.capdevon.physx.PhysxDebugAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.material.TechniqueDef;
+import com.jme3.renderer.Limits;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeVersion;
 
@@ -26,7 +29,10 @@ public class Main extends SimpleApplication {
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Demo " + JmeVersion.FULL_NAME);
         settings.setResolution(800, 600);
-        settings.setFrameRate(60);
+        //settings.setFrameRate(60);
+        settings.setSamples(4);
+        settings.setBitsPerPixel(32);
+        settings.setVSync(false);
         //settings.setUseJoysticks(true);
 
         app.setSettings(settings);
@@ -40,11 +46,23 @@ public class Main extends SimpleApplication {
         // disable the default 1st-person flyCam!
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
         flyCam.setEnabled(false);
+        
+        // Rendered configurations
+        renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePassAndImageBased);
+        renderManager.setSinglePassLightBatchSize(2);
+
+        /**
+         * JME supports anisotropic filtering only on desktop platforms. Determine the
+         * maximum possible degree of anisotropy on the graphics hardware:
+         */
+        int maxDegree = renderer.getLimits().get(Limits.TextureAnisotropy);
+        renderer.setDefaultAnisotropicFilter(Math.min(8, maxDegree));
 
         /**
          * Initialize the physics simulation
          */
         Physics.initEngine(this);
+        SoundManager.init(assetManager);
         //stateManager.attach(new BulletAppState());
         stateManager.attach(new PhysxDebugAppState());
         //stateManager.attach(new DetailedProfilerState());
