@@ -5,7 +5,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.ModelKey;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Quaternion;
@@ -49,12 +48,6 @@ public abstract class PrefabComponent {
     public final int nextSeqId() {
         objectId++;
         return objectId;
-    }
-
-    public Spatial loadModel(String name, ModelKey key) {
-        Spatial model = assetManager.loadModel(key);
-        model.setName(name + "." + nextSeqId());
-        return model;
     }
 
     public Spatial instantiate(Vector3f position, Quaternion rotation) {
