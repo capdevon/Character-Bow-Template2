@@ -10,18 +10,16 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.environment.LightProbeFactory;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.LightProbe;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.FXAAFilter;
-import com.jme3.post.filters.LightScatteringFilter;
-import com.jme3.post.ssao.SSAOFilter;
+import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.util.SkyFactory;
 
 /**
@@ -33,7 +31,7 @@ public class TownAppState extends SimpleAppState {
     private DirectionalLight sun;
     private FilterPostProcessor fpp;
 
-    boolean lightProbeEnabled = true;
+    boolean lightProbeEnabled = false;
 
     @Override
     public void initialize(Application app) {
@@ -76,10 +74,11 @@ public class TownAppState extends SimpleAppState {
     }
 
     private void setupLights() {
-        sun = new DirectionalLight();
-        sun.setName("SunLight");
-        sun.setDirection(new Vector3f(-4.9236743f, -1.27054665f, 5.896916f));
-        sun.setColor(ColorRGBA.White);
+        AmbientLight al = new AmbientLight();
+        rootNode.addLight(al);
+        
+        Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f).normalizeLocal();
+        sun = new DirectionalLight(lightDir);
         rootNode.addLight(sun);
 
         if (lightProbeEnabled) {
@@ -94,32 +93,17 @@ public class TownAppState extends SimpleAppState {
 
     private void setupFilters() {
         // Shadows
-        //DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
-        //dlsf.setLight(sun);
-
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 2048, 3);
-        dlsr.setLight(sun);
-        dlsr.setShadowIntensity(0.65f);
-        viewPort.addProcessor(dlsr);
-
-        LightScatteringFilter lsf = new LightScatteringFilter(sun.getDirection().mult(-300));
-        lsf.setLightDensity(0.5f);
-
-        BloomFilter bloom = new BloomFilter();
-        bloom.setExposurePower(55);
-        bloom.setBloomIntensity(1f);
-
-        SSAOFilter ssao = new SSAOFilter(5f, 10f, 0.8f, 0.70f);
-        ssao.setApproximateNormals(true);
+        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, 2048, 3);
+        dlsf.setLight(sun);
+        dlsf.setShadowIntensity(0.65f);
 
         FXAAFilter fxaa = new FXAAFilter();
+        TranslucentBucketFilter tbf = new TranslucentBucketFilter(true);
 
         fpp = new FilterPostProcessor(assetManager);
-        //fpp.addFilter(dlsf);
-        fpp.addFilter(ssao);
-        fpp.addFilter(bloom);
-        fpp.addFilter(lsf);
+        fpp.addFilter(dlsf);
         fpp.addFilter(fxaa);
+        fpp.addFilter(tbf);
         viewPort.addProcessor(fpp);
     }
 
