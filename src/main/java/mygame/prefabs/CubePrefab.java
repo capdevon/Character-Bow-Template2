@@ -1,5 +1,6 @@
 package mygame.prefabs;
 
+import com.capdevon.control.Damageable;
 import com.capdevon.engine.GameObject;
 import com.jme3.app.Application;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -59,6 +60,8 @@ public class CubePrefab extends PrefabComponent {
         model.addControl(rb);
         getPhysicsSpace().add(rb);
         rb.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
+        
+        model.addControl(new Damageable());
 
         return model;
     }
