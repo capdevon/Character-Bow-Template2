@@ -19,12 +19,14 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 /**
+ * A simplified AppState that provides convenient access to common jME resources.
+ * This class caches frequently used application components for easy access.
  * 
  * @author capdevon
  */
 public abstract class SimpleAppState extends BaseAppState {
     
-    // variables
+    // Cached application resources
     public AppSettings      settings;
     public AppStateManager  stateManager;
     public AssetManager     assetManager;
@@ -41,6 +43,9 @@ public abstract class SimpleAppState extends BaseAppState {
         refreshCacheFields();
     }
     
+    /**
+     * Refreshes the cached application resource fields.
+     */
     protected void refreshCacheFields() {
         SimpleApplication app = (SimpleApplication) getApplication();
         this.settings       = app.getContext().getSettings();
@@ -55,15 +60,21 @@ public abstract class SimpleAppState extends BaseAppState {
         this.guiFont        = assetManager.loadFont("Interface/Fonts/Default.fnt");
     }
 
+    /**
+     * Retrieves the physics space from the BulletAppState.
+     *
+     * @return The physics space.
+     */
     public PhysicsSpace getPhysicsSpace() {
-        return getState(BulletAppState.class).getPhysicsSpace();
+        return getState(BulletAppState.class, true).getPhysicsSpace();
     }
 
     /**
-     * Finds a GameObject by name and returns it.
-     * 
-     * @param childName
-     * @return
+     * Finds a GameObject by name within the root node.
+     *
+     * @param childName The name of the spatial to find.
+     * @return The found spatial.
+     * @throws NullPointerException if the spatial with the given name is not found.
      */
     public Spatial find(String childName) {
         Spatial sp = rootNode.getChild(childName);
