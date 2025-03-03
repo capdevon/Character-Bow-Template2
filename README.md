@@ -17,12 +17,13 @@ The demo contains:
 * Postprocessing
 
 # Keyboard Commands
-- WASD: Basic movements
-- E: Aiming
+- WASD: Movement
+- E: Aim
 - R: Switch arrow type
-- LMB: Left Mouse Button to fire
-- SPACEBAR: Running
-- CAMERA: Use the mouse to orient the camera
+- LMB: Shoot
+- RMB: Reload
+- SPACEBAR: Run
+- MOUSE: Camera Orientation
 - KEY_0: Toggle Physics Debug
 
 # Requirements
