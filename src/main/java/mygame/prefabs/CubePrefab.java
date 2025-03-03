@@ -37,11 +37,15 @@ public class CubePrefab extends PrefabComponent {
     }
 
     private Spatial loadModel() {
-        int sequenceId = nextSeqId();
-        Node node = new Node("Cube." + sequenceId);
-        Geometry body = new Geometry("Cube.GeoMesh." + sequenceId, mesh);
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", color);
+        Material mat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
+        mat.setTexture("BaseColorMap", assetManager.loadTexture("Textures/white_grid.jpg"));
+        mat.setColor("BaseColor", color);
+        mat.setFloat("Metallic", 0);
+        mat.setFloat("Roughness", 0.8f);
+        
+        int id = nextSeqId();
+        Node node = new Node("Cube." + id);
+        Geometry body = new Geometry("Cube.GeoMesh." + id, mesh);
         body.setMaterial(mat);
         node.attachChild(body);
 

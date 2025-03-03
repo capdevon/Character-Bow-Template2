@@ -24,7 +24,7 @@ public class Damageable extends AbstractControl {
     
     public void takeDamage(ColorRGBA color) {
         if (mpo == null) {
-            mpo = new MatParamOverride(VarType.Vector4, "Color", color);
+            mpo = new MatParamOverride(VarType.Vector4, "BaseColor", color);
             spatial.addMatParamOverride(mpo);
         } else {
             mpo.setValue(color);
