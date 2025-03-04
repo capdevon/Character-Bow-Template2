@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.capdevon.control.AdapterControl;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Joint;
+import com.jme3.anim.SkinningControl;
 import com.jme3.anim.tween.Tween;
 import com.jme3.anim.tween.Tweens;
 import com.jme3.anim.tween.action.Action;
@@ -16,6 +18,7 @@ import com.jme3.scene.Spatial;
  */
 public class Animator extends AdapterControl {
 
+    private SkinningControl skinningControl;
     private AnimComposer animComposer;
     private String currentAnim;
     private ArrayList<AnimationListener> listeners = new ArrayList<>();
@@ -25,6 +28,7 @@ public class Animator extends AdapterControl {
         super.setSpatial(sp);
 
         if (spatial != null) {
+            skinningControl = getComponentInChildren(SkinningControl.class);
             animComposer = getComponentInChildren(AnimComposer.class);
         }
     }
@@ -88,6 +92,10 @@ public class Animator extends AdapterControl {
 
     public Spatial getAnimRoot() {
         return animComposer.getSpatial();
+    }
+    
+    public Joint getJoint(String name) {
+        return skinningControl.getArmature().getJoint(name);
     }
 
     /**
