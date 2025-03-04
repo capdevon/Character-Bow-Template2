@@ -2,6 +2,7 @@ package mygame;
 
 import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.AsyncOperation;
+import com.capdevon.engine.Capture;
 import com.capdevon.engine.Scene;
 import com.capdevon.engine.SceneManager;
 import com.capdevon.physx.Physics;
@@ -28,11 +29,12 @@ public class Main extends SimpleApplication {
         Main app = new Main();
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Demo " + JmeVersion.FULL_NAME);
+        //settings.setRenderer(AppSettings.LWJGL_OPENGL32); // OpenGL 3.2 Core profile
         settings.setResolution(800, 600);
-        //settings.setFrameRate(60);
+        settings.setFrameRate(60);
         settings.setSamples(4);
         settings.setBitsPerPixel(32);
-        settings.setVSync(false);
+        //settings.setVSync(false);
         //settings.setUseJoysticks(true);
 
         app.setSettings(settings);
@@ -67,11 +69,6 @@ public class Main extends SimpleApplication {
         stateManager.attach(new PhysxDebugAppState());
         //stateManager.attach(new DetailedProfilerState());
         //stateManager.attach(new BasicProfilerState(false));
-        //stateManager.attach(new SceneAppState());
-        //stateManager.attach(new CubeAppState());
-        //stateManager.attach(new GInputAppState());
-        //stateManager.attach(new ParticleManager());
-        //stateManager.attach(new PlayerManager());
 
         currScene = Boot.Scene1.get();
         sceneManager = new SceneManager();
@@ -92,6 +89,7 @@ public class Main extends SimpleApplication {
         if (!sceneLoaded && sceneManager.isInitialized()) {
             loadSceneAsync();
             sceneLoaded = true;
+            //Capture.captureVideo(this, 0.5f);
         }
     }
 
