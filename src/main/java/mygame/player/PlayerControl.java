@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import com.capdevon.anim.Animation3;
 import com.capdevon.anim.AnimationListener;
 import com.capdevon.anim.Animator;
+import com.capdevon.anim.HumanBodyBones;
+import com.capdevon.anim.IKRig;
 import com.capdevon.control.AdapterControl;
 import com.capdevon.control.Damageable;
 import com.capdevon.engine.FRotator;
@@ -26,6 +28,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import jme3utilities.debug.SkeletonVisualizer;
 import mygame.camera.MainCamera;
 import mygame.states.ParticleManager;
 import mygame.util.AnimDefs;
@@ -56,6 +59,8 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     private ChaseCamera chaseCamera;
     private Animator animator;
+    private IKRig rig;
+    private SkeletonVisualizer sv;
     private BetterCharacterControl bcc;
     private final Vector3f walkDirection = new Vector3f(0, 0, 0);
     private final Vector3f viewDirection = new Vector3f(0, 0, 1);
@@ -63,6 +68,10 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     private final Quaternion dr = new Quaternion();
     private final Vector3f camDir = new Vector3f();
     private final Vector3f camLeft = new Vector3f();
+    
+    private final String spine = "mixamorig:" + HumanBodyBones.Spine;
+    private final Quaternion targetRotation = new Quaternion();
+    private final float[] angles = new float[3];
 
     private float runSpeed = 5.5f;
     private float moveSpeed = 4.5f;
@@ -82,6 +91,8 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
             this.chaseCamera = getComponent(ChaseCamera.class);
             this.bcc         = getComponent(BetterCharacterControl.class);
             this.animator    = getComponent(Animator.class);
+            this.rig         = getComponentInChildren(IKRig.class);
+            this.sv          = getComponentInChildren(SkeletonVisualizer.class);
 
             configureAnimClips();
 
@@ -104,6 +115,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     @Override
     protected void controlUpdate(float tpf) {
 
+        updateBoneIK(tpf);
         updateWeaponAiming(tpf);
         weaponUI.setText(weapon.getDescription());
 
@@ -139,8 +151,8 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
             }
 
             walkDirection.normalizeLocal();
-
             boolean isMoving = walkDirection.lengthSquared() > 0;
+            
             if (isMoving) {
                 float angle = FastMath.atan2(walkDirection.x, walkDirection.z);
                 dr.fromAngleNormalAxis(angle, Vector3f.UNIT_Y);
@@ -166,6 +178,15 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
             }
         }
     }
+    
+    private void updateBoneIK(float tpf) {
+        if (isAiming) {
+            camera.getRotation().toAngles(angles);
+            float rx = angles[0];
+            targetRotation.fromAngles(0, 0, -rx);
+            rig.setAvatarIKRotation(spine, targetRotation);
+        }
+    }
 
     private void updateWeaponAiming(float tpf) {
         if (isAiming) {
@@ -184,6 +205,9 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         chaseCamera.setRotationSpeed(isAiming ? 0.5f : 1);
         weapon.getCrosshair().setEnabled(isAiming);
         playAnimation(AnimDefs.StandingDrawArrow);
+
+        rig.setAvatarIKActive(spine, isAiming);
+        sv.setHeadColor(animator.getJoint(spine).getId(), isAiming ? ColorRGBA.Red : ColorRGBA.White);
     }
 
     public void changeAmmo() {

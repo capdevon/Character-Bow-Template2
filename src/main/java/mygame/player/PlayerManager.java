@@ -121,7 +121,7 @@ public class PlayerManager extends SimpleAppState {
         Node leftHand = createBoneHook(skinningControl, "mixamorig:" + HumanBodyBones.LeftHand);
         
         // Spatial model = assetManager.loadModel("Bow.j3o");
-        Spatial model = makeGeometry("Bow", new Sphere(8, 8, .05f), ColorRGBA.Green);
+        Spatial model = makeGeometry("Bow", new Sphere(8, 8, .05f), ColorRGBA.Red);
         model.setCullHint(Spatial.CullHint.Never);
         leftHand.attachChild(model);
         
