@@ -11,19 +11,26 @@ import com.jme3.math.Vector3f;
  */
 public class IKControl {
 
+    // The avatar mask associated with this IK control.
     private final AvatarMask mask;
+    // The joint that this IK control manipulates.
     private final Joint joint;
+    // The target position for the IK effect.
     private final Vector3f ikPosition = new Vector3f();
+    // The target rotation for the IK effect.
     private final Quaternion ikRotation = new Quaternion();
+    // The target scale for the IK effect.
     private final Vector3f ikScale = new Vector3f();
+    // The weight of the IK effect, ranging from 0.0f (no effect) to 1.0f (full effect).
     private float weight = 1f;
+    // Indicates whether the IK target is under user control.
     private boolean userControl;
 
     /**
      * Instantiate an IKControl.
      *
-     * @param mask
-     * @param joint
+     * @param mask  The avatar mask associated with this IK control.
+     * @param joint The joint to be manipulated by this IK control.
      */
     protected IKControl(AvatarMask mask, Joint joint) {
         this.mask = mask;
