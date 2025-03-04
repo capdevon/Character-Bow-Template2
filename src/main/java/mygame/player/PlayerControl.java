@@ -59,7 +59,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
     private ChaseCamera chaseCamera;
     private Animator animator;
-    private IKRig rig;
+    private IKRig ikRig;
     private SkeletonVisualizer sv;
     private BetterCharacterControl bcc;
     private final Vector3f walkDirection = new Vector3f(0, 0, 0);
@@ -91,7 +91,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
             this.chaseCamera = getComponent(ChaseCamera.class);
             this.bcc         = getComponent(BetterCharacterControl.class);
             this.animator    = getComponent(Animator.class);
-            this.rig         = getComponentInChildren(IKRig.class);
+            this.ikRig       = getComponentInChildren(IKRig.class);
             this.sv          = getComponentInChildren(SkeletonVisualizer.class);
 
             configureAnimClips();
@@ -119,6 +119,10 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         updateWeaponAiming(tpf);
         weaponUI.setText(weapon.getDescription());
 
+        updateMovement(tpf);
+    }
+
+    private void updateMovement(float tpf) {
         camera.getDirection(camDir).setY(0);
         camera.getLeft(camLeft).setY(0);
 
@@ -159,7 +163,6 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
 
                 float smoothTime = 1 - (tpf * rotateSpeed);
                 FRotator.smoothDamp(spatial.getWorldRotation(), dr, smoothTime, viewDirection);
-
                 bcc.setViewDirection(viewDirection);
             }
 
@@ -179,15 +182,6 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         }
     }
     
-    private void updateBoneIK(float tpf) {
-        if (isAiming) {
-            camera.getRotation().toAngles(angles);
-            float rx = angles[0];
-            targetRotation.fromAngles(0, 0, -rx);
-            rig.setAvatarIKRotation(spine, targetRotation);
-        }
-    }
-
     private void updateWeaponAiming(float tpf) {
         if (isAiming) {
             fov += tpf * aimingSpeed;
@@ -198,6 +192,15 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         fov = FastMath.clamp(fov, 0, 1);
         _MainCamera.setFieldOfView(FastMath.interpolateLinear(fov, defaultFOV, aimFOV));
     }
+    
+    private void updateBoneIK(float tpf) {
+        if (isAiming) {
+            camera.getRotation().toAngles(angles);
+            float rx = angles[0];
+            targetRotation.fromAngles(0, 0, -rx);
+            ikRig.setAvatarIKRotation(spine, targetRotation);
+        }
+    }
 
     public void setAiming(boolean isAiming) {
         this.isAiming = isAiming;
@@ -206,7 +209,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         weapon.getCrosshair().setEnabled(isAiming);
         playAnimation(AnimDefs.StandingDrawArrow);
 
-        rig.setAvatarIKActive(spine, isAiming);
+        ikRig.setAvatarIKActive(spine, isAiming);
         sv.setHeadColor(animator.getJoint(spine).getId(), isAiming ? ColorRGBA.Red : ColorRGBA.White);
     }
 
@@ -236,10 +239,6 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         }
     }
 
-    /**
-     * @param hit
-     * @param weapon
-     */
     private void applyExplosion(RaycastHit hit, Weapon weapon) {
         AmmoType ammoType = weapon.getAmmoType();
         int shootLayer = PhysicsCollisionObject.COLLISION_GROUP_03;
