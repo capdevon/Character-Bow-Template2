@@ -28,7 +28,8 @@ import com.jme3.util.TempVars;
  */
 public class Physics {
 
-    private static final int DefaultRaycastLayers = ~0; // All Layers
+    // Default Recast Layers
+    private static final int ALL_LAYERS = ~0;
 
     private static PhysicsSpace physicsSpace;
     private static boolean initialized;
@@ -45,7 +46,7 @@ public class Physics {
         }
 
         BulletAppState physics = new BulletAppState();
-        physics.setThreadingType(BulletAppState.ThreadingType.SEQUENTIAL);
+        physics.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
         app.getStateManager().attach(physics);
         physicsSpace = physics.getPhysicsSpace();
         initialized = true;
@@ -54,10 +55,10 @@ public class Physics {
     /**
      * Applies a force to a rigidbody that simulates explosion effects.
      *
-     * @param rb                - The rigidbody object.
-     * @param explosionForce    - The force of the explosion (which may be modified by distance).
-     * @param explosionPosition - The centre of the sphere within which the explosion has its effect.
-     * @param explosionRadius   - The radius of the sphere within which the explosion has its effect.
+     * @param rb                The rigidbody object.
+     * @param explosionForce    The force of the explosion (which may be modified by distance).
+     * @param explosionPosition The centre of the sphere within which the explosion has its effect.
+     * @param explosionRadius   The radius of the sphere within which the explosion has its effect.
      */
     public static void addExplosionForce(PhysicsRigidBody rb, float explosionForce, Vector3f explosionPosition, float explosionRadius) {
         Vector3f expCenter2Body = rb.getPhysicsLocation().subtract(explosionPosition);
@@ -73,7 +74,7 @@ public class Physics {
      * Casts a ray through the scene and returns all hits.
      */
     public static List<RaycastHit> raycastAll(Ray ray, float maxDistance) {
-        return raycastAll(ray, maxDistance, DefaultRaycastLayers);
+        return raycastAll(ray, maxDistance, ALL_LAYERS);
     }
 
     /**
@@ -111,7 +112,7 @@ public class Physics {
      * maxDistance, against all colliders in the Scene.
      */
     public static boolean doRaycast(Vector3f origin, Vector3f direction, RaycastHit hitInfo, float maxDistance) {
-        return doRaycast(origin, direction, hitInfo, maxDistance, DefaultRaycastLayers);
+        return doRaycast(origin, direction, hitInfo, maxDistance, ALL_LAYERS);
     }
 
     /**
@@ -155,7 +156,7 @@ public class Physics {
      * beginVec and finalVec.
      */
     public static boolean doLinecast(Vector3f beginVec, Vector3f finalVec, RaycastHit hitInfo) {
-        return doLinecast(beginVec, finalVec, hitInfo, DefaultRaycastLayers);
+        return doLinecast(beginVec, finalVec, hitInfo, ALL_LAYERS);
     }
 
     /**
@@ -207,7 +208,7 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapSphere(Vector3f position, float radius) {
-        return overlapSphere(position, radius, DefaultRaycastLayers);
+        return overlapSphere(position, radius, ALL_LAYERS);
     }
     
     /**
@@ -232,11 +233,12 @@ public class Physics {
     }
 
     public static Set<PhysicsCollisionObject> overlapBox(Vector3f center, Vector3f halfExtents, Quaternion rotation) {
-        return overlapBox(center, halfExtents, rotation, DefaultRaycastLayers);
+        return overlapBox(center, halfExtents, rotation, ALL_LAYERS);
     }
 
     /**
-     * Perform a contact test. This will not detect contacts with soft bodies.
+     * Perform a contact test. 
+     * This will not detect contacts with soft bodies.
      */
     private static int contactTest(PhysicsGhostObject ghost, final Set<PhysicsCollisionObject> overlappingObjects, int layerMask) {
 
@@ -259,11 +261,12 @@ public class Physics {
     }
     
     /**
-     * Check if a collisionGroup is in a layerMask
+     * Checks if a collision group is included within a layer mask.
      *
-     * @param layerMask
-     * @param collisionGroup
-     * @return
+     * @param layerMask      The layer mask to check against.
+     * @param collisionGroup The collision group to verify.
+     * @return {@code true} if the collision group is within the layer mask,
+     *         {@code false} otherwise.
      */
     private static boolean applyMask(int layerMask, int collisionGroup) {
         return layerMask == (layerMask | collisionGroup);
