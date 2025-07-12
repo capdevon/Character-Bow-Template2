@@ -6,7 +6,6 @@ import com.capdevon.physx.RaycastHit;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.CameraInput;
-import com.jme3.input.ChaseCamera;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -23,7 +22,7 @@ public class CameraCollisionControl extends AbstractControl {
 
     private Spatial scene;
     private Camera camera;
-    private ChaseCamera chaseCam;
+    private MyChaseCamera chaseCam;
 
     private final Vector3f targetLocation = new Vector3f();
     private final Vector3f targetToCamDirection = new Vector3f();
@@ -53,7 +52,7 @@ public class CameraCollisionControl extends AbstractControl {
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            this.chaseCam = spatial.getControl(ChaseCamera.class);
+            this.chaseCam = spatial.getControl(MyChaseCamera.class);
             Objects.requireNonNull(chaseCam, "ChaseCamera not found: " + spatial);
         }
     }
