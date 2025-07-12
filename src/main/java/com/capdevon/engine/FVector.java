@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.capdevon.engine;
 
 import com.jme3.math.FastMath;
@@ -24,8 +19,6 @@ public class FVector {
     public static final Vector3f Right   = new Vector3f(1f, 0f, 0f);
     public static final Vector3f Forward = new Vector3f(0f, 0f, 1f);
     public static final Vector3f Back    = new Vector3f(0f, 0f, -1f);
-    public static final Vector3f PositiveInfinity = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-    public static final Vector3f NegativeInfinity = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
     
     /**
      * A private constructor to inhibit instantiation of this class.
@@ -60,27 +53,6 @@ public class FVector {
         return start.scaleAdd((float) Math.cos(theta), new Vector3f(tx * dl, ty * dl, tz * dl)).normalizeLocal();
     }
         
-    /**
-     * Returns a random point inside or on a sphere with radius 1.0
-     */
-    public static Vector3f insideUnitSphere() {
-
-        float u = FastMath.nextRandomFloat();
-        float v = FastMath.nextRandomFloat();
-
-        // azimuthal angle: The angle between x-axis in radians [0, 2pi]
-        float theta = FastMath.TWO_PI * u;
-        // polar angle: The angle between z-axis in radians [0, pi]
-        float phi = (float) Math.acos(2f * v - 1f);
-
-        float cosPolar = FastMath.cos(phi);
-        float sinPolar = FastMath.sin(phi);
-        float cosAzim = FastMath.cos(theta);
-        float sinAzim = FastMath.sin(theta);
-
-        return new Vector3f(cosAzim * sinPolar, sinAzim * sinPolar, cosPolar);
-    }
-    
     /**
      * Rotates this vector by the given angle in degrees around Y axis.
      */
@@ -146,14 +118,14 @@ public class FVector {
      * Returns the distance between a and b.
      */
     public static float distance(Spatial a, Spatial b) {
-        return b.getWorldTranslation().distance(a.getWorldTranslation());
+        return distance(a.getWorldTranslation(), b.getWorldTranslation());
     }
 
     /**
      * Returns the squared distance between a and b.
      */
     public static float sqrDistance(Spatial a, Spatial b) {
-        return b.getWorldTranslation().distanceSquared(a.getWorldTranslation());
+        return sqrDistance(a.getWorldTranslation(), b.getWorldTranslation());
     }
 
     /**
