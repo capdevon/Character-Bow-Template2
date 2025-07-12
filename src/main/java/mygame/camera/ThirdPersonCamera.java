@@ -3,7 +3,6 @@ package mygame.camera;
 import java.util.logging.Logger;
 
 import com.jme3.input.CameraInput;
-import com.jme3.input.ChaseCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.Joystick;
 import com.jme3.input.JoystickAxis;
@@ -16,9 +15,9 @@ import com.jme3.scene.Spatial;
  *
  * @author capdevon
  */
-public class ThirdPersonCamera extends ChaseCamera {
+public class ThirdPersonCamera extends MyChaseCamera {
 
-    private static final Logger logger = Logger.getLogger(ChaseCamera.class.getName());
+    private static final Logger logger = Logger.getLogger(ThirdPersonCamera.class.getName());
 
     /**
      * Constructs a ThirdPersonCamera instance. This constructor does not register
