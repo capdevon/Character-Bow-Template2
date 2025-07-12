@@ -66,7 +66,8 @@ public class TownAppState extends SimpleAppState {
         getPhysicsSpace().add(rb);
 
         /* nature sound - keeps playing in a loop. */
-        AudioNode audio = SoundManager.createAudioStream(AudioLib.ENV_NATURE);
+        AudioNode audio = SoundManager.makeAudio(AudioLib.ENV_NATURE);
+        rootNode.attachChild(audio);
         audio.play();
         
         rootNode.attachChild(scene);

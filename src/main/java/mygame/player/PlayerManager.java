@@ -5,6 +5,7 @@ import com.capdevon.anim.Animator;
 import com.capdevon.anim.AvatarMask;
 import com.capdevon.anim.HumanBodyBones;
 import com.capdevon.anim.IKRig;
+import com.capdevon.audio.AudioClip;
 import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.GameObject;
 import com.capdevon.engine.SimpleAppState;
@@ -12,6 +13,7 @@ import com.capdevon.input.GInputAppState;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
 import com.jme3.app.Application;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
@@ -83,9 +85,9 @@ public class PlayerManager extends SimpleAppState {
         playerControl.weaponUI         = createLabel(20, settings.getHeight() - 20);
         playerControl.particleManager  = getState(ParticleManager.class);
         playerControl.weapon           = initWeapon(skinningControl);
-        playerControl.footstepsSFX     = SoundManager.createAudioBuffer(AudioLib.GRASS_FOOTSTEPS);
-        playerControl.shootSFX         = SoundManager.createAudioBuffer(AudioLib.ARROW_HIT);
-        playerControl.reloadSFX        = SoundManager.createAudioBuffer(AudioLib.BOW_PULL);
+        playerControl.footstepsSFX     = makeAudio(AudioLib.GRASS_FOOTSTEPS);
+        playerControl.shootSFX         = makeAudio(AudioLib.ARROW_HIT);
+        playerControl.reloadSFX        = makeAudio(AudioLib.BOW_PULL);
         player.addControl(playerControl);
 
         PlayerInput playerInput = new PlayerInput();
@@ -94,6 +96,12 @@ public class PlayerManager extends SimpleAppState {
 
         getPhysicsSpace().add(player);
         rootNode.attachChild(player);
+    }
+    
+    private AudioNode makeAudio(AudioClip clip) {
+        AudioNode audio = SoundManager.makeAudio(clip);
+        player.attachChild(audio);
+        return audio;
     }
 
     private void setupChaseCamera(Spatial target) {

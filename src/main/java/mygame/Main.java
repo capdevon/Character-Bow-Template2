@@ -64,7 +64,7 @@ public class Main extends SimpleApplication {
          * Initialize the physics simulation
          */
         Physics.initEngine(this);
-        SoundManager.init(assetManager);
+        SoundManager.init(this);
         //stateManager.attach(new BulletAppState());
         stateManager.attach(new PhysxDebugAppState());
         //stateManager.attach(new DetailedProfilerState());

@@ -1,5 +1,7 @@
 package com.capdevon.audio;
 
+import com.jme3.audio.AudioData;
+
 /**
  *
  * @author capdevon
@@ -10,6 +12,7 @@ public class AudioClip {
     public float volume = 1;
     public boolean looping = false;
     public boolean positional = false;
+    public AudioData.DataType dataType = AudioData.DataType.Buffer;
 
     public AudioClip(String file) {
         this.file = file;
@@ -26,11 +29,12 @@ public class AudioClip {
         this.looping = looping;
     }
 
-    public AudioClip(String file, float volume, boolean looping, boolean positional) {
+    public AudioClip(String file, float volume, boolean looping, boolean positional, AudioData.DataType dataType) {
         this.file = file;
         this.volume = volume;
         this.looping = looping;
         this.positional = positional;
+        this.dataType = dataType;
     }
 
     @Override
@@ -39,6 +43,7 @@ public class AudioClip {
                 + ", volume=" + volume
                 + ", looping=" + looping
                 + ", positional=" + positional
+                + ", dataType=" + dataType
                 + "]";
     }
 
