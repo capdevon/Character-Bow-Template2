@@ -19,7 +19,6 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.font.BitmapText;
-import com.jme3.input.ChaseCamera;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -30,6 +29,7 @@ import com.jme3.scene.Spatial;
 
 import jme3utilities.debug.SkeletonVisualizer;
 import mygame.camera.MainCamera;
+import mygame.camera.MyChaseCamera;
 import mygame.states.ParticleManager;
 import mygame.util.AnimDefs;
 
@@ -57,7 +57,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
     private float aimFOV = 45;
     private float defaultFOV = 60;
 
-    private ChaseCamera chaseCamera;
+    private MyChaseCamera chaseCamera;
     private Animator animator;
     private IKRig ikRig;
     private SkeletonVisualizer sv;
@@ -88,7 +88,7 @@ public class PlayerControl extends AdapterControl implements AnimationListener {
         super.setSpatial(sp);
         if (spatial != null) {
             this.aimNode     = (Node) getChild("aim-node");
-            this.chaseCamera = getComponent(ChaseCamera.class);
+            this.chaseCamera = getComponent(MyChaseCamera.class);
             this.bcc         = getComponent(BetterCharacterControl.class);
             this.animator    = getComponent(Animator.class);
             this.ikRig       = getComponentInChildren(IKRig.class);
