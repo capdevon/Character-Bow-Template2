@@ -5,7 +5,7 @@ import com.capdevon.engine.AsyncOperation;
 import com.capdevon.engine.Scene;
 import com.capdevon.engine.SceneManager;
 import com.capdevon.physx.Physics;
-import com.capdevon.physx.PhysxDebugAppState;
+import com.capdevon.physx.TogglePhysicsDebugState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.TechniqueDef;
@@ -55,7 +55,7 @@ public class Main extends SimpleApplication {
         Physics.initEngine(this);
         SoundManager.init(this);
         //stateManager.attach(new BulletAppState());
-        stateManager.attach(new PhysxDebugAppState());
+        stateManager.attach(new TogglePhysicsDebugState());
         //stateManager.attach(new DetailedProfilerState());
         //stateManager.attach(new BasicProfilerState(false));
 
