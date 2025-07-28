@@ -4,6 +4,7 @@ import com.capdevon.control.TimerControl;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.math.Vector3f;
@@ -16,13 +17,12 @@ import com.jme3.scene.Spatial;
  */
 public class ParticleManager extends BaseAppState {
 
-    private SimpleApplication simpleApp;
-    private Node rootLocal;
+    private AssetManager assetManager;
+    private final Node rootLocal = new Node("Particles");
 
     @Override
     protected void initialize(Application app) {
-        this.simpleApp = (SimpleApplication) app;
-        rootLocal = new Node("Particles");
+        this.assetManager = app.getAssetManager();
     }
 
     @Override
@@ -32,17 +32,21 @@ public class ParticleManager extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        simpleApp.getRootNode().attachChild(rootLocal);
+        getRootNode().attachChild(rootLocal);
     }
 
     @Override
     protected void onDisable() {
-        simpleApp.getRootNode().attachChild(rootLocal);
+        getRootNode().attachChild(rootLocal);
+    }
+
+    private Node getRootNode() {
+        return ((SimpleApplication) getApplication()).getRootNode();
     }
 
     public void playEffect(String name, Vector3f location, float lifeTime) {
 
-        Node emitter = (Node) simpleApp.getAssetManager().loadModel(name);
+        Node emitter = (Node) assetManager.loadModel(name);
         emitter.setLocalTranslation(location);
         rootLocal.attachChild(emitter);
 
