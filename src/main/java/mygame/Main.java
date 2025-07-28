@@ -2,7 +2,6 @@ package mygame;
 
 import com.capdevon.audio.SoundManager;
 import com.capdevon.engine.AsyncOperation;
-import com.capdevon.engine.Capture;
 import com.capdevon.engine.Scene;
 import com.capdevon.engine.SceneManager;
 import com.capdevon.physx.Physics;
@@ -12,7 +11,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.material.TechniqueDef;
 import com.jme3.renderer.Limits;
 import com.jme3.system.AppSettings;
-import com.jme3.system.JmeVersion;
 
 /**
  *
@@ -27,16 +25,7 @@ public class Main extends SimpleApplication {
      */
     public static void main(String[] args) {
         Main app = new Main();
-        AppSettings settings = new AppSettings(true);
-        settings.setTitle("Demo " + JmeVersion.FULL_NAME);
-        //settings.setRenderer(AppSettings.LWJGL_OPENGL32); // OpenGL 3.2 Core profile
-        settings.setResolution(800, 600);
-        settings.setFrameRate(60);
-        settings.setSamples(4);
-        settings.setBitsPerPixel(32);
-        //settings.setVSync(false);
-        //settings.setUseJoysticks(true);
-
+        AppSettings settings = JmeSettings.getDefault();
         app.setSettings(settings);
         app.setShowSettings(false);
         app.setPauseOnLostFocus(false);
