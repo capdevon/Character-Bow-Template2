@@ -22,6 +22,8 @@ public class Damageable extends AbstractControl {
             mpo = new MatParamOverride(VarType.Vector4, "BaseColor", ColorRGBA.White);
             spatial.addMatParamOverride(mpo);
             mpo.setEnabled(false);
+        } else {
+            spatial.removeMatParamOverride(mpo);
         }
     }
 
