@@ -91,14 +91,14 @@ public class TownAppState extends SimpleAppState {
             // Manually initialize so we can add a probe before the next update happens
             envCam.initialize(stateManager, getApplication());
             LightProbe probe = LightProbeFactory.makeProbe(envCam, rootNode);
-            probe.getArea().setRadius(100); // Set the probe's radius in world units
+            probe.getArea().setRadius(500); // Set the probe's radius in world units
             rootNode.addLight(probe);
 
         } else {
             // add a PBR probe.
             Spatial probeModel = assetManager.loadModel("Scenes/defaultProbe.j3o");
             LightProbe lightProbe = (LightProbe) probeModel.getLocalLightList().get(0);
-            lightProbe.getArea().setRadius(100);
+            lightProbe.getArea().setRadius(500);
             rootNode.addLight(lightProbe);
         }
     }
