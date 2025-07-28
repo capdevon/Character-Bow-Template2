@@ -37,7 +37,7 @@ public class ParticleManager extends BaseAppState {
 
     @Override
     protected void onDisable() {
-        getRootNode().attachChild(rootLocal);
+        getRootNode().detachChild(rootLocal);
     }
 
     private Node getRootNode() {
