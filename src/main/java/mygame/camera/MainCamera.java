@@ -5,6 +5,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.util.TempVars;
 
 /**
  *
@@ -94,11 +95,19 @@ public class MainCamera {
      * </pre>
      */
     public static Ray screenPointToRay(Camera cam, Vector2f click2d) {
-        // Convert screen click to 3d position
-        Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d), 0).clone();
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d), 1).subtractLocal(click3d).normalizeLocal();
-        // Aim the ray from the clicked spot forwards.
-        Ray ray = new Ray(click3d, dir);
+        TempVars vars = TempVars.get();
+        Vector3f nearPoint = vars.vect1;
+        Vector3f farPoint = vars.vect2;
+
+        // Get the world coordinates for the near and far points
+        cam.getWorldCoordinates(click2d, 0, nearPoint);
+        cam.getWorldCoordinates(click2d, 1, farPoint);
+
+        // Calculate direction and normalize
+        Vector3f direction = farPoint.subtractLocal(nearPoint).normalizeLocal();
+        Ray ray = new Ray(nearPoint, direction);
+        
+        vars.release();
         return ray;
     }
 
