@@ -604,19 +604,12 @@ public class MyChaseCamera implements ActionListener, AnalogListener, Control, J
 
     @Override
     public Object jmeClone() {
-        MyChaseCamera cc = new MyChaseCamera(cam, inputManager);
-        cc.target = target;
-        cc.setMaxDistance(getMaxDistance());
-        cc.setMinDistance(getMinDistance());
-        return cc;
+        return null;
     }
 
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        this.target = cloner.clone(target);
-        computePosition();
-        prevPos = new Vector3f(target.getWorldTranslation());
-        cam.setLocation(pos);
+        throw new UnsupportedOperationException("jmeClone not supported");
     }
 
     /**
