@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jme3.app.Application;
+import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
+import com.jme3.audio.AudioSource.Status;
 
 /**
  *
@@ -27,15 +29,23 @@ public class SoundManager {
         }
     }
 
-    /**
-     * @param clip
-     * @return
-     */
-    public static AudioNode makeAudio(AudioClip clip) {
-        AudioNode audio = new AudioNode(app.getAssetManager(), clip.file, clip.dataType);
-        audio.setVolume(clip.volume);
-        audio.setLooping(clip.looping);
-        audio.setPositional(clip.positional);
+    public static AudioNode makeAudioBuffer(String name) {
+        AudioNode audio = new AudioNode(app.getAssetManager(), name, DataType.Buffer);
+        audio.setPositional(false);
+        return audio;
+    }
+    
+    public static AudioNode makeAudioStream(String name) {
+        AudioNode audio = new AudioNode(app.getAssetManager(), name, DataType.Stream);
+        audio.setPositional(false);
+        return audio;
+    }
+    
+    public static AudioNode makeAudio(AudioClip ac) {
+        AudioNode audio = new AudioNode(app.getAssetManager(), ac.file, ac.dataType);
+        audio.setVolume(ac.volume);
+        audio.setLooping(ac.looping);
+        audio.setPositional(ac.positional);
         return audio;
     }
 
@@ -44,19 +54,40 @@ public class SoundManager {
             soundsMap.put(name, makeAudio(clip));
         }
     }
+    
+    public static void clear() {
+        soundsMap.clear();
+    }
+    
+    public static AudioNode getAudioNode(String name) {
+        return soundsMap.get(name);
+    }
 
-    /**
-     * Called when all sounds must be stopped.
-     */
     public static void stopAll() {
         for (Map.Entry<String, AudioNode> entry : soundsMap.entrySet()) {
             AudioNode audio = entry.getValue();
-            audio.stop();
+            if (audio.getStatus() == Status.Playing) {
+                audio.stop();
+            }
         }
     }
 
-    public static AudioNode getAudioNode(String name) {
-        return soundsMap.get(name);
+    public static void pauseAll() {
+        for (Map.Entry<String, AudioNode> entry : soundsMap.entrySet()) {
+            AudioNode audio = entry.getValue();
+            if (audio.getStatus() == Status.Playing) {
+                audio.pause();
+            }
+        }
+    }
+
+    public static void resumeAll() {
+        for (Map.Entry<String, AudioNode> entry : soundsMap.entrySet()) {
+            AudioNode audio = entry.getValue();
+            if (audio.getStatus() == Status.Paused) {
+                audio.play();
+            }
+        }
     }
 
 }
