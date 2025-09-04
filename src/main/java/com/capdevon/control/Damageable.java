@@ -14,14 +14,17 @@ import com.jme3.shader.VarType;
 public class Damageable extends AbstractControl {
 
     private MatParamOverride mpo;
+    
+    public Damageable() {
+        mpo = new MatParamOverride(VarType.Vector4, "BaseColor", ColorRGBA.White);
+        mpo.setEnabled(false);
+    }
 
     @Override
     public void setSpatial(Spatial sp) {
         super.setSpatial(sp);
         if (spatial != null) {
-            mpo = new MatParamOverride(VarType.Vector4, "BaseColor", ColorRGBA.White);
             spatial.addMatParamOverride(mpo);
-            mpo.setEnabled(false);
         } else {
             spatial.removeMatParamOverride(mpo);
         }
