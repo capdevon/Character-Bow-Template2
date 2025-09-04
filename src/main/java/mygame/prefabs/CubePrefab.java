@@ -27,20 +27,18 @@ public class CubePrefab extends PrefabComponent {
     
     private Box mesh;
     private CollisionShape collShape;
-    private ColorRGBA color;
 
     public CubePrefab(Application app) {
         super(app);
         mesh = new Box(halfExtent, halfExtent, halfExtent);
         collShape = new BoxCollisionShape(halfExtent);
-        color = ColorRGBA.Red.clone();
     }
 
     private Spatial loadModel() {
         Material mat = new Material(assetManager, "Common/MatDefs/Light/PBRLighting.j3md");
         mat.setTexture("BaseColorMap", assetManager.loadTexture("Textures/white_grid.jpg"));
-        mat.setColor("BaseColor", color);
-        mat.setFloat("Metallic", 0);
+        mat.setColor("BaseColor", ColorRGBA.Red);
+        mat.setFloat("Metallic", 0.2f);
         mat.setFloat("Roughness", 0.8f);
         
         int id = nextSeqId();
