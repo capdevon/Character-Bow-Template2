@@ -2,19 +2,17 @@
 
 A demo of a third-person controller with a bow and arrow system made with [jMonkeyEngine](https://jmonkeyengine.org/)
 
-🔔 If you found this project useful, please let me know by leaving a like to motivate me to improve it. 
-Thanks!
+🔔 Enjoying this project? Give it a star to show your support and motivate me to keep improving it!
 
 The demo contains:
 
-* Animations
-* Third Person Camera with collision detection
-* Bow with two types of ammo and effect
-* Dynamic update of camera FOV when aiming
-* Keyboard/Mouse and Joystick support
+* Fluid animations
+* A smart third person Camera with collision detection
+* Dual-Ammo Bow: Wield a bow with two distinct ammo types and special effects
+* Adaptive Aiming: a dynamic field of view update that zooms in automatically when you aim
+* Keyboard/Mouse support
 * Sounds
-* Particles
-* Postprocessing
+* Visual Effects: Stunning particle effects and post-processing
 
 # Keyboard Commands
 - WASD: Movement
@@ -29,7 +27,7 @@ The demo contains:
 # Requirements
 - [jmonkeyengine](https://github.com/jMonkeyEngine/jmonkeyengine) - A complete 3D game development suite written purely in Java.
 - [Minie](https://stephengold.github.io/Minie/minie/overview.html) - A physics library for JMonkeyEngine.
-- java 11+
+- java 19+
  
 # Youtube videos
 [Demo](https://www.youtube.com/watch?v=US9KNTqL2js)
