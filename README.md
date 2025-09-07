@@ -1,6 +1,6 @@
 # Character-Bow-Template
 
-A demo of a third-person controller with a bow and arrow system made with [jMonkeyEngine](https://jmonkeyengine.org/)
+Dive into a dynamic third-person controller demo featuring a fully-functional bow and arrow system, built with the powerful [jMonkeyEngine](https://jmonkeyengine.org/)
 
 🔔 Enjoying this project? Give it a star to show your support and motivate me to keep improving it!
 
