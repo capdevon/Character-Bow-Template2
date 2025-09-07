@@ -12,6 +12,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.custom.ArmatureDebugger;
+import jme3utilities.InfluenceUtil;
+import jme3utilities.debug.SkeletonVisualizer;
 
 /**
  *
@@ -58,13 +60,19 @@ public class AnimUtils {
      *            ArmatureDebugger
      */
     public static void addArmatureDebugger(AssetManager asm, SkinningControl sc) {
-        Node animRoot = (Node) sc.getSpatial();
-        String name = animRoot.getName() + "_Armature";
-        Armature armature = sc.getArmature();
-        ArmatureDebugger debugger = new ArmatureDebugger(name, armature, armature.getJointList());
-        Material mat = createWireMaterial(asm, ColorRGBA.Blue);
-        debugger.setMaterial(mat);
-        animRoot.attachChild(debugger);
+        Spatial animRoot = sc.getSpatial();
+        SkeletonVisualizer sv = new SkeletonVisualizer(asm, sc);
+        InfluenceUtil.hideNonInfluencers(sv, sc);
+        animRoot.addControl(sv);
+        sv.setEnabled(true);
+
+//        Node animRoot = (Node) sc.getSpatial();
+//        String name = animRoot.getName() + "_Armature";
+//        Armature armature = sc.getArmature();
+//        ArmatureDebugger debugger = new ArmatureDebugger(name, armature, armature.getJointList());
+//        Material mat = createWireMaterial(asm, ColorRGBA.Blue);
+//        debugger.setMaterial(mat);
+//        animRoot.attachChild(debugger);
     }
 
     private static Material createWireMaterial(AssetManager asm, ColorRGBA color) {
